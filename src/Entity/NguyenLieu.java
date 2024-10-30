@@ -1,5 +1,6 @@
 package Entity;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 
@@ -7,14 +8,14 @@ public class NguyenLieu {
 	private String maNguyenLieu;
 	private String tenNguyenLieu;
 	private int soLuong;
-	private Date thoiGianNhap;
-	private Date thoiGianHetHan;
+	private LocalDateTime thoiGianNhap;
+	private LocalDateTime thoiGianHetHan;
 	private NhaCungCap nhaCungCap;
 	public NguyenLieu() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public NguyenLieu(String maNguyenLieu, String tenNguyenLieu, int soLuong, Date thoiGianNhap, Date thoiGianHetHan,
+	public NguyenLieu(String maNguyenLieu, String tenNguyenLieu, int soLuong, LocalDateTime thoiGianNhap, LocalDateTime thoiGianHetHan,
 			NhaCungCap nhaCungCap) {
 		super();
 		this.maNguyenLieu = maNguyenLieu;
@@ -42,16 +43,16 @@ public class NguyenLieu {
 	public void setSoLuong(int soLuong) {
 		this.soLuong = soLuong;
 	}
-	public Date getThoiGianNhap() {
+	public LocalDateTime getThoiGianNhap() {
 		return thoiGianNhap;
 	}
-	public void setThoiGianNhap(Date thoiGianNhap) {
+	public void setThoiGianNhap(LocalDateTime thoiGianNhap) {
 		this.thoiGianNhap = thoiGianNhap;
 	}
-	public Date getThoiGianHetHan() {
+	public LocalDateTime getThoiGianHetHan() {
 		return thoiGianHetHan;
 	}
-	public void setThoiGianHetHan(Date thoiGianHetHan) {
+	public void setThoiGianHetHan(LocalDateTime thoiGianHetHan) {
 		this.thoiGianHetHan = thoiGianHetHan;
 	}
 	public NhaCungCap getNhaCungCap() {
