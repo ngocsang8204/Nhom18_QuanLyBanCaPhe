@@ -5,9 +5,9 @@ import java.util.Objects;
 public class Ban {
 	private String maBan;
 	private String tenBan;
-	private int trangThaiBan;
+	private String trangThaiBan;
 	private String ghiChu;
-	public Ban(String maBan, String tenBan, int trangThaiBan, String ghiChu) {
+	public Ban(String maBan, String tenBan, String trangThaiBan, String ghiChu) {
 		super();
 		this.maBan = maBan;
 		this.tenBan = tenBan;
@@ -30,10 +30,10 @@ public class Ban {
 	public void setTenBan(String tenBan) {
 		this.tenBan = tenBan;
 	}
-	public int getTrangThaiBan() {
+	public String getTrangThaiBan() {
 		return trangThaiBan;
 	}
-	public void setTrangThaiBan(int trangThaiBan) {
+	public void setTrangThaiBan(String trangThaiBan) {
 		this.trangThaiBan = trangThaiBan;
 	}
 	public String getGhiChu() {

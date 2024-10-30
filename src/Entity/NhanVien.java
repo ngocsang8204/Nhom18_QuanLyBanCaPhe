@@ -8,9 +8,9 @@ public class NhanVien {
 	private String soCCCD;
 	private String soDienThoai;
 	private String diaChi;
-	private String chucVu;
+	private boolean chucVu;
 	public NhanVien(String maNhanVien, String tenNhanVien, String soCCCD, String soDienThoai, String diaChi,
-			String chucVu) {
+			boolean chucVu) {
 		super();
 		this.maNhanVien = maNhanVien;
 		this.tenNhanVien = tenNhanVien;
@@ -53,10 +53,10 @@ public class NhanVien {
 	public void setDiaChi(String diaChi) {
 		this.diaChi = diaChi;
 	}
-	public String getChucVu() {
+	public boolean getChucVu() {
 		return chucVu;
 	}
-	public void setChucVu(String chucVu) {
+	public void setChucVu(boolean chucVu) {
 		this.chucVu = chucVu;
 	}
 	
