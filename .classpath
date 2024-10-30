@@ -6,5 +6,15 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="D:/java/Nhom18_QuanLyBanCaPhe/lib/flatlaf-3.0.jar"/>
+	<classpathentry kind="lib" path="D:/java/Nhom18_QuanLyBanCaPhe/lib/flatlaf-extras-3.1.jar"/>
+	<classpathentry kind="lib" path="D:/java/Nhom18_QuanLyBanCaPhe/lib/flatlaf-fonts-roboto-2.137.jar"/>
+	<classpathentry kind="lib" path="D:/java/Nhom18_QuanLyBanCaPhe/lib/jcalendar-1.4.jar"/>
+	<classpathentry kind="lib" path="D:/java/Nhom18_QuanLyBanCaPhe/lib/jcommon-1.0.23.jar"/>
+	<classpathentry kind="lib" path="D:/java/Nhom18_QuanLyBanCaPhe/lib/jcommon-xml-1.0.23.jar"/>
+	<classpathentry kind="lib" path="D:/java/Nhom18_QuanLyBanCaPhe/lib/jfreechart-1.0.19.jar"/>
+	<classpathentry kind="lib" path="D:/java/Nhom18_QuanLyBanCaPhe/lib/sqljdbc42.jar"/>
+	<classpathentry kind="lib" path="D:/java/Nhom18_QuanLyBanCaPhe/lib/swing-time-picker.jar"/>
+	<classpathentry kind="lib" path="D:/java/Nhom18_QuanLyBanCaPhe/lib/TimingFramework-0.55.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
