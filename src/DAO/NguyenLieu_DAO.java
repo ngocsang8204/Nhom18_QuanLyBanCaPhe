@@ -66,13 +66,14 @@ public class NguyenLieu_DAO {
 	    	if (dsDV.contains(nguyenLieu)) {
 	    		System.out.println("Nguyên liệu đã tồn tại, không thể thêm");
 	    	} else {
-	    		String sql = "INSERT INTO DichVu(maNguyenLieu, tenNguyenLieu, soLuong, thoiGianNhapHang, thoiGianHetHan, maNhaCungCap) VALUES (?, ?, ?, ?, ?, ?)";
+	    		String sql = "INSERT INTO NguyenLieu(maNguyenLieu, tenNguyenLieu, soLuong, thoiGianNhapHang, thoiGianHetHan, maNhaCungCap) VALUES (?, ?, ?, ?, ?, ?)";
 	    		stmt = con.prepareStatement(sql);
 	    		stmt.setString(1, "NL00" + String.valueOf(dsDV.size() + 1));
 	    		stmt.setString(2, nguyenLieu.getTenNguyenLieu());
 	    		stmt.setInt(3, nguyenLieu.getSoLuong());
 	    		stmt.setTimestamp(4, Timestamp.valueOf(nguyenLieu.getThoiGianNhap()));
-	    		
+	    		stmt.setTimestamp(5, Timestamp.valueOf(nguyenLieu.getThoiGianHetHan()));
+	    		stmt.setString(6, nguyenLieu.getNhaCungCap().getMaNhaCungCap());
 	    		int rowsInserted = stmt.executeUpdate();
 	            if (rowsInserted > 0) {
 	                isSuccess = true;
@@ -82,5 +83,33 @@ public class NguyenLieu_DAO {
 	    	e.printStackTrace();
 	    }
 	    return isSuccess;
+	}
+	
+	public boolean suaNguyenLieu (NguyenLieu nguyenLieu) {
+		Connection connection = database.getInstance().getConnection();
+		boolean isSuccess = false;
+		try {
+			ArrayList<NguyenLieu> dsNL = danhSachNguyenLieu();
+			if (!dsNL.contains(nguyenLieu)) {
+				System.out.println("Nguyên liệu không tồn tại");
+			} else {
+				String updateSql = "UPDATE NguyenLieu SET tenNguyenLieu = ?, soLuong = ?, thoiGianNhapHang = ?, thoiGianHetHan = ? WHERE maNguyenLieu = ?";
+		        PreparedStatement stmt = connection.prepareStatement(updateSql);
+		        stmt.setString(1, nguyenLieu.getTenNguyenLieu());
+	    		stmt.setInt(2, nguyenLieu.getSoLuong());
+	    		stmt.setTimestamp(3, Timestamp.valueOf(nguyenLieu.getThoiGianNhap()));
+	    		stmt.setTimestamp(4, Timestamp.valueOf(nguyenLieu.getThoiGianHetHan()));
+	    		stmt.setString(5, nguyenLieu.getNhaCungCap().getMaNhaCungCap());
+		        stmt.setString(6, nguyenLieu.getMaNguyenLieu());
+		        
+		        int rowsInserted = stmt.executeUpdate();
+	            if (rowsInserted > 0) {
+	                isSuccess = true;
+	            }
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return isSuccess;
 	}
 }

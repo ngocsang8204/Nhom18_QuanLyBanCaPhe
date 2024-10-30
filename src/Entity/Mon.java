@@ -5,16 +5,15 @@ import java.util.Objects;
 public class Mon {
 	private String maMon;
 	private String tenMon;
+	private String loaiMon;
 	private double donGia;
-	private int loaiMon;
-	private NhaCungCap nhaCungCap;
-	public Mon(String maMon, String tenMon, double donGia, int loaiMon, NhaCungCap nhaCungCap) {
+	
+	public Mon(String maMon, String tenMon, String loaiMon, double donGia) {
 		super();
 		this.maMon = maMon;
 		this.tenMon = tenMon;
-		this.donGia = donGia;
 		this.loaiMon = loaiMon;
-		this.nhaCungCap = nhaCungCap;
+		this.donGia = donGia;
 	}
 	public Mon() {
 		super();
@@ -38,18 +37,13 @@ public class Mon {
 	public void setDonGia(double donGia) {
 		this.donGia = donGia;
 	}
-	public int getLoaiMon() {
+	public String getLoaiMon() {
 		return loaiMon;
 	}
-	public void setLoaiMon(int loaiMon) {
+	public void setLoaiMon(String loaiMon) {
 		this.loaiMon = loaiMon;
 	}
-	public NhaCungCap getNhaCungCap() {
-		return nhaCungCap;
-	}
-	public void setNhaCungCap(NhaCungCap nhaCungCap) {
-		this.nhaCungCap = nhaCungCap;
-	}
+	
 	public Mon(String maMon) {
 		this.maMon = maMon;
 	}
@@ -70,7 +64,7 @@ public class Mon {
 	}
 	@Override
 	public String toString() {
-		return "Mon [maMon=" + maMon + ", tenMon=" + tenMon + ", donGia=" + donGia + ", loaiMon=" + loaiMon + "]";
+		return "Mon [maMon=" + maMon + ", tenMon=" + tenMon + ", loaiMon=" + loaiMon + ", donGia=" + donGia + "]";
 	}
 	
 	
