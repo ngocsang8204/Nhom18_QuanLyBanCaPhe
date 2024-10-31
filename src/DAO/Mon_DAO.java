@@ -14,7 +14,16 @@ public class Mon_DAO {
 	public Mon_DAO() {
 		
 	}
+	
+	public static void khoiTao () {
+		try {
+			database.getInstance().Connect();;
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
 	public ArrayList<Mon> danhSachMon(){
+		khoiTao();
 		ArrayList<Mon> dsDV = new ArrayList<Mon>();
 		try {
 			Connection con = database.getInstance().getConnection();
@@ -52,6 +61,11 @@ public class Mon_DAO {
 	public ArrayList<Mon> timMonTheoLoai (String loai){
 		ArrayList<Mon> dsMon = danhSachMon();
 		return dsMon.stream().filter(x -> x.getLoaiMon().matches(".*" + loai + ".*")).collect(Collectors.toCollection(ArrayList::new));
+	}
+	
+	public Mon layMonTheoTenChinhXac (String ten) {
+		ArrayList<Mon> dsMon = danhSachMon();
+		return dsMon.stream().filter(x -> x.getTenMon().equalsIgnoreCase(ten)).findFirst().orElse(null);
 	}
 	
 	public boolean themMon(Mon mon) {
