@@ -200,7 +200,7 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
         JMenuItem accountItem = createSubmenuItem("Tài khoản");
         JMenuItem employeeItem = createSubmenuItem("Nhân viên");
         JMenuItem customerItem = createSubmenuItem("Khách Hàng");
-        JMenuItem productItem = createSubmenuItem("Sản phẩm");
+        JMenuItem productItem = createSubmenuItem("Món");
         JMenuItem ingredientItem = createSubmenuItem("Nguyên liệu");
         JMenuItem supplierItem = createSubmenuItem("Nhà cung cấp");
 
@@ -212,12 +212,12 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
         manageMenu.add(supplierItem);
         
      // Action listeners cho các mục submenu
-//        accountItem.addActionListener(e -> handleSubmenuSelection("account"));
-//        employeeItem.addActionListener(e -> handleSubmenuSelection("employee"));
-//        customerItem.addActionListener(e -> handleSubmenuSelection("customer"));
-//        productItem.addActionListener(e -> handleSubmenuSelection("product"));
-//        ingredientItem.addActionListener(e -> handleSubmenuSelection("ingredient"));
-//        supplierItem.addActionListener(e -> handleSubmenuSelection("supplier"));
+        accountItem.addActionListener(e -> handleSubmenuSelection("account"));
+        employeeItem.addActionListener(e -> handleSubmenuSelection("employee"));
+        customerItem.addActionListener(e -> handleSubmenuSelection("customer"));
+        productItem.addActionListener(e -> handleSubmenuSelection("product"));
+        ingredientItem.addActionListener(e -> handleSubmenuSelection("ingredient"));
+        supplierItem.addActionListener(e -> handleSubmenuSelection("supplier"));
 		
 		thongKe = new JPanel();
 		thongKe.setBackground(new Color(24, 28, 20));
@@ -324,7 +324,7 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
 		cen_l.setBackground(new Color(255, 255, 255));
 		left_main.add(cen_l, BorderLayout.CENTER);
 		cen_l.setLayout(new BorderLayout(0, 0));JPanel panel_9 = new JPanel();
-panel_9.setBorder(new EmptyBorder(0, 0, 5, 0));
+		panel_9.setBorder(new EmptyBorder(0, 0, 5, 0));
 		panel_9.setBackground(new Color(255, 255, 255));
 		cen_l.add(panel_9);
 		panel_9.setLayout(new BorderLayout(0, 0));
@@ -462,31 +462,31 @@ panel_9.setBorder(new EmptyBorder(0, 0, 5, 0));
         return item;
     }
 	
-//	private void handleSubmenuSelection(String menu) {
-//        body.removeAll();
-//        switch (menu) {
-//            case "account":
-//                body.add(new TaiKhoan());
-//                break;
-//            case "employee":
-//                body.add(new NhanVien());
-//                break;
-//            case "customer":
-//                body.add(new KhachHang());
-//                break;
-//            case "product":
-//                body.add(new SanPham());
-//                break;
-//            case "ingredient":
-//                body.add(new NguyenLieu());
-//                break;
-//            case "supplier":
-//            	body.add(new NhaCungCap());
-//            	break;
-//        }
-//        body.revalidate();
-//        body.repaint();
-//    }
+	private void handleSubmenuSelection(String menu) {
+        body.removeAll();
+        switch (menu) {
+            case "account":
+                body.add(new TaiKhoan());
+                break;
+            case "employee":
+                body.add(new NhanVien());
+                break;
+            case "customer":
+                body.add(new KhachHang());
+                break;
+            case "product":
+                body.add(new GUI.Mon());
+                break;
+            case "ingredient":
+                body.add(new NguyenLieu());
+                break;
+            case "supplier":
+            	body.add(new NhaCungCap());
+            	break;
+        }
+        body.revalidate();
+        body.repaint();
+    }
 	
 	private void updateTable(ArrayList<Mon> dsMon, JPanel table) {
 		table.removeAll();
@@ -600,26 +600,26 @@ panel_9.setBorder(new EmptyBorder(0, 0, 5, 0));
 	    	manageMenu.show(btnQuanLy, btnQuanLy.getWidth(), btnQuanLy.getHeight());
 	    }
 
-//	    if (o.equals(btnThongKe)) {
-//	        body.removeAll();
-//	        body.add(new ThongKe());
-//	        body.revalidate();
-//	        body.repaint();
-//	    }
-//
-//	    if (o.equals(btnHoaDon)) {
-//	        body.removeAll();
-//	        body.add(new HoaDon());
-//	        body.revalidate();
-//	        body.repaint();
-//	    }
-//	    
-//	    if (o.equals(btnCaiDat)) {
-//	        body.removeAll();
-//	        body.add(new CaiDat());
-//	        body.revalidate();
-//	        body.repaint();
-//	    }
+	    if (o.equals(btnThongKe)) {
+	        body.removeAll();
+	        body.add(new ThongKe());
+	        body.revalidate();
+	        body.repaint();
+	    }
+
+	    if (o.equals(btnHoaDon)) {
+	        body.removeAll();
+	        body.add(new HoaDon());
+	        body.revalidate();
+	        body.repaint();
+	    }
+	    
+	    if (o.equals(btnCaiDat)) {
+	        body.removeAll();
+	        body.add(new CaiDat());
+	        body.revalidate();
+	        body.repaint();
+	    }
 	}
 
 	@Override
