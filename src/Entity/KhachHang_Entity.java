@@ -2,17 +2,17 @@ package Entity;
 
 import java.util.Objects;
 
-public class KhachHang {
+public class KhachHang_Entity {
 	private String maKhachHang;
 	private String tenKhachHang;
 	private String soDienThoai;
-	public KhachHang(String maKhachHang, String tenKhachHang, String soDienThoai) {
+	public KhachHang_Entity(String maKhachHang, String tenKhachHang, String soDienThoai) {
 		super();
 		this.maKhachHang = maKhachHang;
 		this.tenKhachHang = tenKhachHang;
 		this.soDienThoai = soDienThoai;
 	}
-	public KhachHang() {
+	public KhachHang_Entity() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -35,7 +35,7 @@ public class KhachHang {
 		this.soDienThoai = soDienThoai;
 	}
 	
-	public KhachHang(String maKhachHang) {
+	public KhachHang_Entity(String maKhachHang) {
 		super();
 		this.maKhachHang = maKhachHang;
 	}
@@ -51,7 +51,7 @@ public class KhachHang {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		KhachHang other = (KhachHang) obj;
+		KhachHang_Entity other = (KhachHang_Entity) obj;
 		return Objects.equals(maKhachHang, other.maKhachHang);
 	}
 	@Override

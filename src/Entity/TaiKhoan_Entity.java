@@ -2,19 +2,19 @@ package Entity;
 
 import java.util.Objects;
 
-public class TaiKhoan {
+public class TaiKhoan_Entity {
 	private String maTaiKhoan;
 	private String tenDangNhap;
 	private String matKhau;
-	private NhanVien nhanVien;
-	public TaiKhoan(String maTaiKhoan, String tenDangNhap, String matKhau, NhanVien nhanVien) {
+	private NhanVien_Entity nhanVien;
+	public TaiKhoan_Entity(String maTaiKhoan, String tenDangNhap, String matKhau, NhanVien_Entity nhanVien) {
 		super();
 		this.maTaiKhoan = maTaiKhoan;
 		this.tenDangNhap = tenDangNhap;
 		this.matKhau = matKhau;
 		this.nhanVien = nhanVien;
 	}
-	public TaiKhoan() {
+	public TaiKhoan_Entity() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -36,13 +36,13 @@ public class TaiKhoan {
 	public void setMatKhau(String matKhau) {
 		this.matKhau = matKhau;
 	}
-	public NhanVien getNhanVien() {
+	public NhanVien_Entity getNhanVien() {
 		return nhanVien;
 	}
-	public void setNhanVien(NhanVien nhanVien) {
+	public void setNhanVien(NhanVien_Entity nhanVien) {
 		this.nhanVien = nhanVien;
 	}
-	public TaiKhoan(String maTaiKhoan) {
+	public TaiKhoan_Entity(String maTaiKhoan) {
 		super();
 		this.maTaiKhoan = maTaiKhoan;
 	}
@@ -58,7 +58,7 @@ public class TaiKhoan {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		TaiKhoan other = (TaiKhoan) obj;
+		TaiKhoan_Entity other = (TaiKhoan_Entity) obj;
 		return Objects.equals(maTaiKhoan, other.maTaiKhoan);
 	}
 	@Override

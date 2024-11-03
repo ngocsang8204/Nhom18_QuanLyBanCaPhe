@@ -3,14 +3,17 @@ package DAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
 import ConnectDB.database;
-import Entity.NhanVien;
-import Entity.TaiKhoan;
+import Entity.NhanVien_Entity;
+import Entity.TaiKhoan_Entity;
 
 public class TaiKhoan_DAO {
+	private Connection con;
+	private NhanVien_DAO nhanVien_DAO;
 	public TaiKhoan_DAO() {
 		
 	}
@@ -25,9 +28,9 @@ public class TaiKhoan_DAO {
 	
 	private static NhanVien_DAO nhanVien_dao = new NhanVien_DAO();
 	
-	public static ArrayList<TaiKhoan> danhSachTaiKhoan(){
+	public static ArrayList<TaiKhoan_Entity> danhSachTaiKhoan(){
 		khoiTao();
-		ArrayList<TaiKhoan> dsTK = new ArrayList<TaiKhoan>();
+		ArrayList<TaiKhoan_Entity> dsTK = new ArrayList<TaiKhoan_Entity>();
 		try {
 			Connection con = database.getInstance().getConnection();
 		    if (con == null) {
@@ -41,8 +44,8 @@ public class TaiKhoan_DAO {
 				String tenDN = rs.getString(2);
 				String matKhau = rs.getString(3);
 				String maNhanVien = rs.getString(4);
-				NhanVien nhanVien = nhanVien_dao.timNhanVienTheoMa(maNhanVien);
-				TaiKhoan tk = new TaiKhoan(maTK, tenDN, matKhau, nhanVien);
+				NhanVien_Entity nhanVien = nhanVien_dao.timNhanVienTheoMa(maNhanVien);
+				TaiKhoan_Entity tk = new TaiKhoan_Entity(maTK, tenDN, matKhau, nhanVien);
 				dsTK.add(tk);
 	
 			}
@@ -52,19 +55,19 @@ public class TaiKhoan_DAO {
 		return dsTK;
 	}
 	
-	public TaiKhoan timTaiKhoan (String maTK) {
-		ArrayList<TaiKhoan> dsTK = danhSachTaiKhoan();
+	public TaiKhoan_Entity timTaiKhoan (String maTK) {
+		ArrayList<TaiKhoan_Entity> dsTK = danhSachTaiKhoan();
 		return dsTK.stream().filter(x -> x.getMaTaiKhoan().equalsIgnoreCase(maTK)).findFirst().orElse(null);
 	}
 	
-	public boolean themTaiKhoan (TaiKhoan tk) {
+	public boolean themTaiKhoan (TaiKhoan_Entity tk) {
 		
 		Connection con = database.getInstance().getConnection();
 	    PreparedStatement stmt = null;
 	    boolean isSuccess = false;
 	    
 	    try {
-	    	ArrayList<TaiKhoan> dsTK = danhSachTaiKhoan();
+	    	ArrayList<TaiKhoan_Entity> dsTK = danhSachTaiKhoan();
 	    	if (dsTK.contains(tk)) {
 	    		System.out.println("Tài khoản đã tồn tại, không thể thêm");
 	    	} else {
@@ -85,12 +88,12 @@ public class TaiKhoan_DAO {
 	    return isSuccess;
 	}
 	
-	public boolean suaTaiKhoan(TaiKhoan tk) {
+	public boolean suaTaiKhoan(TaiKhoan_Entity tk) {
 //		khoiTao();
 		Connection connection = database.getInstance().getConnection();
 		boolean isSuccess = false;
 		try {
-			ArrayList<TaiKhoan> dsTK = danhSachTaiKhoan();
+			ArrayList<TaiKhoan_Entity> dsTK = danhSachTaiKhoan();
 			if (!dsTK.contains(tk)) {
 				System.out.println("Tài khoản không tồn tại");
 			} else {
@@ -111,7 +114,32 @@ public class TaiKhoan_DAO {
 	}
 	
 	public static void main(String[] args) {
-		ArrayList<TaiKhoan> dsTK = danhSachTaiKhoan();
+		ArrayList<TaiKhoan_Entity> dsTK = danhSachTaiKhoan();
 		dsTK.forEach(x -> System.out.println(x));
 	}
+
+	public TaiKhoan_Entity checkUser(String username, String password) {
+	    try {
+	        con = database.getInstance().getConnection();
+	        String sql = "SELECT * FROM TaiKhoan WHERE tenDangNhap = ? AND matKhau = ?";
+	        PreparedStatement stmt = con.prepareStatement(sql);
+	        stmt.setString(1, username);
+	        stmt.setString(2, password);
+
+	        ResultSet rs = stmt.executeQuery();
+	        if (rs.next()) {
+	            String maTK = rs.getString("maTaiKhoan");
+	            String tenDN = rs.getString("tenDangNhap");
+	            String matKhau = rs.getString("matKhau");
+	            String maNhanVien = rs.getString("maNhanVien");
+
+	            NhanVien_Entity nhanVien = nhanVien_dao.timNhanVienTheoMa(maNhanVien); // Giả sử phương thức này tồn tại
+	            return new TaiKhoan_Entity(maTK, tenDN, matKhau, nhanVien);
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return null;
+	}
+
 }

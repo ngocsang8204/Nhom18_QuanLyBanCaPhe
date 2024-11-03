@@ -2,14 +2,14 @@ package Entity;
 
 import java.util.Objects;
 
-public class NhanVien {
+public class NhanVien_Entity {
 	private String maNhanVien;
 	private String tenNhanVien;
 	private String soCCCD;
 	private String soDienThoai;
 	private String diaChi;
 	private boolean chucVu;
-	public NhanVien(String maNhanVien, String tenNhanVien, String soCCCD, String soDienThoai, String diaChi,
+	public NhanVien_Entity(String maNhanVien, String tenNhanVien, String soCCCD, String soDienThoai, String diaChi,
 			boolean chucVu) {
 		super();
 		this.maNhanVien = maNhanVien;
@@ -19,7 +19,7 @@ public class NhanVien {
 		this.diaChi = diaChi;
 		this.chucVu = chucVu;
 	}
-	public NhanVien() {
+	public NhanVien_Entity() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -60,7 +60,7 @@ public class NhanVien {
 		this.chucVu = chucVu;
 	}
 	
-	public NhanVien(String maNhanVien) {
+	public NhanVien_Entity(String maNhanVien) {
 		super();
 		this.maNhanVien = maNhanVien;
 	}
@@ -76,7 +76,7 @@ public class NhanVien {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		NhanVien other = (NhanVien) obj;
+		NhanVien_Entity other = (NhanVien_Entity) obj;
 		return Objects.equals(maNhanVien, other.maNhanVien);
 	}
 	@Override

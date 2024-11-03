@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import ConnectDB.database;
-import Entity.KhachHang;
+import Entity.KhachHang_Entity;
 
 public class KhachHang_DAO {
 	public KhachHang_DAO() {
@@ -22,9 +22,9 @@ public class KhachHang_DAO {
 		}
 	}
 	
-	public ArrayList<KhachHang> danhSachKhachHang(){
+	public ArrayList<KhachHang_Entity> danhSachKhachHang(){
 		khoiTao();
-		ArrayList<KhachHang> dsKH = new ArrayList<KhachHang>();
+		ArrayList<KhachHang_Entity> dsKH = new ArrayList<KhachHang_Entity>();
 		try {
 			Connection con = database.getInstance().getConnection();
 		    if (con == null) {
@@ -37,7 +37,7 @@ public class KhachHang_DAO {
 				String maKhachHang = rs.getString(1);
 				String tenKhachHang = rs.getString(2);
 				String soDienThoai = rs.getString(3);
-				KhachHang kh = new  KhachHang(maKhachHang, tenKhachHang, soDienThoai);
+				KhachHang_Entity kh = new  KhachHang_Entity(maKhachHang, tenKhachHang, soDienThoai);
 				dsKH.add(kh);
 			}
 		} catch (Exception e) {
@@ -46,24 +46,24 @@ public class KhachHang_DAO {
 		return dsKH;
 	}
 	
-	public KhachHang timKiemKhachHangTheoMa (String ma) {
-		ArrayList<KhachHang> dsKH = danhSachKhachHang();
+	public KhachHang_Entity timKiemKhachHangTheoMa (String ma) {
+		ArrayList<KhachHang_Entity> dsKH = danhSachKhachHang();
 		return dsKH.stream().filter(x -> x.getMaKhachHang().equals(ma)).findFirst().orElse(null);
 	}
 	
-	public ArrayList<KhachHang> timKiemKhachHangTheoTen (String ten){
-		ArrayList<KhachHang> dsKH = danhSachKhachHang();
+	public ArrayList<KhachHang_Entity> timKiemKhachHangTheoTen (String ten){
+		ArrayList<KhachHang_Entity> dsKH = danhSachKhachHang();
 		return dsKH.stream().filter(x -> x.getTenKhachHang().matches(".*" + ten + ".*")).collect(Collectors.toCollection(ArrayList::new));
 	}
 	
-	public boolean themKhachHang (KhachHang khachHang) {
+	public boolean themKhachHang (KhachHang_Entity khachHang) {
 		khoiTao();
 		Connection con = database.getInstance().getConnection();
 	    PreparedStatement stmt = null;
 	    boolean isSuccess = false;
 	    
 	    try {
-	    	ArrayList<KhachHang> dsKH = danhSachKhachHang();
+	    	ArrayList<KhachHang_Entity> dsKH = danhSachKhachHang();
 	    	if (dsKH.contains(khachHang)) {
 	    		System.out.println("Khách hàng đã tồn tại, không thể thêm");
 	    	} else {
@@ -83,12 +83,12 @@ public class KhachHang_DAO {
 	    return isSuccess;
 	}
 	
-	public boolean suaKhachHang(KhachHang khachHang) {
+	public boolean suaKhachHang(KhachHang_Entity khachHang) {
 		khoiTao();
 		Connection connection = database.getInstance().getConnection();
 		boolean isSuccess = false;
 		try {
-			ArrayList<KhachHang> dsKH = danhSachKhachHang();
+			ArrayList<KhachHang_Entity> dsKH = danhSachKhachHang();
 			if (!dsKH.contains(khachHang)) {
 				System.out.println("Khách hàng không tồn tại");
 			} else {

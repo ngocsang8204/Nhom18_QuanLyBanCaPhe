@@ -2,20 +2,20 @@ package Entity;
 
 import java.util.Objects;
 
-public class Mon {
+public class Mon_Entity {
 	private String maMon;
 	private String tenMon;
 	private String loaiMon;
 	private double donGia;
 	
-	public Mon(String maMon, String tenMon, String loaiMon, double donGia) {
+	public Mon_Entity(String maMon, String tenMon, String loaiMon, double donGia) {
 		super();
 		this.maMon = maMon;
 		this.tenMon = tenMon;
 		this.loaiMon = loaiMon;
 		this.donGia = donGia;
 	}
-	public Mon() {
+	public Mon_Entity() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -44,7 +44,7 @@ public class Mon {
 		this.loaiMon = loaiMon;
 	}
 	
-	public Mon(String maMon) {
+	public Mon_Entity(String maMon) {
 		this.maMon = maMon;
 	}
 	@Override
@@ -59,7 +59,7 @@ public class Mon {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Mon other = (Mon) obj;
+		Mon_Entity other = (Mon_Entity) obj;
 		return Objects.equals(maMon, other.maMon);
 	}
 	@Override

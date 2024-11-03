@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import ConnectDB.database;
-import Entity.NguyenLieu;
-import Entity.NhaCungCap;
+import Entity.NguyenLieu_Entity;
+import Entity.NhaCungCap_Entity;
 
 public class NguyenLieu_DAO {
 	NhaCungCap_DAO ncc_dao = new NhaCungCap_DAO();
@@ -19,8 +19,8 @@ public class NguyenLieu_DAO {
 		
 	}
 	
-	public ArrayList<NguyenLieu> danhSachNguyenLieu(){
-		ArrayList<NguyenLieu> dsNL = new ArrayList<NguyenLieu>();
+	public ArrayList<NguyenLieu_Entity> danhSachNguyenLieu(){
+		ArrayList<NguyenLieu_Entity> dsNL = new ArrayList<NguyenLieu_Entity>();
 		try {
 			Connection con = database.getInstance().getConnection();
 		    if (con == null) {
@@ -36,8 +36,8 @@ public class NguyenLieu_DAO {
 				LocalDateTime thoiGianNhap = rs.getTimestamp(4).toLocalDateTime();
 				LocalDateTime thoiGianHetHan = rs.getTimestamp(5).toLocalDateTime();
 				String maNCC = rs.getString(6);
-				NhaCungCap ncc = ncc_dao.timNhaCungCapTheoMa(maNCC);
-				NguyenLieu nguyenLieu = new NguyenLieu(maNL, tenNL, soLuong, thoiGianNhap, thoiGianHetHan, ncc);
+				NhaCungCap_Entity ncc = ncc_dao.timNhaCungCapTheoMa(maNCC);
+				NguyenLieu_Entity nguyenLieu = new NguyenLieu_Entity(maNL, tenNL, soLuong, thoiGianNhap, thoiGianHetHan, ncc);
 				dsNL.add(nguyenLieu);
 			}
 		} catch (Exception e) {
@@ -46,23 +46,23 @@ public class NguyenLieu_DAO {
 		return dsNL;
 	}
 	
-	public NguyenLieu timNguyenLieuTheoMa (String ma) {
-		ArrayList<NguyenLieu> dsNL = danhSachNguyenLieu();
+	public NguyenLieu_Entity timNguyenLieuTheoMa (String ma) {
+		ArrayList<NguyenLieu_Entity> dsNL = danhSachNguyenLieu();
 		return dsNL.stream().filter(x -> x.getMaNguyenLieu().equals(ma)).findFirst().orElse(null);
 	}
 	
-	public ArrayList<NguyenLieu> timNguyenLieuTheoTen (String ten){
-		ArrayList<NguyenLieu> dsNL = danhSachNguyenLieu();
+	public ArrayList<NguyenLieu_Entity> timNguyenLieuTheoTen (String ten){
+		ArrayList<NguyenLieu_Entity> dsNL = danhSachNguyenLieu();
 		return dsNL.stream().filter(x -> x.getTenNguyenLieu().matches(".*" + ten +  ".*")).collect(Collectors.toCollection(ArrayList::new));
 	}
 	
-	public boolean themNguyenLieu (NguyenLieu nguyenLieu) {
+	public boolean themNguyenLieu (NguyenLieu_Entity nguyenLieu) {
 		Connection con = database.getInstance().getConnection();
 	    PreparedStatement stmt = null;
 	    boolean isSuccess = false;
 	    
 	    try {
-	    	ArrayList<NguyenLieu> dsDV = danhSachNguyenLieu();
+	    	ArrayList<NguyenLieu_Entity> dsDV = danhSachNguyenLieu();
 	    	if (dsDV.contains(nguyenLieu)) {
 	    		System.out.println("Nguyên liệu đã tồn tại, không thể thêm");
 	    	} else {
@@ -85,11 +85,11 @@ public class NguyenLieu_DAO {
 	    return isSuccess;
 	}
 	
-	public boolean suaNguyenLieu (NguyenLieu nguyenLieu) {
+	public boolean suaNguyenLieu (NguyenLieu_Entity nguyenLieu) {
 		Connection connection = database.getInstance().getConnection();
 		boolean isSuccess = false;
 		try {
-			ArrayList<NguyenLieu> dsNL = danhSachNguyenLieu();
+			ArrayList<NguyenLieu_Entity> dsNL = danhSachNguyenLieu();
 			if (!dsNL.contains(nguyenLieu)) {
 				System.out.println("Nguyên liệu không tồn tại");
 			} else {

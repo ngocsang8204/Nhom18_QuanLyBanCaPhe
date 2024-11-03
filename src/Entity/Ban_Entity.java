@@ -2,19 +2,19 @@ package Entity;
 
 import java.util.Objects;
 
-public class Ban {
+public class Ban_Entity {
 	private String maBan;
 	private String tenBan;
 	private String trangThaiBan;
 	private String ghiChu;
-	public Ban(String maBan, String tenBan, String trangThaiBan, String ghiChu) {
+	public Ban_Entity(String maBan, String tenBan, String trangThaiBan, String ghiChu) {
 		super();
 		this.maBan = maBan;
 		this.tenBan = tenBan;
 		this.trangThaiBan = trangThaiBan;
 		this.ghiChu = ghiChu;
 	}
-	public Ban() {
+	public Ban_Entity() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -42,7 +42,7 @@ public class Ban {
 	public void setGhiChu(String ghiChu) {
 		this.ghiChu = ghiChu;
 	}
-	public Ban(String maBan) {
+	public Ban_Entity(String maBan) {
 		super();
 		this.maBan = maBan;
 	}
@@ -58,7 +58,7 @@ public class Ban {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Ban other = (Ban) obj;
+		Ban_Entity other = (Ban_Entity) obj;
 		return Objects.equals(maBan, other.maBan);
 	}
 	@Override

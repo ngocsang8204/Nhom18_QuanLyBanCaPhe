@@ -9,16 +9,16 @@ import java.util.Date;
 import java.util.stream.Collectors;
 
 import ConnectDB.database;
-import Entity.NguyenLieu;
-import Entity.NhaCungCap;
+import Entity.NguyenLieu_Entity;
+import Entity.NhaCungCap_Entity;
 
 public class NhaCungCap_DAO {
 	public NhaCungCap_DAO() {
 		
 	}
 	
-	public ArrayList<NhaCungCap> danhSachNhaCungCap(){
-		ArrayList<NhaCungCap> dsNCC = new ArrayList<NhaCungCap>();
+	public ArrayList<NhaCungCap_Entity> danhSachNhaCungCap(){
+		ArrayList<NhaCungCap_Entity> dsNCC = new ArrayList<NhaCungCap_Entity>();
 		try {
 			Connection con = database.getInstance().getConnection();
 		    if (con == null) {
@@ -32,7 +32,7 @@ public class NhaCungCap_DAO {
 				String tenNCC = rs.getString(2);
 				String diaChi = rs.getString(3);
 				String thongTinLienHe = rs.getString(4);
-				NhaCungCap ncc = new NhaCungCap(maNCC, tenNCC, diaChi, thongTinLienHe);
+				NhaCungCap_Entity ncc = new NhaCungCap_Entity(maNCC, tenNCC, diaChi, thongTinLienHe);
 				dsNCC.add(ncc);
 			}
 		} catch (Exception e) {
@@ -41,23 +41,23 @@ public class NhaCungCap_DAO {
 		return dsNCC;
 	}
 	
-	public NhaCungCap timNhaCungCapTheoMa (String ma) {
-		ArrayList<NhaCungCap> dsNCC = danhSachNhaCungCap();
+	public NhaCungCap_Entity timNhaCungCapTheoMa (String ma) {
+		ArrayList<NhaCungCap_Entity> dsNCC = danhSachNhaCungCap();
 		return dsNCC.stream().filter(x -> x.getMaNhaCungCap().equals(ma)).findFirst().orElse(null);
 	}
 	
-	public ArrayList<NhaCungCap> timNhaCungCapTheoTen (String ten){
-		ArrayList<NhaCungCap> dsNCC = danhSachNhaCungCap();
+	public ArrayList<NhaCungCap_Entity> timNhaCungCapTheoTen (String ten){
+		ArrayList<NhaCungCap_Entity> dsNCC = danhSachNhaCungCap();
 		return dsNCC.stream().filter(x -> x.getTenNhaCungCap().matches(".*" + ten + ".*")).collect(Collectors.toCollection(ArrayList::new));
 	}
 	
-	public boolean themNhaCungCap (NhaCungCap ncc) {
+	public boolean themNhaCungCap (NhaCungCap_Entity ncc) {
 		Connection con = database.getInstance().getConnection();
 	    PreparedStatement stmt = null;
 	    boolean isSuccess = false;
 	    
 	    try {
-	    	ArrayList<NhaCungCap> dsDV = danhSachNhaCungCap();
+	    	ArrayList<NhaCungCap_Entity> dsDV = danhSachNhaCungCap();
 	    	if (dsDV.contains(ncc)) {
 	    		System.out.println("Nhà cung cấp đã tồn tại, không thể thêm");
 	    	} else {
@@ -78,11 +78,11 @@ public class NhaCungCap_DAO {
 	    return isSuccess;
 	}
 	
-	public boolean suaNhaCungCap (NhaCungCap ncc) {
+	public boolean suaNhaCungCap (NhaCungCap_Entity ncc) {
 		Connection connection = database.getInstance().getConnection();
 		boolean isSuccess = false;
 		try {
-			ArrayList<NhaCungCap> dsNCC = danhSachNhaCungCap();
+			ArrayList<NhaCungCap_Entity> dsNCC = danhSachNhaCungCap();
 			if (!dsNCC.contains(ncc)) {
 				System.out.println("Nhà cung cấp không tồn tại");
 			} else {

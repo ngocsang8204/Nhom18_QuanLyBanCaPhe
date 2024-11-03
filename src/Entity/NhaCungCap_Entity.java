@@ -2,19 +2,19 @@ package Entity;
 
 import java.util.Objects;
 
-public class NhaCungCap {
+public class NhaCungCap_Entity {
 	private String maNhaCungCap;
 	private String tenNhaCungCap;
 	private String diaChi;
 	private String thongTinLienHe;
-	public NhaCungCap(String maNhaCungCap, String tenNhaCungCap, String diaChi, String thongTinLienHe) {
+	public NhaCungCap_Entity(String maNhaCungCap, String tenNhaCungCap, String diaChi, String thongTinLienHe) {
 		super();
 		this.maNhaCungCap = maNhaCungCap;
 		this.tenNhaCungCap = tenNhaCungCap;
 		this.diaChi = diaChi;
 		this.thongTinLienHe = thongTinLienHe;
 	}
-	public NhaCungCap() {
+	public NhaCungCap_Entity() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -42,7 +42,7 @@ public class NhaCungCap {
 	public void setThongTinLienHe(String thongTinLienHe) {
 		this.thongTinLienHe = thongTinLienHe;
 	}
-	public NhaCungCap(String maNhaCungCap) {
+	public NhaCungCap_Entity(String maNhaCungCap) {
 		super();
 		this.maNhaCungCap = maNhaCungCap;
 	}
@@ -58,7 +58,7 @@ public class NhaCungCap {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		NhaCungCap other = (NhaCungCap) obj;
+		NhaCungCap_Entity other = (NhaCungCap_Entity) obj;
 		return Objects.equals(maNhaCungCap, other.maNhaCungCap);
 	}
 	@Override

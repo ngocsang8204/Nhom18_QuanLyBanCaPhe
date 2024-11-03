@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import ConnectDB.database;
-import Entity.Mon;
+import Entity.Mon_Entity;
 
 public class Mon_DAO {
 	public Mon_DAO() {
@@ -22,9 +22,9 @@ public class Mon_DAO {
 			// TODO: handle exception
 		}
 	}
-	public ArrayList<Mon> danhSachMon(){
+	public ArrayList<Mon_Entity> danhSachMon(){
 		khoiTao();
-		ArrayList<Mon> dsDV = new ArrayList<Mon>();
+		ArrayList<Mon_Entity> dsDV = new ArrayList<Mon_Entity>();
 		try {
 			Connection con = database.getInstance().getConnection();
 		    if (con == null) {
@@ -38,7 +38,7 @@ public class Mon_DAO {
 				String tenMon = rs.getString(2);
 				double giaTien = rs.getDouble(4);
 				String loaiMon = rs.getString(3);
-				Mon mon = new Mon(maMon, tenMon, loaiMon, giaTien);
+				Mon_Entity mon = new Mon_Entity(maMon, tenMon, loaiMon, giaTien);
 				dsDV.add(mon);
 	
 			}
@@ -48,33 +48,33 @@ public class Mon_DAO {
 		return dsDV;
 	}
 	
-	public Mon timMonTheoMa(String ma) {
-		ArrayList<Mon> dsMon = danhSachMon();
+	public Mon_Entity timMonTheoMa(String ma) {
+		ArrayList<Mon_Entity> dsMon = danhSachMon();
 		return dsMon.stream().filter(x -> x.getMaMon().equals(ma)).findFirst().orElse(null);
 	}
 	
-	public ArrayList<Mon> timMonTheoTen (String ten){
-		ArrayList<Mon> dsMon = danhSachMon();
+	public ArrayList<Mon_Entity> timMonTheoTen (String ten){
+		ArrayList<Mon_Entity> dsMon = danhSachMon();
 		return dsMon.stream().filter(x -> x.getTenMon().matches(".*" + ten + ".*")).collect(Collectors.toCollection(ArrayList::new));
 	}
 	
-	public ArrayList<Mon> timMonTheoLoai (String loai){
-		ArrayList<Mon> dsMon = danhSachMon();
+	public ArrayList<Mon_Entity> timMonTheoLoai (String loai){
+		ArrayList<Mon_Entity> dsMon = danhSachMon();
 		return dsMon.stream().filter(x -> x.getLoaiMon().matches(".*" + loai + ".*")).collect(Collectors.toCollection(ArrayList::new));
 	}
 	
-	public Mon layMonTheoTenChinhXac (String ten) {
-		ArrayList<Mon> dsMon = danhSachMon();
+	public Mon_Entity layMonTheoTenChinhXac (String ten) {
+		ArrayList<Mon_Entity> dsMon = danhSachMon();
 		return dsMon.stream().filter(x -> x.getTenMon().equalsIgnoreCase(ten)).findFirst().orElse(null);
 	}
 	
-	public boolean themMon(Mon mon) {
+	public boolean themMon(Mon_Entity mon) {
 		Connection con = database.getInstance().getConnection();
 	    PreparedStatement stmt = null;
 	    boolean isSuccess = false;
 	    
 	    try {
-	    	ArrayList<Mon> dsMon = danhSachMon();
+	    	ArrayList<Mon_Entity> dsMon = danhSachMon();
 	    	if (dsMon.contains(mon)) {
 	    		System.out.println("Món đã tồn tại, không thể thêm");
 	    	} else {
@@ -95,11 +95,11 @@ public class Mon_DAO {
 	    return isSuccess;
 	}
 	
-	public boolean suaMon(Mon mon) {
+	public boolean suaMon(Mon_Entity mon) {
 		Connection connection = database.getInstance().getConnection();
 		boolean isSuccess = false;
 		try {
-			ArrayList<Mon> dsDV = danhSachMon();
+			ArrayList<Mon_Entity> dsDV = danhSachMon();
 			if (!dsDV.contains(mon)) {
 				System.out.println("Món không tồn tại");
 			} else {

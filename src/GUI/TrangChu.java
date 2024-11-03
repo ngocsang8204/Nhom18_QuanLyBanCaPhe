@@ -16,7 +16,9 @@ import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
 
 import DAO.Mon_DAO;
-import Entity.Mon;
+import DAO.TaiKhoan_DAO;
+import Entity.Mon_Entity;
+import Entity.TaiKhoan_Entity;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -95,7 +97,7 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
 	private JPanel paneTrong_1;
 	private JPanel paneTrong_2;
 	private Mon_DAO mon_dao = new Mon_DAO();
-	private ArrayList<Mon> dsMon;
+	private ArrayList<Mon_Entity> dsMon;
 	private JLabel lbTenMon;
 	private JButton btnThem;
 	private JPanel body;
@@ -104,24 +106,24 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
 
 	/**
 	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					TrangChu frame = new TrangChu();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	 */
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					TrangChu frame = new TrangChu(taiKhoan);
+//					frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
 	/**
 	 * Create the frame.
 	 */
-	public TrangChu() {
+	public TrangChu(TaiKhoan_Entity taiKhoan) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);getContentPane().setLayout(new BorderLayout(0, 0));
 		setResizable(false);
 		setTitle("Quản lý quán cà phê");
@@ -488,7 +490,7 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
         body.repaint();
     }
 	
-	private void updateTable(ArrayList<Mon> dsMon, JPanel table) {
+	private void updateTable(ArrayList<Mon_Entity> dsMon, JPanel table) {
 		table.removeAll();
 		dsMon = mon_dao.danhSachMon();
 		dsMon.forEach(item -> {
@@ -498,7 +500,7 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
 		table.repaint();
 	}
 	
-	private void addItemToTable(Mon mon, JPanel table) {
+	private void addItemToTable(Mon_Entity mon, JPanel table) {
 		JPanel listMon = new JPanel();
 		listMon.setBackground(SystemColor.menu);
 		listMon.setPreferredSize(new Dimension(table.getWidth(), 50));

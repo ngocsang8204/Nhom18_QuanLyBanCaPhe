@@ -4,19 +4,19 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 
-public class NguyenLieu {
+public class NguyenLieu_Entity {
 	private String maNguyenLieu;
 	private String tenNguyenLieu;
 	private int soLuong;
 	private LocalDateTime thoiGianNhap;
 	private LocalDateTime thoiGianHetHan;
-	private NhaCungCap nhaCungCap;
-	public NguyenLieu() {
+	private NhaCungCap_Entity nhaCungCap;
+	public NguyenLieu_Entity() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public NguyenLieu(String maNguyenLieu, String tenNguyenLieu, int soLuong, LocalDateTime thoiGianNhap, LocalDateTime thoiGianHetHan,
-			NhaCungCap nhaCungCap) {
+	public NguyenLieu_Entity(String maNguyenLieu, String tenNguyenLieu, int soLuong, LocalDateTime thoiGianNhap, LocalDateTime thoiGianHetHan,
+			NhaCungCap_Entity nhaCungCap) {
 		super();
 		this.maNguyenLieu = maNguyenLieu;
 		this.tenNguyenLieu = tenNguyenLieu;
@@ -55,13 +55,13 @@ public class NguyenLieu {
 	public void setThoiGianHetHan(LocalDateTime thoiGianHetHan) {
 		this.thoiGianHetHan = thoiGianHetHan;
 	}
-	public NhaCungCap getNhaCungCap() {
+	public NhaCungCap_Entity getNhaCungCap() {
 		return nhaCungCap;
 	}
-	public void setNhaCungCap(NhaCungCap nhaCungCap) {
+	public void setNhaCungCap(NhaCungCap_Entity nhaCungCap) {
 		this.nhaCungCap = nhaCungCap;
 	}
-	public NguyenLieu(String maNguyenLieu) {
+	public NguyenLieu_Entity(String maNguyenLieu) {
 		super();
 		this.maNguyenLieu = maNguyenLieu;
 	}
@@ -77,7 +77,7 @@ public class NguyenLieu {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		NguyenLieu other = (NguyenLieu) obj;
+		NguyenLieu_Entity other = (NguyenLieu_Entity) obj;
 		return Objects.equals(maNguyenLieu, other.maNguyenLieu);
 	}
 	@Override

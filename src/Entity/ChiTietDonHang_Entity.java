@@ -1,29 +1,29 @@
 package Entity;
 
-public class ChiTietDonHang {
-	private Mon mon;
-	private HoaDon hoaDon;
+public class ChiTietDonHang_Entity {
+	private Mon_Entity mon;
+	private HoaDon_Entity hoaDon;
 	private int soLuongMon;
-	public ChiTietDonHang(Mon mon, HoaDon hoaDon, int soLuongMon) {
+	public ChiTietDonHang_Entity(Mon_Entity mon, HoaDon_Entity hoaDon, int soLuongMon) {
 		super();
 		this.mon = mon;
 		this.hoaDon = hoaDon;
 		this.soLuongMon = soLuongMon;
 	}
-	public ChiTietDonHang() {
+	public ChiTietDonHang_Entity() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public Mon getMon() {
+	public Mon_Entity getMon() {
 		return mon;
 	}
-	public void setMon(Mon mon) {
+	public void setMon(Mon_Entity mon) {
 		this.mon = mon;
 	}
-	public HoaDon getHoaDon() {
+	public HoaDon_Entity getHoaDon() {
 		return hoaDon;
 	}
-	public void setHoaDon(HoaDon hoaDon) {
+	public void setHoaDon(HoaDon_Entity hoaDon) {
 		this.hoaDon = hoaDon;
 	}
 	public int getSoLuongMon() {

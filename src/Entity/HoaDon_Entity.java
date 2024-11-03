@@ -3,14 +3,14 @@ package Entity;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class HoaDon {
+public class HoaDon_Entity {
 	private String maHoaDon;
 	private LocalDate ngayLap;
 	private double giamGia;
-	private NhanVien nhanVien;
-	private Ban ban;
-	private KhachHang khachHang;
-	public HoaDon(String maHoaDon, LocalDate ngayLap, double giamGia, NhanVien nhanVien, Ban ban, KhachHang khachHang) {
+	private NhanVien_Entity nhanVien;
+	private Ban_Entity ban;
+	private KhachHang_Entity khachHang;
+	public HoaDon_Entity(String maHoaDon, LocalDate ngayLap, double giamGia, NhanVien_Entity nhanVien, Ban_Entity ban, KhachHang_Entity khachHang) {
 		super();
 		this.maHoaDon = maHoaDon;
 		this.ngayLap = ngayLap;
@@ -19,7 +19,7 @@ public class HoaDon {
 		this.ban = ban;
 		this.khachHang = khachHang;
 	}
-	public HoaDon() {
+	public HoaDon_Entity() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -41,25 +41,25 @@ public class HoaDon {
 	public void setGiamGia(double giamGia) {
 		this.giamGia = giamGia;
 	}
-	public NhanVien getNhanVien() {
+	public NhanVien_Entity getNhanVien() {
 		return nhanVien;
 	}
-	public void setNhanVien(NhanVien nhanVien) {
+	public void setNhanVien(NhanVien_Entity nhanVien) {
 		this.nhanVien = nhanVien;
 	}
-	public Ban getBan() {
+	public Ban_Entity getBan() {
 		return ban;
 	}
-	public void setBan(Ban ban) {
+	public void setBan(Ban_Entity ban) {
 		this.ban = ban;
 	}
-	public KhachHang getKhachHang() {
+	public KhachHang_Entity getKhachHang() {
 		return khachHang;
 	}
-	public void setKhachHang(KhachHang khachHang) {
+	public void setKhachHang(KhachHang_Entity khachHang) {
 		this.khachHang = khachHang;
 	}
-	public HoaDon(String maHoaDon) {
+	public HoaDon_Entity(String maHoaDon) {
 		super();
 		this.maHoaDon = maHoaDon;
 	}
@@ -75,7 +75,7 @@ public class HoaDon {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		HoaDon other = (HoaDon) obj;
+		HoaDon_Entity other = (HoaDon_Entity) obj;
 		return Objects.equals(maHoaDon, other.maHoaDon);
 	}
 	@Override
