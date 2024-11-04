@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -24,12 +25,22 @@ import javax.swing.ImageIcon;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
+
+import DAO.NhanVien_DAO;
+import Entity.NhanVien_Entity;
+
 import javax.swing.border.EtchedBorder;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.Iterator;
+import java.util.List;
 
-public class NhanVien extends JPanel {
+public class NhanVien extends JPanel implements ActionListener, MouseListener{
 
 	private static final long serialVersionUID = 1L;
 	private JTextField tMaNhanVien;
@@ -43,11 +54,16 @@ public class NhanVien extends JPanel {
 	private JTextField tTimKiem;
 	private JButton btnTimKiem;
 	private JTextField tDiaChi;
-
+	private NhanVien_DAO nhanVien_DAO;
+	private JComboBox<String> comboBox;
+	private int previousRow = -1;
 	/**
 	 * Create the panel.
 	 */
 	public NhanVien() {
+		
+		nhanVien_DAO = new NhanVien_DAO();
+		
         this.setBackground(Color.WHITE);
         this.setBounds(0, 0, 1600, 954);
         setLayout(new BorderLayout(0, 0));
@@ -149,8 +165,10 @@ public class NhanVien extends JPanel {
         lb6.setFont(new Font("Tahoma", Font.PLAIN, 16));
         panel_4_3_2.add(lb6);
         
-        JComboBox comboBox = new JComboBox();
+        comboBox = new JComboBox<String>();
         panel_4_3_2.add(comboBox);
+        comboBox.addItem("Quản lý");
+        comboBox.addItem("Nhân viên");
         
         tMaNhanVien.setPreferredSize(new Dimension(tMaNhanVien.getPreferredSize().width,30));
         tMaNhanVien.setEditable(false);
@@ -271,8 +289,11 @@ public class NhanVien extends JPanel {
         table.setShowGrid(true);
         table.setShowHorizontalLines(true);
         table.setShowVerticalLines(false);
+        table.getColumnModel().getColumn(4).setPreferredWidth(300);
+        table.getColumnModel().getColumn(4).setMinWidth(300);
+        table.getColumnModel().getColumn(4).setMaxWidth(500); // Giới hạn kích thước tối đa nếu cần
         JScrollPane jsp = new JScrollPane(table);
-        jsp.setPreferredSize(new Dimension(panel_1.getPreferredSize().width, 873));
+        jsp.setPreferredSize(new Dimension(1180, 873));
         jsp.setBorder(BorderFactory.createLineBorder(Color.BLACK)); // Tạo viền màu đen
         table.getTableHeader().setBackground(Color.white);
         panel_12.add(jsp);
@@ -282,12 +303,209 @@ public class NhanVien extends JPanel {
         Font font = new Font("Tahoma", Font.PLAIN, 16); // Chọn font và kích thước
         table.setFont(font);
         table.setRowHeight(50); // Thiết lập chiều cao hàng nếu cần
-
         // Thiết lập renderer cho tiêu đề cột
         table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 18)); // Kích thước font cho tiêu đề
         table.getTableHeader().setResizingAllowed(false);
         
+        loadData();
+        table.addMouseListener(this);
+        btnThem.addActionListener(this);
+        btnSua.addActionListener(this);
+        btnTimKiem.addActionListener(this);
         
 	}
 
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		Object o = e.getSource();
+		if (o.equals(table)) {
+			int row = table.getSelectedRow();
+			if(row == previousRow) {
+    	    	clear();
+    			previousRow = -1;
+    			
+    		} else {
+	    	    tMaNhanVien.setText(model.getValueAt(row, 0).toString());
+				tTenNhanVien.setText(model.getValueAt(row, 1).toString());
+				tSoCCCD.setText(model.getValueAt(row, 2).toString());
+				tSoDienThoai.setText(model.getValueAt(row, 3).toString());
+				tDiaChi.setText(model.getValueAt(row, 4).toString());
+				comboBox.setSelectedItem(model.getValueAt(row, 5));
+	    	    previousRow = row;
+    	        // Đặt cờ là true khi một hàng được chọn
+    	
+    	    }
+		}
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object o = e.getSource();
+		if (o.equals(btnThem)) {
+			them();
+		}
+		if (o.equals(btnSua)) {
+			sua();
+		}
+		if (o.equals(btnTimKiem)) {
+			
+		}
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
+
+    private void them() {
+		NhanVien_Entity nv = revert();
+		List<NhanVien_Entity> listTopNhanVien = nhanVien_DAO.danhSachNhanVien();
+		for(NhanVien_Entity nvv: listTopNhanVien) {
+			if (nv.getMaNhanVien().equals(nvv.getMaNhanVien())) {
+				JOptionPane.showMessageDialog(null, "Nhân viên này đã tồn tại", "Lỗi", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+		}
+		if (nhanVien_DAO.themNhanVien(nv)) {
+			JOptionPane.showMessageDialog(null, "Thêm thành công", "Thành công", JOptionPane.DEFAULT_OPTION);
+			String chucVu;
+			if (nv.getChucVu()==true) {
+				chucVu = "Quản lý";
+			}else {
+				chucVu = "Nhân viên";
+			}
+			model.addRow(new Object[]{
+	                nv.getMaNhanVien(), 
+	                nv.getTenNhanVien(), 
+	                nv.getSoCCCD(), 
+	                nv.getSoDienThoai(), 
+	                nv.getDiaChi(), 
+	                chucVu
+	            });
+			
+		}else {
+			JOptionPane.showMessageDialog(null, "Nhân viên này đã tồn tại", "Lỗi", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+    
+    private void sua() {
+    	if (JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn cập nhật không?", "Cảnh báo!", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+				int row = table.getSelectedRow();
+				if (row >= 0) {
+					String ma = tMaNhanVien.getText().trim();
+					String ten = tTenNhanVien.getText().trim();
+					String soCCCD = tSoCCCD.getText().trim();
+					String SDT = tSoDienThoai.getText().trim();
+					String diaChi = tDiaChi.getText().trim();
+					String chucVuu = comboBox.getSelectedItem().toString();
+					boolean chucVu;
+					if (comboBox.getSelectedItem()=="Quản lý") {
+						chucVu = true;
+					}else {
+						chucVu = false;
+					}
+					// Cập nhật thông tin trong bảng
+					model.setValueAt(ma, row, 0);
+					model.setValueAt(ten, row, 1);
+					model.setValueAt(soCCCD, row, 2);
+					model.setValueAt(SDT, row, 3);
+					model.setValueAt(diaChi, row, 4);
+					model.setValueAt(chucVuu, row, 5);
+
+					NhanVien_Entity nv = new NhanVien_Entity(ma, ten, soCCCD, SDT, diaChi, chucVu);
+					boolean updated = nhanVien_DAO.suaNhanVien(nv);
+					if (updated) {
+					    JOptionPane.showMessageDialog(null, "Cập nhật thành công!");
+					} else {
+					    JOptionPane.showMessageDialog(null, "Cập nhật không thành công. Vui lòng thử lại.");
+					}
+				} else {
+					JOptionPane.showMessageDialog(null, "Vui lòng chọn dịch vụ cần sửa.");
+				}
+			}
+    }
+    private void loadData() {
+	    model.setRowCount(0);
+	    String chucVu;
+        for (NhanVien_Entity nv : nhanVien_DAO.danhSachNhanVien()) {
+        	if (nv.getChucVu()==true) {
+				chucVu = "Quản lý";
+			}else {
+				chucVu = "Nhân viên";
+			}
+            model.addRow(new Object[]{
+                nv.getMaNhanVien(), 
+                nv.getTenNhanVien(), 
+                nv.getSoCCCD(), 
+                nv.getSoDienThoai(), 
+                nv.getDiaChi(), 
+                chucVu
+            });
+	    }
+	}
+	private void clear() {
+		tMaNhanVien.setText("");
+		tTenNhanVien.setText("");
+		tSoCCCD.setText("");
+		tSoDienThoai.setText("");
+		tDiaChi.setText("");
+		comboBox.setSelectedIndex(0);
+		// TODO Auto-generated method stub
+		
+	}
+	protected NhanVien_Entity revert() {
+		String ma;
+		if (tMaNhanVien.getText().trim().equals("")) {
+			ma = taoMa();
+		}else {
+			ma = tMaNhanVien.getText().trim();
+		}
+		String ten = tTenNhanVien.getText().trim();
+		String soCCCD = tSoCCCD.getText().trim();
+		String SDT = tSoDienThoai.getText().trim();
+		String diaChi = tDiaChi.getText().trim();
+		boolean chucVu;
+		if (comboBox.getSelectedItem()=="Quản lý") {
+			chucVu = true;
+		}else {
+			chucVu = false;
+		}
+		return new NhanVien_Entity(ma, ten, soCCCD, SDT, diaChi, chucVu);
+	}
+	private String taoMa() {
+		String lastMa = nhanVien_DAO.getMaxMaNhanVien();
+		int newNumber = 1;
+		if (lastMa != null && !lastMa.isEmpty()) {
+			String numberPart = lastMa.substring(2);
+			newNumber = Integer.parseInt(numberPart) + 1;
+		}
+
+		String newMa = String.format("NV%03d", newNumber);
+		return newMa;
+	}
 }

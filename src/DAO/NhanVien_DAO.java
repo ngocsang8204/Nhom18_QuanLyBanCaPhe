@@ -19,16 +19,20 @@ public class NhanVien_DAO {
 	private ResultSet rs;
 
 	public NhanVien_DAO() {
-		
+		khoiTao();
 	}
 	
-	public static void khoiTao () {
-		try {
-			database.getInstance().Connect();;
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
+	public void khoiTao() {
+	    try {
+	        con = database.getInstance().getConnection(); // Khởi tạo kết nối và gán cho biến con
+	        if (con == null) {
+	            System.out.println("Không thể kết nối cơ sở dữ liệu");
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
 	}
+
 	
 	public ArrayList<NhanVien_Entity> danhSachNhanVien(){
 		khoiTao();
@@ -108,7 +112,7 @@ public class NhanVien_DAO {
 	    	} else {
 	    		String sql = "INSERT INTO NhanVien(maNhanVien, tenNhanVien, soCCCD, soDienThoai, diaChi, chucVu) VALUES (?, ?, ?, ?, ?, ?)";
 	    		stmt = con.prepareStatement(sql);
-	    		stmt.setString(1, "NV00" + String.valueOf(dsNV.size() + 1));
+	    		stmt.setString(1, nhanVien.getMaNhanVien());
 	    		stmt.setString(2, nhanVien.getTenNhanVien());
 	    		stmt.setString(3, nhanVien.getSoCCCD());
 	    		stmt.setString(4, nhanVien.getSoDienThoai());
@@ -126,53 +130,64 @@ public class NhanVien_DAO {
 	}
 	
 	public boolean suaNhanVien(NhanVien_Entity nhanVien) {
-		khoiTao();
-		Connection connection = database.getInstance().getConnection();
-		boolean isSuccess = false;
-		try {
-			ArrayList<NhanVien_Entity> dsNV = danhSachNhanVien();
-			if (!dsNV.contains(nhanVien)) {
-				System.out.println("Nhân viên không tồn tại");
-			} else {
-				String updateSql = "UPDATE NhanVien SET tenNhanVien = ?, soCCCD = ?, soDienThoai = ?, diaChi = ?, chucVu = ? WHERE maNhanVien = ?";
-		        PreparedStatement updateStmt = connection.prepareStatement(updateSql);
-		        updateStmt.setString(1, nhanVien.getTenNhanVien());
-		        updateStmt.setString(2, nhanVien.getSoCCCD());
-		        updateStmt.setString(3, nhanVien.getSoDienThoai());
-		        updateStmt.setString(4, nhanVien.getDiaChi());
-		        updateStmt.setBoolean(5, nhanVien.getChucVu());		        
-		        updateStmt.setString(4, nhanVien.getMaNhanVien());		        
-		        int rowsInserted = updateStmt.executeUpdate();
-	            if (rowsInserted > 0) {
-	                isSuccess = true;
-	            }
-			}
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-		return isSuccess;
+        boolean isSuccess = false;
+        PreparedStatement updateStmt = null;
+
+        try {
+            ArrayList<NhanVien_Entity> dsNV = danhSachNhanVien();
+            // Kiểm tra xem nhân viên có tồn tại không
+            if (!dsNV.stream().anyMatch(nv -> nv.getMaNhanVien().equals(nhanVien.getMaNhanVien()))) {
+                System.out.println("Nhân viên không tồn tại");
+                return false;
+            } else {
+                String updateSql = "UPDATE NhanVien SET tenNhanVien = ?, soCCCD = ?, soDienThoai = ?, diaChi = ?, chucVu = ? WHERE maNhanVien = ?";
+                updateStmt = con.prepareStatement(updateSql);
+                updateStmt.setString(1, nhanVien.getTenNhanVien());
+                updateStmt.setString(2, nhanVien.getSoCCCD());
+                updateStmt.setString(3, nhanVien.getSoDienThoai());
+                updateStmt.setString(4, nhanVien.getDiaChi());
+                updateStmt.setBoolean(5, nhanVien.getChucVu());
+                updateStmt.setString(6, nhanVien.getMaNhanVien()); // Gán mã nhân viên cần cập nhật
+                int rowsUpdated = updateStmt.executeUpdate();
+                if (rowsUpdated > 0) {
+                    isSuccess = true;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (updateStmt != null) {
+                try {
+                    updateStmt.close(); // Đóng PreparedStatement
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return isSuccess;
+    }
+	
+	public String getMaxMaNhanVien() {
+	    String maNV = "";
+	    
+	    if (con == null) {
+	        System.out.println("Chưa có kết nối cơ sở dữ liệu");
+	        return maNV;
+	    }
+	    
+	    try (PreparedStatement stm = con.prepareStatement(
+	            "SELECT TOP 1 maNhanVien FROM NhanVien ORDER BY maNhanVien DESC")) {
+	        
+	        ResultSet rs = stm.executeQuery();
+	        if (rs.next()) {
+	            maNV = rs.getString("maNhanVien");
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return maNV;
 	}
 
-//	public NhanVien_Entity findById(String id) {
-//        con = database.getInstance().getConnection();
-//        NhanVien_Entity nhanVien = null;
-//        try {
-//            stm = con.prepareStatement("SELECT * FROM NhanVien WHERE maNV = ?");
-//            stm.setString(1, id);
-//            rs = stm.executeQuery();
-//
-//            if (rs.next()) {
-//                String maNV = rs.getString("maNhanVien");
-//                String tenNV = rs.getString("tenNhanVien");
-//                String soCCCD = rs.getString("soCCCD");
-//                String soDienThoai = rs.getString("soDienThoai");
-//                String diaChi = rs.getString("diaChi");
-//                boolean chucVu = rs.getBoolean("ChucVu");
-//                nhanVien = new NhanVien_Entity(maNV, tenNV, soCCCD, soDienThoai, diaChi, chucVu);
-//            }
-//        } catch (SQLException ex) {
-//            ex.printStackTrace();
-//        }
-//        return nhanVien;
-//    }
+
+
 }

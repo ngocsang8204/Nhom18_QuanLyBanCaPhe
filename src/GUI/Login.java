@@ -134,8 +134,9 @@ public class Login extends JFrame implements ActionListener, MouseListener{
         panel_5.add(Box.createVerticalStrut(30));
         
         tTenDangNhap = new JTextField();
-        tTenDangNhap.setText("nguyenvana");
+        tTenDangNhap.setText("quandz");
         tTenDangNhap.setFont(new Font("Tahoma", Font.PLAIN, 20));
+        tTenDangNhap.setRequestFocusEnabled(true);
         panel_4.add(tTenDangNhap);
         
         JPanel panel_3 = new JPanel();
@@ -149,7 +150,7 @@ public class Login extends JFrame implements ActionListener, MouseListener{
         tMatKhau.setToolTipText("");
         tMatKhau.setFont(new Font("Tahoma", Font.PLAIN, 16));
         panel_3.add(tMatKhau);
-        tMatKhau.setText("password1");
+        tMatKhau.setText("123");
         
         lb1.setPreferredSize(new Dimension(150,20));
         lb2.setPreferredSize(new Dimension(150,20));
@@ -212,7 +213,7 @@ public class Login extends JFrame implements ActionListener, MouseListener{
 	                    @Override
 	                    protected Void doInBackground() throws Exception {
 	                        for (int i = 0; i <= 100; i++) {
-	                            Thread.sleep(5); // Giảm thời gian chờ để tăng tốc độ tải
+	                            Thread.sleep(10); // Giảm thời gian chờ để tăng tốc độ tải
 	                            publish(i); // Gửi giá trị tiến trình cho phương thức process()
 	                        }
 	                        return null;

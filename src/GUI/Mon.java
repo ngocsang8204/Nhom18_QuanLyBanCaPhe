@@ -286,7 +286,7 @@ public class Mon extends JPanel {
         tableSanPham.setShowHorizontalLines(true);
         tableSanPham.setShowVerticalLines(false);
         JScrollPane jsp = new JScrollPane(tableSanPham);
-        jsp.setPreferredSize(new Dimension(panel_1.getPreferredSize().width, 873));
+        jsp.setPreferredSize(new Dimension(1180, 873));
         jsp.setBorder(BorderFactory.createLineBorder(Color.BLACK)); // Tạo viền màu đen
         tableSanPham.getTableHeader().setBackground(Color.white);
         panel_12.add(jsp);

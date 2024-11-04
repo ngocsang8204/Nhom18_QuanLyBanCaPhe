@@ -226,7 +226,7 @@ public class KhachHang extends JPanel {
         table.setShowHorizontalLines(true);
         table.setShowVerticalLines(false);
         JScrollPane jsp = new JScrollPane(table);
-        jsp.setPreferredSize(new Dimension(panel_1.getPreferredSize().width, 873));
+        jsp.setPreferredSize(new Dimension(1180, 873));
         jsp.setBorder(BorderFactory.createLineBorder(Color.BLACK)); // Tạo viền màu đen
         table.getTableHeader().setBackground(Color.white);
         panel_12.add(jsp);
