@@ -18,7 +18,13 @@ public class NguyenLieu_DAO {
 	public NguyenLieu_DAO() {
 		
 	}
-	
+	public static void khoiTao () {
+		try {
+			database.getInstance().Connect();;
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
 	public ArrayList<NguyenLieu_Entity> danhSachNguyenLieu(){
 		ArrayList<NguyenLieu_Entity> dsNL = new ArrayList<NguyenLieu_Entity>();
 		try {
@@ -46,7 +52,53 @@ public class NguyenLieu_DAO {
 		return dsNL;
 	}
 	
+	public String[] danhSachNguyenLieuTheoTen(){
+		khoiTao();
+		ArrayList<String> dsNL = new ArrayList<>();
+		String[] ds= new String[0];
+		try {
+			Connection con = database.getInstance().getConnection();
+		    if (con == null) {
+		        System.out.println("Connection is not established.");
+		    }
+			String sql = "Select tenNguyenLieu from NguyenLieu";
+			Statement statement = con.createStatement();
+			ResultSet rs = statement.executeQuery(sql);
+			while (rs.next()) {
+				String ten = rs.getString(1);
+				
+				dsNL.add(ten);
+			}
+			ds=dsNL.stream().toArray(String[]::new);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ds;
+	}
+	public NguyenLieu_Entity getNLTheoTen(String a) {
+		
+		khoiTao();
+		String sql="select * from nguyenlieu where tennguyenlieu like ?";
+		NguyenLieu_Entity nl= new NguyenLieu_Entity();
+		try {
+			Connection con = database.getInstance().getConnection();
+		    if (con == null) {
+		        System.out.println("Connection is not established.");
+		    }
+			PreparedStatement stmt= con.prepareStatement(sql);
+			stmt.setString(1, a);
+			ResultSet rs= stmt.executeQuery();
+			if(rs.next()) {
+				nl= new NguyenLieu_Entity(rs.getNString(1), rs.getNString(2), rs.getInt(3), rs.getTimestamp(4).toLocalDateTime(), 
+						rs.getTimestamp(5).toLocalDateTime(), new NhaCungCap_Entity(rs.getNString(6)));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return nl;
+	}
 	public NguyenLieu_Entity timNguyenLieuTheoMa (String ma) {
+		khoiTao();
 		ArrayList<NguyenLieu_Entity> dsNL = danhSachNguyenLieu();
 		return dsNL.stream().filter(x -> x.getMaNguyenLieu().equals(ma)).findFirst().orElse(null);
 	}
@@ -57,6 +109,7 @@ public class NguyenLieu_DAO {
 	}
 	
 	public boolean themNguyenLieu (NguyenLieu_Entity nguyenLieu) {
+		khoiTao();
 		Connection con = database.getInstance().getConnection();
 	    PreparedStatement stmt = null;
 	    boolean isSuccess = false;
@@ -86,6 +139,7 @@ public class NguyenLieu_DAO {
 	}
 	
 	public boolean suaNguyenLieu (NguyenLieu_Entity nguyenLieu) {
+		khoiTao();
 		Connection connection = database.getInstance().getConnection();
 		boolean isSuccess = false;
 		try {
@@ -108,8 +162,12 @@ public class NguyenLieu_DAO {
 	            }
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 		return isSuccess;
+	}
+	public static void main(String[] args) {
+		NguyenLieu_DAO dao= new NguyenLieu_DAO();
+		System.out.println(dao.getNLTheoTen("Nước cam"));
 	}
 }

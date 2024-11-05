@@ -14,7 +14,7 @@ public class database {
 	public void Connect() {
 		String url = "jdbc:sqlserver://localhost:1433;databasename=QLQuanCoffee";
 		String user = "sa";
-		String password = "sapassword";
+		String password = "123";
 		
 		try {
 			con=DriverManager.getConnection(url,user,password);
