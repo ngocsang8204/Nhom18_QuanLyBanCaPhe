@@ -127,7 +127,7 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);getContentPane().setLayout(new BorderLayout(0, 0));
 		setResizable(false);
 		setTitle("Quản lý quán cà phê");
-		setSize(new Dimension(1920, 1080));
+//		setSize(new Dimension(1920, 1080));
 		setLocationRelativeTo(null);
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		contentPane = new JPanel();
@@ -599,7 +599,7 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
 	    }
 
 	    if (o.equals(btnQuanLy)) {
-	    	manageMenu.show(btnQuanLy, btnQuanLy.getWidth(), btnQuanLy.getHeight());
+	    	manageMenu.show(btnQuanLy, btnQuanLy.getWidth(), btnQuanLy.getHeight()/3);
 	    }
 
 	    if (o.equals(btnThongKe)) {
@@ -648,6 +648,11 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
 //	    if (o.equals(btnSanPham) && selectedButton != btnSanPham) {
 //	        btnSanPham.setBackground(new Color(240, 240, 240));
 //	    }
+	}
+	public static void main(String[] args) {
+		TaiKhoan_Entity tk= new TaiKhoan_Entity("TK001");
+		TrangChu tc= new TrangChu(tk);
+		tc.setVisible(true);
 	}
 
 	

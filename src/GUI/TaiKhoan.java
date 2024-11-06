@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -24,29 +25,50 @@ import javax.swing.ImageIcon;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
+
+import DAO.NhanVien_DAO;
+import DAO.TaiKhoan_DAO;
+import Entity.NhanVien_Entity;
+import Entity.TaiKhoan_Entity;
+
 import javax.swing.border.EtchedBorder;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.awt.Component;
 
-public class TaiKhoan extends JPanel {
+public class TaiKhoan extends JPanel implements ActionListener, MouseListener{
 
 	private static final long serialVersionUID = 1L;
 	private JTextField tMaTaiKhoan;
-	private JTextField tTenTaiKhoan;
-	private JTextField tMaNhanVien;
-	private JTextField tDiaChi;
+	private JTextField tTenDangNhap;
+	private JTextField tMatKhau;
 	private DefaultTableModel model;
 	private JTable table;
 	private JButton btnThem;
 	private JButton btnSua;
 	private JTextField tTimKiem;
 	private JButton btnTimKiem;
+	private JComboBox<String> cbb_MaNhanVien;
+	private int previousRow = -1;
+	private TaiKhoan_DAO taiKhoan_DAO;
+	private NhanVien_DAO nhanVien_DAO;
+	private JButton btnXoaRong;
 
 	/**
 	 * Create the panel.
 	 */
 	public TaiKhoan() {
+		nhanVien_DAO = new NhanVien_DAO();
+		taiKhoan_DAO = new TaiKhoan_DAO();
+		
         this.setBackground(Color.WHITE);
         this.setBounds(0, 0, 1600, 954);
         setLayout(new BorderLayout(0, 0));
@@ -72,10 +94,6 @@ public class TaiKhoan extends JPanel {
         JLabel lblNewLabel_1_1 = new JLabel("                       ");
         panel_2.add(lblNewLabel_1_1);
         
-//        JPanel panel_trong = new JPanel();
-//        panel_trong.setPreferredSize(new Dimension(panel_2.getPreferredSize().width,200));
-//        panel.add(panel_trong,BorderLayout.CENTER);
-//        
         JPanel panel_3 = new JPanel();
         panel_3.setBackground(new Color(255, 255, 255));
         panel.add(panel_3, BorderLayout.CENTER);
@@ -96,12 +114,12 @@ public class TaiKhoan extends JPanel {
         panel_4_1.setBackground(new Color(255, 255, 255));
         panel_3.add(panel_4_1);
         
-        JLabel lbTenTaiKhoan = new JLabel("Tên tài khoản: ");
+        JLabel lbTenTaiKhoan = new JLabel("Tên đăng nhập");
         lbTenTaiKhoan.setFont(new Font("Tahoma", Font.PLAIN, 16));
         panel_4_1.add(lbTenTaiKhoan);
         
-        tTenTaiKhoan = new JTextField();
-        panel_4_1.add(tTenTaiKhoan);
+        tTenDangNhap = new JTextField();
+        panel_4_1.add(tTenDangNhap);
         
         JPanel panel_4_2 = new JPanel();
         panel_4_2.setBackground(new Color(255, 255, 255));
@@ -120,17 +138,21 @@ public class TaiKhoan extends JPanel {
         panel_4_3.add(lbMaNhanVien);
         
         
-        tMaNhanVien = new JTextField();
-        panel_4_3.add(tMaNhanVien);
+        cbb_MaNhanVien = new JComboBox<String>();
+        panel_4_3.add(cbb_MaNhanVien);
+        List<String> listMaNV = nhanVien_DAO.getAllNhanVien();
+        for(String maNV : listMaNV) {
+        	cbb_MaNhanVien.addItem(maNV);
+        }
         
-        tDiaChi = new JTextField(); 
-        panel_4_2.add(tDiaChi);
+        tMatKhau = new JTextField(); 
+        panel_4_2.add(tMatKhau);
         
         tMaTaiKhoan.setPreferredSize(new Dimension(tMaTaiKhoan.getPreferredSize().width,30));
         tMaTaiKhoan.setEditable(false);
-        tTenTaiKhoan.setPreferredSize(new Dimension(tMaTaiKhoan.getPreferredSize().width,30));
-        tMaNhanVien.setPreferredSize(new Dimension(tMaTaiKhoan.getPreferredSize().width,30));
-        tDiaChi.setPreferredSize(new Dimension(tMaTaiKhoan.getPreferredSize().width,30));
+        tTenDangNhap.setPreferredSize(new Dimension(tMaTaiKhoan.getPreferredSize().width,30));
+        cbb_MaNhanVien.setPreferredSize(new Dimension(tMaTaiKhoan.getPreferredSize().width,30));
+        tMatKhau.setPreferredSize(new Dimension(tMaTaiKhoan.getPreferredSize().width,30));
         
         lbMaTaiKhoan.setPreferredSize(new Dimension(170,20));
         lbTenTaiKhoan.setPreferredSize(new Dimension(170,20));
@@ -160,6 +182,13 @@ public class TaiKhoan extends JPanel {
         btnSua.setPreferredSize(new Dimension(93, 39));
         btnSua.setIcon(new ImageIcon(Mon.class.getResource("/img/icons8-tools-30.png")));
         panel_6.add(btnSua);
+        
+        Component horizontalStrut = Box.createHorizontalStrut(2);
+        panel_6.add(horizontalStrut);
+        
+        btnXoaRong = new JButton("Xóa rỗng");
+        btnXoaRong.setIcon(new ImageIcon(TaiKhoan.class.getResource("/img/icons8-erase-30.png")));
+        panel_6.add(btnXoaRong);
         
         JPanel panel_1 = new JPanel();
         panel_1.setBackground(new Color(255, 255, 255));
@@ -232,7 +261,7 @@ public class TaiKhoan extends JPanel {
         panel_12.setBackground(new Color(255, 255, 255));
         panel_1.add(panel_12, BorderLayout.CENTER);
         // Table Model and JTable
-        String[] colnames = new String[] { "Mã tài khoản","Tên tên tài khoản", "Mật khẩu", "Mã nhân viên"};
+        String[] colnames = new String[] { "Mã tài khoản","Tên đăng nhập", "Mật khẩu", "Mã nhân viên"};
         model = new DefaultTableModel(colnames, 0);
         // Sau khi khởi tạo JTable và JScrollPane
         table = new JTable(model);
@@ -257,6 +286,171 @@ public class TaiKhoan extends JPanel {
 
         table.getTableHeader().setResizingAllowed(false);
         table.getTableHeader().setReorderingAllowed(false);
+        
+        table.addMouseListener(this);
+        btnThem.addActionListener(this);
+        btnTimKiem.addActionListener(this);
+        btnSua.addActionListener(this);
+        btnXoaRong.addActionListener(this);
+        loadData();
 	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		Object o = e.getSource();
+		if (o.equals(table)) {
+			int row = table.getSelectedRow();
+			if(row == previousRow) {
+    	    	clear();
+    			previousRow = -1;
+    			
+    		} else {
+	    	    tMaTaiKhoan.setText(model.getValueAt(row, 0).toString());
+				tTenDangNhap.setText(model.getValueAt(row, 1).toString());
+				tMatKhau.setText(model.getValueAt(row, 2).toString());
+				cbb_MaNhanVien.setSelectedItem(model.getValueAt(row, 3));
+	    	    previousRow = row;
+    	        // Đặt cờ là true khi một hàng được chọn
+    	
+    	    }
+		}
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object o = e.getSource();
+		if (o.equals(btnThem)) {
+			them();
+		}
+		if (o.equals(btnSua)) {
+			sua();
+		}
+		if (o.equals(btnTimKiem)) {
+			
+		}
+		if (o.equals(btnXoaRong)) {
+			clear();
+		}
+		// TODO Auto-generated method stub
+		
+	}
+	
+	private void sua() {
+		if (JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn cập nhật không?", "Cảnh báo!", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+			int row = table.getSelectedRow();
+			if (row >= 0) {
+				String ma = tMaTaiKhoan.getText().trim();
+				String ten = tTenDangNhap.getText().trim();
+				String matkhau = tMatKhau.getText().trim();
+				String maNV = cbb_MaNhanVien.getSelectedItem().toString();
+				// Cập nhật thông tin trong bảng
+				model.setValueAt(ma, row, 0);
+				model.setValueAt(ten, row, 1);
+				model.setValueAt(matkhau, row, 2);
+				model.setValueAt(maNV, row, 3);
+				NhanVien_Entity nv = nhanVien_DAO.timNhanVienTheoMa(maNV);
+				TaiKhoan_Entity tk = new TaiKhoan_Entity(ma, ten, matkhau, nv);
+				boolean updated = taiKhoan_DAO.suaTaiKhoan(tk);
+				if (updated) {
+				    JOptionPane.showMessageDialog(null, "Cập nhật thành công!");
+				} else {
+				    JOptionPane.showMessageDialog(null, "Cập nhật không thành công. Vui lòng thử lại.");
+				}
+			} else {
+				JOptionPane.showMessageDialog(null, "Vui lòng chọn dịch vụ cần sửa.");
+			}
+		}
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void loadData() {
+	    model.setRowCount(0);
+        for (TaiKhoan_Entity tk : taiKhoan_DAO.danhSachTaiKhoan()) {
+            model.addRow(new Object[]{
+                tk.getMaTaiKhoan(),
+                tk.getTenDangNhap(),
+                tk.getMatKhau(),
+                tk.getNhanVien().getMaNhanVien()
+            });
+	    }
+	}
+	private void clear() {
+		tMaTaiKhoan.setText("");
+		tTenDangNhap.setText("");
+		tMatKhau.setText("");
+		cbb_MaNhanVien.setSelectedIndex(0);
+		// TODO Auto-generated method stub
+	}
+	protected TaiKhoan_Entity revert() {
+		String ma;
+		if (tMaTaiKhoan.getText().trim().equals("")) {
+			ma = taoMa();
+		}else {
+			ma = tMaTaiKhoan.getText().trim();
+		}
+		String ten = tTenDangNhap.getText().trim();
+		String matkhau = tMatKhau.getText().trim();
+		String manv = (String) cbb_MaNhanVien.getSelectedItem();
+		NhanVien_Entity nv = nhanVien_DAO.timNhanVienTheoMa(manv);
+		return new TaiKhoan_Entity(ma, ten, matkhau, nv);
+	}
+	private String taoMa() {
+		int sl= taiKhoan_DAO.getSLTaiKhoan()+1;
+		return String.format("TK%03d",sl);
+	}
+	
+	private void them() {
+	    TaiKhoan_Entity tk = revert();
+	    List<TaiKhoan_Entity> listTopTaiKhoan = taiKhoan_DAO.danhSachTaiKhoan();
+	    
+	    // Kiểm tra nếu tài khoản đã tồn tại trong danh sách
+	    for (TaiKhoan_Entity tkk : listTopTaiKhoan) {
+	        if (tk.getMaTaiKhoan().equals(tkk.getMaTaiKhoan())) {
+	            JOptionPane.showMessageDialog(null, "Tài khoản này đã tồn tại", "Lỗi", JOptionPane.ERROR_MESSAGE);
+	            return;
+	        }
+	    }
+
+	    // Thêm tài khoản nếu không trùng lặp
+	    if (taiKhoan_DAO.themTaiKhoan(tk)) {
+	        JOptionPane.showMessageDialog(null, "Thêm thành công", "Thành công", JOptionPane.DEFAULT_OPTION);
+	        model.addRow(new Object[]{
+	            tk.getMaTaiKhoan(),
+	            tk.getTenDangNhap(),
+	            tk.getMatKhau(),
+	            tk.getNhanVien().getMaNhanVien()
+	        });
+	    } else {
+	        JOptionPane.showMessageDialog(null, "Lỗi khi thêm tài khoản vào cơ sở dữ liệu", "Lỗi", JOptionPane.ERROR_MESSAGE);
+	    }
+	}
+
 
 }

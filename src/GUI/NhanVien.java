@@ -1,6 +1,7 @@
 package GUI;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 
 import javax.swing.JLabel;
@@ -57,6 +58,7 @@ public class NhanVien extends JPanel implements ActionListener, MouseListener{
 	private NhanVien_DAO nhanVien_DAO;
 	private JComboBox<String> comboBox;
 	private int previousRow = -1;
+	private JButton btnXoaRong;
 	/**
 	 * Create the panel.
 	 */
@@ -210,6 +212,13 @@ public class NhanVien extends JPanel implements ActionListener, MouseListener{
         btnSua.setIcon(new ImageIcon(Mon.class.getResource("/img/icons8-tools-30.png")));
         panel_6.add(btnSua);
         
+        Component horizontalStrut = Box.createHorizontalStrut(2);
+        panel_6.add(horizontalStrut);
+        
+        btnXoaRong = new JButton("Xóa rỗng");
+        btnXoaRong.setIcon(new ImageIcon(TaiKhoan.class.getResource("/img/icons8-erase-30.png")));
+        panel_6.add(btnXoaRong);
+        
         JPanel panel_1 = new JPanel();
         panel_1.setBackground(new Color(255, 255, 255));
         add(panel_1, BorderLayout.CENTER);
@@ -312,6 +321,7 @@ public class NhanVien extends JPanel implements ActionListener, MouseListener{
         btnThem.addActionListener(this);
         btnSua.addActionListener(this);
         btnTimKiem.addActionListener(this);
+        btnXoaRong.addActionListener(this);
         
 	}
 
@@ -375,6 +385,9 @@ public class NhanVien extends JPanel implements ActionListener, MouseListener{
 		}
 		if (o.equals(btnTimKiem)) {
 			
+		}
+		if (o.equals(btnXoaRong)) {
+			clear();
 		}
 		// TODO Auto-generated method stub
 		

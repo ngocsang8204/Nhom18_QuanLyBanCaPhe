@@ -140,5 +140,23 @@ public class TaiKhoan_DAO {
 	    }
 	    return null;
 	}
+	
+	public int getSLTaiKhoan() {
+		khoiTao();
+		Connection connection = database.getInstance().getConnection();
+		String sql= "Select count(*) from TaiKhoan";
+		int count=0;
+		try {
+			PreparedStatement stmt= connection.prepareStatement(sql);
+			ResultSet rs= stmt.executeQuery();
+			if(rs.next()) {
+				count=rs.getInt(1);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return count;
+	}
+
 
 }

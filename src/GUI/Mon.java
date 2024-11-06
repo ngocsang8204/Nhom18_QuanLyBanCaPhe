@@ -24,12 +24,27 @@ import javax.swing.ImageIcon;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
+
+import DAO.Mon_DAO;
+import DAO.NguyenLieu_DAO;
+import Entity.Mon_Entity;
+import Entity.NguyenLieu_Entity;
+
 import javax.swing.border.EtchedBorder;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.TextField;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
 
-public class Mon extends JPanel {
+public class Mon extends JPanel implements MouseListener, ActionListener{
 
 	private static final long serialVersionUID = 1L;
 	private JTextField tMaMon;
@@ -40,13 +55,26 @@ public class Mon extends JPanel {
 	private DefaultTableModel model_SanPham;
 	private JButton btnCaPhe;
 	private JButton btnDaXay;
-	private JButton btnTra;
-	private JButton btnSoda;
+	private JButton btnTraSua;
+	private JButton btnSinhTo;
 	private JButton btnThucUongKhac;
 	private JButton btnBanh;
 	private JButton btnTimKiem;
 	private JButton btnSua;
 	private JButton btnThem;
+	private Mon_DAO mon_dao= new Mon_DAO();
+	private NguyenLieu_DAO nl_dao= new NguyenLieu_DAO();
+	private JComboBox cbLoaiMon;
+	private JComboBox cbNL;
+	private JTextField tSLNL;
+	private JButton btnThemNL;
+	private JButton btnXoaNL;
+	private JTable table;
+	private DefaultTableModel model_NguyenLieu;
+	private JTable tableNguyenLieu;
+	private JButton btnXoaRong;
+	private JButton btnXoa;
+	private JButton btnAll;
 
 	/**
 	 * Create the panel.
@@ -116,7 +144,9 @@ public class Mon extends JPanel {
         lbLoaiMon.setFont(new Font("Tahoma", Font.PLAIN, 16));
         panel_4_2.add(lbLoaiMon);
         
-        JComboBox cbLoaiMon = new JComboBox();
+        cbLoaiMon = new JComboBox();
+        cbLoaiMon.setFont(new Font("Tahoma", Font.PLAIN, 11));
+        cbLoaiMon.setModel(new DefaultComboBoxModel(new String[] {"Cà phê", "Trà sữa", "Đá xay", "Sinh tố", "Thức uống khác", "Bánh"}));
         cbLoaiMon.setBackground(new Color(255, 255, 255));
         
         panel_4_2.add(cbLoaiMon);
@@ -142,9 +172,88 @@ public class Mon extends JPanel {
         lbLoaiMon.setPreferredSize(new Dimension(170,20));
         lbDonGia.setPreferredSize(new Dimension(170,20));
         
+        JPanel panel4_4 = new JPanel();
+        
+        panel4_4.setBorder(BorderFactory.createTitledBorder(getBorder(), "Nguyên Liệu", TitledBorder.LEADING, 
+        		TitledBorder.DEFAULT_JUSTIFICATION, new Font("Tahoma",Font.BOLD,16), getForeground()));
+        panel4_4.setBackground(new Color(255, 255, 255));
+        panel_3.add(panel4_4);
+        panel4_4.setLayout(new BoxLayout(panel4_4, BoxLayout.Y_AXIS));
+        
+        JPanel panel4_4_1 = new JPanel();
+        panel4_4_1.setBackground(new Color(255, 255, 255));
+        panel4_4.add(panel4_4_1);
+        
+        JLabel lbNL = new JLabel("Nguyên liệu:");
+        lbNL.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        lbNL.setPreferredSize(new Dimension(170,20));
+        panel4_4_1.add(lbNL);
+        
+        String[] dsNL= nl_dao.danhSachNguyenLieuTheoTen();
+        cbNL = new JComboBox(dsNL);
+        cbNL.setBackground(new Color(255, 255, 255));
+        cbNL.setFont(new Font("Tahoma", Font.PLAIN, 11));
+        cbNL.setPreferredSize(new Dimension(tMaMon.getPreferredSize().width,30));
+        panel4_4_1.add(cbNL);
+        
+        
+        JPanel panel4_4_2 = new JPanel();
+        panel4_4_2.setBackground(new Color(255, 255, 255));
+        panel4_4_1.setBackground(new Color(255, 255, 255));
+        panel4_4.add(panel4_4_2);
+        
+        JLabel lbSLNL = new JLabel("Số lượng:");
+        lbSLNL.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        lbSLNL.setPreferredSize(new Dimension(170,20));
+        panel4_4_2.add(lbSLNL);
+        
+        tSLNL = new JTextField();
+        tSLNL.setPreferredSize(new Dimension(tMaMon.getPreferredSize().width,30));
+        panel4_4_2.add(tSLNL);
+        
+       
+       
+        
+        JPanel panel4_4_3 = new JPanel();
+        panel4_4_3.setBackground(new Color(255, 255, 255));
+        panel4_4.add(panel4_4_3);
+        
+        btnThemNL = new JButton("Thêm");
+        btnThemNL.setIcon(new ImageIcon(Mon.class.getResource("/img/icons8-add-30.png")));
+        panel4_4_3.add(btnThemNL);
+        
+        btnXoaNL = new JButton("Xóa");
+        btnXoaNL.setIcon(new ImageIcon(Mon.class.getResource("/img/icons8-delete-30.png")));
+        panel4_4_3.add(btnXoaNL);
+        btnThemNL.addActionListener(this);
+        btnXoaNL.addActionListener(this);
+        JPanel panel4_4_5 = new JPanel();
+        panel4_4_5.setBackground(new Color(255, 255, 255));
+        panel4_4.add(panel4_4_5);
+        
+        String[] colNL = new String[] { "Tên","Số lượng"};
+        model_NguyenLieu= new DefaultTableModel(colNL, 0);
+        // Sau khi khởi tạo JTable và JScrollPane
+        tableNguyenLieu = new JTable(model_NguyenLieu);
+        tableNguyenLieu.setFocusable(false);
+        tableNguyenLieu.setShowGrid(true);
+        tableNguyenLieu.setShowHorizontalLines(true);
+        tableNguyenLieu.setShowVerticalLines(false);
+        JScrollPane jsp2 = new JScrollPane(tableNguyenLieu);
+        jsp2.setPreferredSize(new Dimension(jsp2.getPreferredSize().width, 300));
+        jsp2.setBorder(BorderFactory.createLineBorder(Color.BLACK)); // Tạo viền màu đen
+        tableNguyenLieu.getTableHeader().setBackground(Color.white);
+        tableNguyenLieu.getTableHeader().setReorderingAllowed(false);
+        tableNguyenLieu.getTableHeader().setResizingAllowed(false);
+        panel4_4_5.add(jsp2);
+        
+        
+        
+        
+        
         JPanel panel_5 = new JPanel();
         panel_5.setBackground(new Color(255, 255, 255));
-        panel_5.setPreferredSize(new Dimension(panel_3.getPreferredSize().width,700));
+        panel_5.setPreferredSize(new Dimension(panel_3.getPreferredSize().width,300));
         panel.add(panel_5,BorderLayout.SOUTH);
         
         JLabel lblNewLabel_1_2 = new JLabel("                       ");
@@ -159,12 +268,23 @@ public class Mon extends JPanel {
         btnThem.setIcon(new ImageIcon(Mon.class.getResource("/img/icons8-add-30.png")));
         panel_6.add(btnThem);
         
-        panel_6.add(Box.createHorizontalStrut(2));
-        
         btnSua = new JButton("Sửa");
         btnSua.setPreferredSize(new Dimension(93, 39));
         btnSua.setIcon(new ImageIcon(Mon.class.getResource("/img/icons8-tools-30.png")));
         panel_6.add(btnSua);
+        
+        btnXoaRong = new JButton("Xóa rỗng");
+        btnXoaRong.setIcon(new ImageIcon(Mon.class.getResource("/img/icons8-erase-30.png")));
+        panel_6.add(btnXoaRong);
+        
+        btnXoa = new JButton("Xóa");
+        btnXoa.setIcon(new ImageIcon(Mon.class.getResource("/img/icons8-delete-30.png")));
+        panel_6.add(btnXoa);
+        
+        btnThem.addActionListener(this);
+        btnSua.addActionListener(this);
+        btnXoaRong.addActionListener(this);
+        btnXoa.addActionListener(this);
         
         JPanel panel_1 = new JPanel();
         panel_1.setBackground(new Color(255, 255, 255));
@@ -256,13 +376,13 @@ public class Mon extends JPanel {
         btnDaXay.setFont(new Font("Tahoma", Font.PLAIN, 20));
         panel_10.add(btnDaXay);
         
-        btnTra = new JButton("TRÀ");
-        btnTra.setFont(new Font("Tahoma", Font.PLAIN, 20));
-        panel_10.add(btnTra);
+        btnTraSua = new JButton("TRÀ SỮA");
+        btnTraSua.setFont(new Font("Tahoma", Font.PLAIN, 20));
+        panel_10.add(btnTraSua);
         
-        btnSoda = new JButton("SODA");
-        btnSoda.setFont(new Font("Tahoma", Font.PLAIN, 20));
-        panel_10.add(btnSoda);
+        btnSinhTo = new JButton("SINH TỐ");
+        btnSinhTo.setFont(new Font("Tahoma", Font.PLAIN, 20));
+        panel_10.add(btnSinhTo);
         
         btnThucUongKhac = new JButton("THỨC UỐNG KHÁC");
         btnThucUongKhac.setFont(new Font("Tahoma", Font.PLAIN, 20));
@@ -272,13 +392,27 @@ public class Mon extends JPanel {
         btnBanh.setFont(new Font("Tahoma", Font.PLAIN, 20));
         panel_10.add(btnBanh);
         
+        
+        
+        btnAll = new JButton("TẤT CẢ");
+        btnAll.setFont(new Font("Tahoma", Font.PLAIN, 20));
+        panel_10.add(btnAll);
+        
+        btnCaPhe.addActionListener(this);
+        btnTraSua.addActionListener(this);
+        btnSinhTo.addActionListener(this);
+        btnDaXay.addActionListener(this);
+        btnThucUongKhac.addActionListener(this);
+        btnBanh.addActionListener(this);
+        btnAll.addActionListener(this);
+        
         JPanel panel_12 = new JPanel();
+        panel_12.setLayout(new BoxLayout(panel_12, BoxLayout.X_AXIS));
         panel_12.setBackground(new Color(255, 255, 255));
         panel_1.add(panel_12, BorderLayout.CENTER);
         // Table Model and JTable
         String[] colnames = new String[] { "Mã món","Tên món", "Loại món", "Đơn giá"};
         model_SanPham= new DefaultTableModel(colnames, 0);
-        model_SanPham = new DefaultTableModel(colnames, 0);
         // Sau khi khởi tạo JTable và JScrollPane
         tableSanPham = new JTable(model_SanPham);
         tableSanPham.setFocusable(false);
@@ -286,7 +420,7 @@ public class Mon extends JPanel {
         tableSanPham.setShowHorizontalLines(true);
         tableSanPham.setShowVerticalLines(false);
         JScrollPane jsp = new JScrollPane(tableSanPham);
-        jsp.setPreferredSize(new Dimension(1180, 873));
+//        jsp.setPreferredSize(new Dimension(1180, 873));
         jsp.setBorder(BorderFactory.createLineBorder(Color.BLACK)); // Tạo viền màu đen
         tableSanPham.getTableHeader().setBackground(Color.white);
         panel_12.add(jsp);
@@ -302,6 +436,249 @@ public class Mon extends JPanel {
         tableSanPham.getTableHeader().setReorderingAllowed(false);
         
         tableSanPham.getTableHeader().setResizingAllowed(false);
+        loadTableData();
+        tableSanPham.addMouseListener(this);
+	}
+	public void loadTableData() {
+		ArrayList<Mon_Entity> list= mon_dao.danhSachMon();
+		list.forEach(x->{
+			model_SanPham.addRow(new Object[] {
+				x.getMaMon(),x.getTenMon(),x.getLoaiMon(),x.getDonGia()	
+			});
+		});
+	}
+	public void XoaRong() {
+		tMaMon.setText("");
+		tTenMon.setText("");
+		tDonGia.setText("");
+		cbLoaiMon.setSelectedIndex(0);
+		tSLNL.setText("");;
+		cbNL.setSelectedIndex(0);
+		model_NguyenLieu.setRowCount(0);
+	}
+	public void thongBao(String a, JTextField b) {
+		JOptionPane.showMessageDialog(this, a);
+		b.requestFocus();
+		b.selectAll();
+	}
+	public boolean valid() {
+	    String tenMon = tTenMon.getText().trim();
+	    String donGia = tDonGia.getText().trim();
+
+	    // Kiểm tra tên món
+	    if (tenMon.isEmpty() || !tenMon.matches("[\\p{L}\\s]+")) {
+	        thongBao("Tên món phải là chữ và không được rỗng", tTenMon);
+	        return false;
+	    }
+
+	    // Kiểm tra đơn giá
+	    if (donGia.isEmpty()) {
+	        thongBao("Đơn giá không được rỗng", tDonGia);
+	        return false;
+	    }
+
+	    try {
+	        double donGiaValue = Double.parseDouble(donGia);
+	        if (donGiaValue <= 0) {
+	            thongBao("Đơn giá phải lớn hơn 0", tDonGia);
+	            return false;
+	        }
+	    } catch (NumberFormatException e) {
+	        thongBao("Đơn giá phải là số", tDonGia);
+	        return false;
+	    }
+
+	    // Kiểm tra nguyên liệu
+	    if (tableNguyenLieu.getRowCount() < 1) {
+	        JOptionPane.showMessageDialog(this, "Cần có nguyên liệu");
+	        return false;
+	    }
+
+	    return true; // Trả về true nếu tất cả các kiểm tra đều hợp lệ
+	}
+	public void updateTable() {
+		model_SanPham.getDataVector().removeAllElements();
+		loadTableData();
+	}
+	public void loadTableTheoLoai(String a) {
+		ArrayList<Mon_Entity> list= mon_dao.danhSachMonTheoLoai(a);
+		System.out.println(list.size());
+		model_SanPham.setRowCount(0);
+		list.forEach(x->{
+			model_SanPham.addRow(new Object[] {
+				x.getMaMon(),x.getTenMon(),x.getLoaiMon(),x.getDonGia()	
+			});
+		});
+		
+	}
+	public String generateMa() {
+		int sl= mon_dao.getSLMon()+1;
+		return String.format("M%03d",sl);
+	}
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		int row= tableSanPham.getSelectedRow();
+		if(row!=-1) {
+			tMaMon.setText(tableSanPham.getValueAt(row, 0).toString());
+			tTenMon.setText(tableSanPham.getValueAt(row, 1).toString());
+			tDonGia.setText(tableSanPham.getValueAt(row, 3).toString());
+			cbLoaiMon.setSelectedItem(tableSanPham.getValueAt(row, 2));
+			model_NguyenLieu.getDataVector().removeAllElements();
+			ArrayList<Object[]> a= mon_dao.getNguyenLieuTheoMaMon(tableSanPham.getValueAt(row, 0).toString());
+			a.forEach(x->{
+				model_NguyenLieu.addRow(x);
+			});
+		}
+	}
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object o= e.getSource();
+		if(o.equals(btnThemNL)) {
+			if(!tSLNL.getText().trim().matches("[0-9]+")) {
+				JOptionPane.showMessageDialog(this,"Số lượng phải là số");
+			}
+			else {
+				model_NguyenLieu.addRow(new Object[] {
+					cbNL.getSelectedItem().toString(), tSLNL.getText().trim()	
+				});
+				
+			}
+		}
+		else if(o.equals(btnXoaNL)) {
+			int row= tableNguyenLieu.getSelectedRow();
+			if(row<0) {
+				JOptionPane.showMessageDialog(this,"Cần chọn dòng để xóa");
+			}
+			else {
+				model_NguyenLieu.removeRow(row);
+			}
+		}
+		else if(o.equals(btnXoaRong)) {
+			XoaRong();
+		}
+		else if(o.equals(btnSua)) {
+			String maMon = tMaMon.getText().trim();
+			if (maMon.isEmpty()) {
+			    JOptionPane.showMessageDialog(this, "Cần chọn món trong danh sách");
+			} else if (valid()) {
+			    try {
+			        // Xóa chi tiết món
+			        mon_dao.deleteChiTietMon(maMon);
+			        
+			        Double donGia= Double.parseDouble(tDonGia.getText().trim());
+			        // Tạo đối tượng món mới
+			        Mon_Entity newMon = new Mon_Entity(maMon, tTenMon.getText().trim(), cbLoaiMon.getSelectedItem().toString(),donGia);
+			        
+			        // Cập nhật món
+			        mon_dao.suaMon(newMon);
+			        
+			        // Duyệt qua từng nguyên liệu trong bảng
+			        for (int i = 0; i < tableNguyenLieu.getRowCount(); i++) {
+			            String tenNguyeLieu = tableNguyenLieu.getValueAt(i, 0).toString();
+			            int soLuong = Integer.parseInt(tableNguyenLieu.getValueAt(i, 1).toString());
+			            
+			            // Tìm nguyên liệu theo mã
+			            NguyenLieu_Entity nl1 = nl_dao.getNLTheoTen(tenNguyeLieu);
+			            
+			            // Thêm chi tiết món
+			            mon_dao.themChiTietMon(newMon, nl1, soLuong);
+			        }
+			        
+			        JOptionPane.showMessageDialog(this, "Cập nhật thành công");
+			        updateTable();
+			    } catch (Exception e1) {
+			        e1.printStackTrace(); // In lỗi ra console để kiểm tra
+			        JOptionPane.showMessageDialog(this, "Cập nhật thất bại");
+			    }
+			}
+
+		}
+		else if(o.equals(btnThem)) {
+			if(valid()) {
+				try {
+					Double donGia= Double.parseDouble(tDonGia.getText().trim());
+					Mon_Entity newMon = new Mon_Entity(generateMa(), tTenMon.getText().trim(), cbLoaiMon.getSelectedItem().toString(),donGia,1);
+					mon_dao.themMon(newMon);
+					// Duyệt qua từng nguyên liệu trong bảng
+			        for (int i = 0; i < tableNguyenLieu.getRowCount(); i++) {
+			            String tenNguyeLieu = tableNguyenLieu.getValueAt(i, 0).toString();
+			            int soLuong = Integer.parseInt(tableNguyenLieu.getValueAt(i, 1).toString());
+			            
+			            // Tìm nguyên liệu theo mã
+			            NguyenLieu_Entity nl1 = nl_dao.getNLTheoTen(tenNguyeLieu);
+			            
+			            // Thêm chi tiết món
+			            mon_dao.themChiTietMon(newMon, nl1, soLuong);
+			        }
+			        JOptionPane.showMessageDialog(this, "Thêm món thành công");
+			        updateTable();
+				} catch (Exception e2) {
+					JOptionPane.showMessageDialog(this, "Thêm món thất bại");
+				}
+			}
+	        
+		}
+		else if(o.equals(btnXoa)) {
+			int row= tableSanPham.getSelectedRow();
+			if(row<0) {
+				JOptionPane.showMessageDialog(this,"Cần chọn món để xóa");
+			}
+			else {
+				int confirm= JOptionPane.showConfirmDialog(this,"Bạn có muốn xóa món này không");
+				if(confirm==JOptionPane.YES_OPTION) {
+					if(mon_dao.xoaMon(tableSanPham.getValueAt(row, 0).toString())) {
+						JOptionPane.showMessageDialog(this,"Xóa thành công");
+						updateTable();
+					}
+					else {
+						JOptionPane.showMessageDialog(this,"Xóa thất bại");
+					}
+				}
+			}
+		}
+		else if(o.equals(btnCaPhe)) {
+			
+			loadTableTheoLoai("Cà phê");
+		}
+		else if(o.equals(btnAll)) {
+			updateTable();
+		}
+		else if(o.equals(btnDaXay)) {
+			loadTableTheoLoai("Đá xay");
+		}
+		else if(o.equals(btnSinhTo)) {
+			loadTableTheoLoai("Sinh tố");
+		}
+		else if(o.equals(btnTraSua)) {
+			loadTableTheoLoai("Trà sữa");
+		}
+		else if(o.equals(btnThucUongKhac)) {
+			loadTableTheoLoai("Thức uống khác");
+		}
+		else if(o.equals(btnBanh)) {
+			loadTableTheoLoai("Bánh");
+		}
+		
 	}
 
 }

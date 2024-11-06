@@ -1,6 +1,7 @@
 package GUI;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 
 import javax.swing.JLabel;
@@ -42,6 +43,7 @@ public class NhaCungCap extends JPanel {
 	private JButton btnSua;
 	private JTextField tTimKiem;
 	private JButton btnTimKiem;
+	private JButton btnXoaRong;
 
 	/**
 	 * Create the panel.
@@ -160,6 +162,14 @@ public class NhaCungCap extends JPanel {
         btnSua.setPreferredSize(new Dimension(93, 39));
         btnSua.setIcon(new ImageIcon(Mon.class.getResource("/img/icons8-tools-30.png")));
         panel_6.add(btnSua);
+        
+        Component horizontalStrut = Box.createHorizontalStrut(2);
+        panel_6.add(horizontalStrut);
+        
+        btnXoaRong = new JButton("Xóa rỗng");
+        btnXoaRong.setIcon(new ImageIcon(TaiKhoan.class.getResource("/img/icons8-erase-30.png")));
+        panel_6.add(btnXoaRong);
+        
         
         JPanel panel_1 = new JPanel();
         panel_1.setBackground(new Color(255, 255, 255));

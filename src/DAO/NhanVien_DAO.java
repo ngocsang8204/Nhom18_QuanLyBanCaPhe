@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import ConnectDB.database;
@@ -167,6 +168,22 @@ public class NhanVien_DAO {
 	        e.printStackTrace();
 	    }
 	    return maNV;
+	}
+
+	public List<String> getAllNhanVien() {
+		List<String> maNhanVien = new ArrayList<>();
+	    try {
+	        con = database.getInstance().getConnection();
+	        stm = con.prepareStatement("SELECT maNhanVien FROM NhanVien");  
+	        rs = stm.executeQuery();
+	        while (rs.next()) {
+	        	maNhanVien.add(rs.getString("maNhanVien"));
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return maNhanVien;
+
 	}
 
 

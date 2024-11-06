@@ -7,6 +7,7 @@ public class Mon_Entity {
 	private String tenMon;
 	private String loaiMon;
 	private double donGia;
+	private int trangThai;
 	
 	public Mon_Entity(String maMon, String tenMon, String loaiMon, double donGia) {
 		super();
@@ -18,6 +19,21 @@ public class Mon_Entity {
 	public Mon_Entity() {
 		super();
 		// TODO Auto-generated constructor stub
+	}
+	
+	public Mon_Entity(String maMon, String tenMon, String loaiMon, double donGia, int trangThai) {
+		super();
+		this.maMon = maMon;
+		this.tenMon = tenMon;
+		this.loaiMon = loaiMon;
+		this.donGia = donGia;
+		this.trangThai = trangThai;
+	}
+	public int getTrangThai() {
+		return trangThai;
+	}
+	public void setTrangThai(int trangThai) {
+		this.trangThai = trangThai;
 	}
 	public String getMaMon() {
 		return maMon;
