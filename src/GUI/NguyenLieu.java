@@ -293,6 +293,10 @@ public class NguyenLieu extends JPanel {
         Font font = new Font("Tahoma", Font.PLAIN, 16); // Chọn font và kích thước
         table.setFont(font);
         table.setRowHeight(50); // Thiết lập chiều cao hàng nếu cần
+        // Các thiết lập khác
+        table.setShowGrid(true);
+        table.setShowHorizontalLines(true);
+        table.setShowVerticalLines(true);
 
         // Thiết lập renderer cho tiêu đề cột
         table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 18)); // Kích thước font cho tiêu đề

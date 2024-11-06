@@ -284,8 +284,7 @@ public class TaiKhoan extends JPanel implements ActionListener, MouseListener{
         // Các thiết lập khác
         table.setShowGrid(true);
         table.setShowHorizontalLines(true);
-        table.setShowVerticalLines(true);
-
+        table.setShowVerticalLines(false);
 
         // Thiết lập renderer cho tiêu đề cột
         table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 18)); // Kích thước font cho tiêu đề

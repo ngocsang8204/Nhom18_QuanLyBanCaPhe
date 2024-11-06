@@ -430,11 +430,10 @@ public class Mon extends JPanel implements MouseListener, ActionListener{
         Font font = new Font("Tahoma", Font.PLAIN, 16); // Chọn font và kích thước
         tableSanPham.setFont(font);
         tableSanPham.setRowHeight(50); // Thiết lập chiều cao hàng nếu cần
-
+     // Các thiết lập khác
         // Thiết lập renderer cho tiêu đề cột
         tableSanPham.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 18)); // Kích thước font cho tiêu đề
         tableSanPham.getTableHeader().setReorderingAllowed(false);
-        
         tableSanPham.getTableHeader().setResizingAllowed(false);
         loadTableData();
         tableSanPham.addMouseListener(this);
