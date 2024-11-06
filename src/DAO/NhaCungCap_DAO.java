@@ -13,18 +13,18 @@ import Entity.NguyenLieu_Entity;
 import Entity.NhaCungCap_Entity;
 
 public class NhaCungCap_DAO {
-	
+
 	public NhaCungCap_DAO() {
-		
+
 	}
-	
+
 	public ArrayList<NhaCungCap_Entity> danhSachNhaCungCap() {
 		ArrayList<NhaCungCap_Entity> dsNCC = new ArrayList<NhaCungCap_Entity>();
 		try {
 			Connection con = database.getInstance().getConnection();
-		    if (con == null) {
-		        System.out.println("Connection is not established.");
-		    }
+			if (con == null) {
+				System.out.println("Connection is not established.");
+			}
 			String sql = "Select * from NhaCungCap";
 			Statement statement = con.createStatement();
 			ResultSet rs = statement.executeQuery(sql);
@@ -48,9 +48,9 @@ public class NhaCungCap_DAO {
 		database.getInstance().Connect();
 		try {
 			Connection con = database.getInstance().getConnection();
-		    if (con == null) {
-		        System.out.println("Connection is not established.");
-		    }
+			if (con == null) {
+				System.out.println("Connection is not established.");
+			}
 			String sql = "Select * from NhaCungCap where tennhacungcap like ?";
 			PreparedStatement statement = con.prepareStatement(sql);
 			statement.setString(1, a);
@@ -60,59 +60,59 @@ public class NhaCungCap_DAO {
 				String tenNCC = rs.getString(2);
 				String diaChi = rs.getString(3);
 				String thongTinLienHe = rs.getString(4);
-				 ncc = new NhaCungCap_Entity(maNCC, tenNCC, diaChi, thongTinLienHe);
-				
+				ncc = new NhaCungCap_Entity(maNCC, tenNCC, diaChi, thongTinLienHe);
+
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return ncc;
 	}
-	
+
 	public NhaCungCap_Entity timNhaCungCapTheoMa(String ma) {
 		ArrayList<NhaCungCap_Entity> dsNCC = danhSachNhaCungCap();
 		return dsNCC.stream().filter(x -> x.getMaNhaCungCap().equals(ma)).findFirst().orElse(null);
 	}
-	
+
 	public ArrayList<NhaCungCap_Entity> timNhaCungCapTheoTen(String ten) {
 		ArrayList<NhaCungCap_Entity> dsNCC = danhSachNhaCungCap();
 		return dsNCC.stream().filter(x -> x.getTenNhaCungCap().matches(".*" + ten + ".*"))
 				.collect(Collectors.toCollection(ArrayList::new));
 	}
-	
+
 	public boolean themNhaCungCap(NhaCungCap_Entity ncc) {
 		Connection con = database.getInstance().getConnection();
-	    PreparedStatement stmt = null;
-	    boolean isSuccess = false;
-	    
-	    try {
-	    	ArrayList<NhaCungCap_Entity> dsDV = danhSachNhaCungCap();
-	    	if (dsDV.contains(ncc)) {
-	    		System.out.println("Nhà cung cấp đã tồn tại, không thể thêm");
-	    	} else {
-	    		String sql = "INSERT INTO NhaCungCap(maNhaCungCap, tenNhaCungCap, diaChi, thongTinLienHe) VALUES (?, ?, ?, ?)";
-	    		stmt = con.prepareStatement(sql);
-	    		if (dsDV.size() + 1 < 10) {
-	    			stmt.setString(1, "NCC00" + String.valueOf(dsDV.size() + 1));
+		PreparedStatement stmt = null;
+		boolean isSuccess = false;
+
+		try {
+			ArrayList<NhaCungCap_Entity> dsDV = danhSachNhaCungCap();
+			if (dsDV.contains(ncc)) {
+				System.out.println("Nhà cung cấp đã tồn tại, không thể thêm");
+			} else {
+				String sql = "INSERT INTO NhaCungCap(maNhaCungCap, tenNhaCungCap, diaChi, thongTinLienHe) VALUES (?, ?, ?, ?)";
+				stmt = con.prepareStatement(sql);
+				if (dsDV.size() + 1 < 10) {
+					stmt.setString(1, "NCC00" + String.valueOf(dsDV.size() + 1));
 				} else if (dsDV.size() + 1 < 100 && dsDV.size() + 1 >= 10) {
-	    			stmt.setString(1, "NCC0" + String.valueOf(dsDV.size() + 1));
-	    		} else if (dsDV.size() + 1 >= 100) {
-	    			stmt.setString(1, "NCC" + String.valueOf(dsDV.size() + 1));
-	    		}
-	    		stmt.setString(2, ncc.getTenNhaCungCap());
-	    		stmt.setString(3, ncc.getDiaChi());
-	    		stmt.setString(4, ncc.getThongTinLienHe());
-	    		int rowsInserted = stmt.executeUpdate();
-	            if (rowsInserted > 0) {
-	                isSuccess = true;
-	            }
-	    	}
-	    } catch (Exception e) {
-	    	e.printStackTrace();
-	    }
-	    return isSuccess;
+					stmt.setString(1, "NCC0" + String.valueOf(dsDV.size() + 1));
+				} else if (dsDV.size() + 1 >= 100) {
+					stmt.setString(1, "NCC" + String.valueOf(dsDV.size() + 1));
+				}
+				stmt.setString(2, ncc.getTenNhaCungCap());
+				stmt.setString(3, ncc.getDiaChi());
+				stmt.setString(4, ncc.getThongTinLienHe());
+				int rowsInserted = stmt.executeUpdate();
+				if (rowsInserted > 0) {
+					isSuccess = true;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return isSuccess;
 	}
-	
+
 	public boolean suaNhaCungCap(NhaCungCap_Entity ncc) {
 		Connection connection = database.getInstance().getConnection();
 		boolean isSuccess = false;
@@ -122,21 +122,22 @@ public class NhaCungCap_DAO {
 				System.out.println("Nhà cung cấp không tồn tại");
 			} else {
 				String updateSql = "UPDATE NhaCungCap SET tenNhaCungCap = ?, diaChi = ?, thongTinLienHe = ? WHERE maNhaCungCap = ?";
-		        PreparedStatement updateStmt = connection.prepareStatement(updateSql);
-		        updateStmt.setString(1, ncc.getTenNhaCungCap());
-		        updateStmt.setString(2, ncc.getDiaChi());
-		        updateStmt.setString(3, ncc.getThongTinLienHe());
-		        updateStmt.setString(4, ncc.getMaNhaCungCap());
-		        int rowsInserted = updateStmt.executeUpdate();
-	            if (rowsInserted > 0) {
-	                isSuccess = true;
-	            }
+				PreparedStatement updateStmt = connection.prepareStatement(updateSql);
+				updateStmt.setString(1, ncc.getTenNhaCungCap());
+				updateStmt.setString(2, ncc.getDiaChi());
+				updateStmt.setString(3, ncc.getThongTinLienHe());
+				updateStmt.setString(4, ncc.getMaNhaCungCap());
+				int rowsInserted = updateStmt.executeUpdate();
+				if (rowsInserted > 0) {
+					isSuccess = true;
+				}
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
 		return isSuccess;
 	}
+
 	public static void main(String[] args) {
 		NhaCungCap_DAO dao = new NhaCungCap_DAO();
 		System.out.println(dao.getNCCTheoTen("Nhà cung cấp E"));
