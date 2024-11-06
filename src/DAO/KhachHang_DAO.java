@@ -92,13 +92,11 @@ public class KhachHang_DAO {
 			if (!dsKH.contains(khachHang)) {
 				System.out.println("Khách hàng không tồn tại");
 			} else {
-				String updateSql = "UPDATE DichVu SET tenKhachHang = ?, soDienThoai = ? WHERE maKhachHang = ?";
+				String updateSql = "UPDATE KhachHang SET tenKhachHang = ?, soDienThoai = ? WHERE maKhachHang = ?";
 		        PreparedStatement updateStmt = connection.prepareStatement(updateSql);
 		        updateStmt.setString(1, khachHang.getTenKhachHang());
 		        updateStmt.setString(2, khachHang.getSoDienThoai());
 		        updateStmt.setString(3, khachHang.getMaKhachHang());
-		        
-		        
 		        int rowsInserted = updateStmt.executeUpdate();
 	            if (rowsInserted > 0) {
 	                isSuccess = true;
@@ -108,5 +106,21 @@ public class KhachHang_DAO {
 			// TODO: handle exception
 		}
 		return isSuccess;
+	}
+	public int getSLKH() {
+		khoiTao();
+		Connection connection = database.getInstance().getConnection();
+		String sql= "Select count(*) from KhachHang";
+		int count=0;
+		try {
+			PreparedStatement stmt= connection.prepareStatement(sql);
+			ResultSet rs= stmt.executeQuery();
+			if(rs.next()) {
+				count=rs.getInt(1);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return count;
 	}
 }

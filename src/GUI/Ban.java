@@ -16,8 +16,7 @@ public class Ban extends JPanel {
 	public Ban() {
 		this.setLayout(null);
         this.setBackground(Color.WHITE);
-        this.setBounds(0, 0, 1600, 954);
-        
+        this.setBounds(0, 0, 1300, 954);
         JPanel panel = new JPanel();
         panel.setBounds(0, 0, 172, 83);
         add(panel);

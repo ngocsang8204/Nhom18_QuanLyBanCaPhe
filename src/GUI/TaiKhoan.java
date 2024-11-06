@@ -346,10 +346,14 @@ public class TaiKhoan extends JPanel implements ActionListener, MouseListener{
 	public void actionPerformed(ActionEvent e) {
 		Object o = e.getSource();
 		if (o.equals(btnThem)) {
-			them();
+			if (validData()) {
+				them();
+			}
 		}
 		if (o.equals(btnSua)) {
-			sua();
+			if (validData()) {
+				sua();
+			}
 		}
 		if (o.equals(btnTimKiem)) {
 			
@@ -450,6 +454,29 @@ public class TaiKhoan extends JPanel implements ActionListener, MouseListener{
 	    } else {
 	        JOptionPane.showMessageDialog(null, "Lỗi khi thêm tài khoản vào cơ sở dữ liệu", "Lỗi", JOptionPane.ERROR_MESSAGE);
 	    }
+	}
+	
+	private boolean validData() {
+		String tenDangNhap = tTenDangNhap.getText().trim();
+		String matKhau = tMatKhau.getText().trim();
+		
+		if (tenDangNhap.isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Tên đăng nhập không được rỗng","Sai",JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		
+		if (!tenDangNhap.matches("^[a-zA-Z0-9]{5,20}$")) {
+			JOptionPane.showMessageDialog(null, "Tên đăng nhập phải viết liền không dấu","Sai",JOptionPane.ERROR_MESSAGE);
+			requestFocus();
+			return false;
+		}
+		
+		if (matKhau.isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Mật khẩu không được rỗng","Sai",JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		
+		return true;
 	}
 
 

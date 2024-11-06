@@ -378,10 +378,14 @@ public class NhanVien extends JPanel implements ActionListener, MouseListener{
 	public void actionPerformed(ActionEvent e) {
 		Object o = e.getSource();
 		if (o.equals(btnThem)) {
-			them();
+			if (validData()) {
+				them();
+			}
 		}
 		if (o.equals(btnSua)) {
-			sua();
+			if (validData()) {
+				sua();
+			}
 		}
 		if (o.equals(btnTimKiem)) {
 			
@@ -520,5 +524,60 @@ public class NhanVien extends JPanel implements ActionListener, MouseListener{
 
 		String newMa = String.format("NV%03d", newNumber);
 		return newMa;
+	}
+	
+	private boolean validData() {
+		String ten = tTenNhanVien.getText().trim();
+		String soCCCD = tSoCCCD.getText().trim();
+		String sdt = tSoDienThoai.getText().trim();
+		String diaChi = tDiaChi.getText().trim();
+		
+		if (ten.isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Tên nhân viên không được rỗng","Sai",JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		
+		if (!ten.matches("^([A-ZÀ-Ỵ][a-zà-ỵ]*(\\s[A-ZÀ-Ỵ][a-zà-ỵ]*)*)$")) {
+			JOptionPane.showMessageDialog(null, "Tên khách hàng phải 2 từ trở lên","Sai",JOptionPane.ERROR_MESSAGE);
+			requestFocus();
+			return false;
+		}
+		
+		if (soCCCD.isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Số CCCD không được rỗng","Sai",JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		
+		if (!soCCCD.matches("^\\d{12}$")) {
+			JOptionPane.showMessageDialog(null, "Số CCCD phải 12 số","Sai",JOptionPane.ERROR_MESSAGE);
+			requestFocus();
+			return false;
+		}
+		
+		if (sdt.isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Số điện thoại không được rỗng","Sai",JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		
+		if (!sdt.matches("^(03|05|07|08|09)[0-9]{8}$")) {
+			JOptionPane.showMessageDialog(null, "số điện thoại phải có 10 chữ số và bắt đầu với các đầu số: 03x, 05x, 07x, 08x hoặc 09x.","Sai",JOptionPane.ERROR_MESSAGE);
+			requestFocus();
+			return false;
+		}
+		
+		if (diaChi.isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Địa chỉ không được rỗng","Sai",JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		
+		if (!diaChi.matches("^[\\p{L}0-9\\s,.-]+$")) {
+			JOptionPane.showMessageDialog(null, "Địa chỉ sai","Sai",JOptionPane.ERROR_MESSAGE);
+			requestFocus();
+			return false;
+		}
+		
+		
+		
+		return true;
 	}
 }

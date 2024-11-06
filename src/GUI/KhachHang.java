@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -25,12 +26,23 @@ import javax.swing.ImageIcon;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
+
+import DAO.KhachHang_DAO;
+import Entity.KhachHang_Entity;
+import Entity.NhanVien_Entity;
+import Entity.TaiKhoan_Entity;
+
 import javax.swing.border.EtchedBorder;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.List;
 
-public class KhachHang extends JPanel {
+public class KhachHang extends JPanel implements ActionListener, MouseListener{
 
 	private static final long serialVersionUID = 1L;
 	private JTextField tMaKhachHang;
@@ -43,11 +55,15 @@ public class KhachHang extends JPanel {
 	private JTextField tTimKiem;
 	private JButton btnTimKiem;
 	private JButton btnXoaRong;
+	private KhachHang_DAO khachHang_DAO;
+	private int previousRow = -1;
 
 	/**
 	 * Create the panel.
 	 */
 	public KhachHang() {
+		khachHang_DAO = new KhachHang_DAO();
+		
         this.setBackground(Color.WHITE);
         this.setBounds(0, 0, 1600, 954);
         setLayout(new BorderLayout(0, 0));
@@ -251,6 +267,202 @@ public class KhachHang extends JPanel {
         table.getTableHeader().setReorderingAllowed(false);
         table.getTableHeader().setResizingAllowed(false);
         
+        table.addMouseListener(this);
+        btnThem.addActionListener(this);
+        btnTimKiem.addActionListener(this);
+        btnSua.addActionListener(this);
+        btnXoaRong.addActionListener(this);
+        loadData();
 	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		Object o = e.getSource();
+		if (o.equals(table)) {
+			int row = table.getSelectedRow();
+			if(row == previousRow) {
+    	    	clear();
+    			previousRow = -1;
+    			
+    		} else {
+	    	    tMaKhachHang.setText(model.getValueAt(row, 0).toString());
+				tTenKhachHang.setText(model.getValueAt(row, 1).toString());
+				tSoDienThoai.setText(model.getValueAt(row, 2).toString());
+	    	    previousRow = row;
+    	        // Đặt cờ là true khi một hàng được chọn
+    	
+    	    }
+		}
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object o = e.getSource();
+		if (o.equals(btnThem)) {
+			if (validData()) {
+				them();
+			}
+		}
+		if (o.equals(btnSua)) {
+			if (validData()) {
+				sua();
+			}
+		}
+		if (o.equals(btnTimKiem)) {
+			
+		}
+		if (o.equals(btnXoaRong)) {
+			clear();
+		}
+		
+		// TODO Auto-generated method stub
+		
+	}
+	
+	private void clear() {
+		tMaKhachHang.setText("");
+		tTenKhachHang.setText("");
+		tSoDienThoai.setText("");
+		// TODO Auto-generated method stub
+		
+	}
+	
+	protected KhachHang_Entity revert() {
+		String ma;
+		if (tMaKhachHang.getText().trim().equals("")) {
+			ma = taoMa();
+		}else {
+			ma = tMaKhachHang.getText().trim();
+		}
+		String ten = tTenKhachHang.getText().trim();
+		String sdt = tSoDienThoai.getText().trim();
+		return new KhachHang_Entity(ma, ten, sdt);
+	}
+	private String taoMa() {
+		int sl= khachHang_DAO.getSLKH()+1;
+		return String.format("KH%03d",sl);
+	}
+	
+
+	private void sua() {
+		if (JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn cập nhật không?", "Cảnh báo!", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+			int row = table.getSelectedRow();
+			if (row >= 0) {
+				String ma = tMaKhachHang.getText().trim();
+				String ten = tTenKhachHang.getText().trim();
+				String sdt = tSoDienThoai.getText().trim();
+				// Cập nhật thông tin trong bảng
+				model.setValueAt(ma, row, 0);
+				model.setValueAt(ten, row, 1);
+				model.setValueAt(sdt, row, 2);
+				KhachHang_Entity kh = new KhachHang_Entity(ma, ten, sdt);
+				boolean updated = khachHang_DAO.suaKhachHang(kh);
+				if (updated) {
+				    JOptionPane.showMessageDialog(null, "Cập nhật thành công!");
+				} else {
+				    JOptionPane.showMessageDialog(null, "Cập nhật không thành công. Vui lòng thử lại.");
+				}
+			} else {
+				JOptionPane.showMessageDialog(null, "Vui lòng chọn dịch vụ cần sửa.");
+			}
+		}
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void them() {
+		KhachHang_Entity kh = revert();
+	    List<KhachHang_Entity> listTopKH = khachHang_DAO.danhSachKhachHang();
+	    
+	    // Kiểm tra nếu tài khoản đã tồn tại trong danh sách
+	    for (KhachHang_Entity khh : listTopKH) {
+	        if (kh.getMaKhachHang().equals(khh.getMaKhachHang())) {
+	            JOptionPane.showMessageDialog(null, "Kháchh này đã tồn tại", "Lỗi", JOptionPane.ERROR_MESSAGE);
+	            return;
+	        }
+	    }
+
+	    // Thêm tài khoản nếu không trùng lặp
+	    if (khachHang_DAO.themKhachHang(kh)) {
+	        JOptionPane.showMessageDialog(null, "Thêm thành công", "Thành công", JOptionPane.DEFAULT_OPTION);
+	        model.addRow(new Object[]{
+        		kh.getMaKhachHang(),
+                kh.getTenKhachHang(),
+                kh.getSoDienThoai()
+	        });
+	    } else {
+	        JOptionPane.showMessageDialog(null, "Lỗi khi thêm khách hàng vào cơ sở dữ liệu", "Lỗi", JOptionPane.ERROR_MESSAGE);
+	    }
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void loadData() {
+	    model.setRowCount(0);
+        for (KhachHang_Entity kh : khachHang_DAO.danhSachKhachHang()) {
+            model.addRow(new Object[]{
+               kh.getMaKhachHang(),
+               kh.getTenKhachHang(),
+               kh.getSoDienThoai()
+            });
+	    }
+	}
+	
+	private boolean validData() {
+		String ten = tTenKhachHang.getText().trim();
+		String sdt = tSoDienThoai.getText().trim();
+		
+		if (ten.isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Tên khách hàng không được rỗng","Sai",JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		
+		if (!ten.matches("^([A-ZÀ-Ỵ][a-zà-ỵ]*(\\s[A-ZÀ-Ỵ][a-zà-ỵ]*)*)$")) {
+			JOptionPane.showMessageDialog(null, "Tên khách hàng phải 2 từ trở lên","Sai",JOptionPane.ERROR_MESSAGE);
+			requestFocus();
+			return false;
+		}
+		
+		if (sdt.isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Số điện thoại không được rỗng","Sai",JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		
+		if (!sdt.matches("^(03|05|07|08|09)[0-9]{8}$")) {
+			JOptionPane.showMessageDialog(null, "số điện thoại phải có 10 chữ số và bắt đầu với các đầu số: 03x, 05x, 07x, 08x hoặc 09x.","Sai",JOptionPane.ERROR_MESSAGE);
+			requestFocus();
+			return false;
+		}
+		
+		return true;
+	}
+	
+	
 
 }
