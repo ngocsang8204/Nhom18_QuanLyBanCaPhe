@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -25,14 +26,24 @@ import javax.swing.ImageIcon;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
+
+import DAO.NhaCungCap_DAO;
+import Entity.NhaCungCap_Entity;
+
 import javax.swing.border.EtchedBorder;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.ArrayList;
 
-public class NhaCungCap extends JPanel {
+public class NhaCungCap extends JPanel implements ActionListener, MouseListener{
 
-	private static final long serialVersionUID = 1L;
 	private JTextField tMaNhaCungCap;
 	private JTextField tTenNhaCungCap;
 	private JTextField tThongTinLienHe;
@@ -44,6 +55,8 @@ public class NhaCungCap extends JPanel {
 	private JTextField tTimKiem;
 	private JButton btnTimKiem;
 	private JButton btnXoaRong;
+	private NhaCungCap_DAO ncc_dao = new NhaCungCap_DAO();
+	private int previousRow = -1;
 
 	/**
 	 * Create the panel.
@@ -236,6 +249,14 @@ public class NhaCungCap extends JPanel {
         tTimKiem.setForeground(Color.BLACK);
         tTimKiem.setFont(new Font("Tahoma", Font.PLAIN, 16));
         tTimKiem.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
+        tTimKiem.addKeyListener(new KeyAdapter(){
+			@Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    btnTimKiem.doClick();
+                }
+            }
+		});
         panel_11.add(tTimKiem);
         
         JPanel panel_12 = new JPanel();
@@ -272,7 +293,174 @@ public class NhaCungCap extends JPanel {
         table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 18)); // Kích thước font cho tiêu đề
         table.getTableHeader().setReorderingAllowed(false);
         table.getTableHeader().setResizingAllowed(false);
-        
+        table.addMouseListener(this);
+        btnXoaRong.addActionListener(this);
+        btnThem.addActionListener(this);
+        btnSua.addActionListener(this);
+        btnTimKiem.addActionListener(this);
+        hienBang();
+	}
+	
+	public void hienBang () {
+		model.getDataVector().removeAllElements();
+		ArrayList<NhaCungCap_Entity> dsNCC = ncc_dao.danhSachNhaCungCap();
+		dsNCC.forEach(x -> themDong(x));
+	}
+	
+	public void themDong(NhaCungCap_Entity a) {
+		model.addRow(new Object[] {a.getMaNhaCungCap(),
+									a.getTenNhaCungCap(),
+									a.getDiaChi(),
+									a.getThongTinLienHe()});
+	}
+	
+	public void xoaRong() {
+		tMaNhaCungCap.setText("");
+		tTenNhaCungCap.setText("");
+		tThongTinLienHe.setText("");
+		tDiaChi.setText("");
+	}
+	
+	public void thongBao(String a, JTextField b) {
+		JOptionPane.showMessageDialog(this, a);
+		b.requestFocus();
+		b.selectAll();
+	}
+	
+	public NhaCungCap_Entity taoNCC() {
+		return new NhaCungCap_Entity(tMaNhaCungCap.getText().toString(), 
+									tTenNhaCungCap.getText().toString(),
+									tDiaChi.getText().toString(),
+									tThongTinLienHe.getText().toString());
+	}
+	
+	public void hienNCC (NhaCungCap_Entity a) {
+		tMaNhaCungCap.setText(a.getMaNhaCungCap());
+		tTenNhaCungCap.setText(a.getTenNhaCungCap());
+		tThongTinLienHe.setText(a.getThongTinLienHe());
+		tDiaChi.setText(a.getDiaChi());
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		JButton btn = (JButton)e.getSource();
+		if (btn.equals(btnXoaRong)) {
+			xoaRong();
+		} else if (btn.equals(btnThem)) {
+			if (kiemTra()) {
+				NhaCungCap_Entity ncc = taoNCC();
+				boolean dung = ncc_dao.themNhaCungCap(ncc);
+				if (dung) {
+					JOptionPane.showMessageDialog(this, "Thêm nhà cung cấp thành công");
+				} else JOptionPane.showMessageDialog(this, "Thêm nhà cung cấp không thành công");
+				xoaRong();
+				hienBang();
+			}
+		} else if (btn.equals(btnSua)) {
+			if (kiemTra()) {
+				NhaCungCap_Entity ncc = taoNCC();
+				boolean dung = ncc_dao.suaNhaCungCap(ncc);
+				if (dung) {
+					JOptionPane.showMessageDialog(this, "Sửa nhà cung cấp thành công");
+				} else JOptionPane.showMessageDialog(this, "Sửa nhà cung cấp không thành công");
+				xoaRong();
+				hienBang();
+			}
+		} else if (btn.equals(btnTimKiem)) {
+			if (tTimKiem.getText().length() <= 0) {
+				JOptionPane.showMessageDialog(this, "Nhập vào ô tìm kiếm");
+			} else {
+				String search = tTimKiem.getText().trim();
+				if (search.substring(1, 3).equals("NCC")) {
+					NhaCungCap_Entity ncc_tim = ncc_dao.timNhaCungCapTheoMa(search);
+					model.getDataVector().removeAllElements();
+					themDong(ncc_tim);
+					hienNCC(ncc_tim);
+				} else {
+					ArrayList<NhaCungCap_Entity> dsTim = ncc_dao.timNhaCungCapTheoTen(search);
+					model.getDataVector().removeAllElements();
+					dsTim.forEach(x -> themDong(x));
+				}
+			}
+		}
+	}
+	
+	public boolean kiemTra () {
+		boolean isCorrect = true;
+		if (tTenNhaCungCap.getText().length() <= 0 || tThongTinLienHe.getText().length() <= 0 || tDiaChi.getText().length() <= 0) {
+			thongBao("Nhập đầy đủ vào các trường", tTenNhaCungCap);
+			isCorrect = false;
+		} else {
+			String ten = "^([A-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪỬỮỰÝỲỴÝỶỸ]{1}[a-zàáâãèéêìíòóôõùúăđĩũơưạảấầẩẫậắằẳẵặẹẻẽềếểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳýỵỷỹ]*)+(\s[A-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪỬỮỰÝỲỴÝỶỸa-zàáâãèéêìíòóôõùúăđĩũơưạảấầẩẫậắằẳẵặẹẻẽềếểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳýỵỷỹ]*)*$";
+			if (!tTenNhaCungCap.getText().trim().matches(ten)) {
+				thongBao("Nhập đúng tên nhà Cung cấp", tTenNhaCungCap);
+				isCorrect = false;
+			} else {
+				if (!tDiaChi.getText().trim().matches("^[\\p{L}0-9\\s,.-]+$")) {
+					thongBao("Nhập đúng định dạng địa chỉ", tDiaChi);
+					isCorrect = false;
+				} else {
+					if (!tThongTinLienHe.getText().trim().matches("^0[0-9]{9}$")) {
+						thongBao("Nhập đúng định dạng thông tin liên hệ (Số điện thoại)", tThongTinLienHe);
+						isCorrect = false;
+					}
+				}
+			}
+		}
+		return isCorrect;
 	}
 
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+//		int row = table.getSelectedRow();
+//		if (row >= 0) {
+//			tMaNhaCungCap.setText(model.getValueAt(row, 0).toString());
+//			tTenNhaCungCap.setText(model.getValueAt(row, 1).toString());
+//			tThongTinLienHe.setText(model.getValueAt(row, 3).toString());
+//			tDiaChi.setText(model.getValueAt(row, 2).toString());
+//		}
+		Object o = e.getSource();
+		if (o.equals(table)) {
+			int row = table.getSelectedRow();
+			if(row == previousRow) {
+    	    	xoaRong();
+    			previousRow = -1;
+    			
+    		} else {
+    			tMaNhaCungCap.setText(model.getValueAt(row, 0).toString());
+    			tTenNhaCungCap.setText(model.getValueAt(row, 1).toString());
+    			tThongTinLienHe.setText(model.getValueAt(row, 3).toString());
+    			tDiaChi.setText(model.getValueAt(row, 2).toString());
+	    	    previousRow = row;
+    	        // Đặt cờ là true khi một hàng được chọn
+    	
+    	    }
+		}
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
 }

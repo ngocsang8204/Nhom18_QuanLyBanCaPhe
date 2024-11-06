@@ -61,9 +61,15 @@ public class NhaCungCap_DAO {
 	    	if (dsDV.contains(ncc)) {
 	    		System.out.println("Nhà cung cấp đã tồn tại, không thể thêm");
 	    	} else {
-	    		String sql = "INSERT INTO NhaCungCap(maNhaCungCap, tenNhaCungCap, diaChi, thongTinLieuHe) VALUES (?, ?, ?, ?)";
+	    		String sql = "INSERT INTO NhaCungCap(maNhaCungCap, tenNhaCungCap, diaChi, thongTinLienHe) VALUES (?, ?, ?, ?)";
 	    		stmt = con.prepareStatement(sql);
-	    		stmt.setString(1, "NCC00" + String.valueOf(dsDV.size() + 1));
+	    		if (dsDV.size() + 1 < 10) {
+	    			stmt.setString(1, "NCC00" + String.valueOf(dsDV.size() + 1));
+	    		} else if(dsDV.size() + 1 < 100 && dsDV.size() + 1 >= 10){
+	    			stmt.setString(1, "NCC0" + String.valueOf(dsDV.size() + 1));
+	    		} else if (dsDV.size() + 1 >= 100) {
+	    			stmt.setString(1, "NCC" + String.valueOf(dsDV.size() + 1));
+	    		}
 	    		stmt.setString(2, ncc.getTenNhaCungCap());
 	    		stmt.setString(3, ncc.getDiaChi());
 	    		stmt.setString(4, ncc.getThongTinLienHe());
