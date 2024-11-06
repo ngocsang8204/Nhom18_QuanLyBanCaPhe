@@ -97,10 +97,12 @@ public class TaiKhoan_DAO {
 			if (!dsTK.contains(tk)) {
 				System.out.println("Tài khoản không tồn tại");
 			} else {
-				String updateSql = "UPDATE TaiKhoan SET matKhau = ? WHERE maTaiKhoan = ?";
+				String updateSql = "UPDATE TaiKhoan SET tenDangNhap = ?, matKhau = ?, maNhanVien = ? WHERE maTaiKhoan = ?";
 		        PreparedStatement updateStmt = connection.prepareStatement(updateSql);
-		        updateStmt.setString(1, tk.getMatKhau());
-		        updateStmt.setString(2, tk.getMaTaiKhoan());
+		        updateStmt.setString(1, tk.getTenDangNhap());
+		        updateStmt.setString(2, tk.getMatKhau());
+		        updateStmt.setString(3, tk.getNhanVien().getMaNhanVien());
+		        updateStmt.setString(4, tk.getMaTaiKhoan());
 		        
 		        int rowsInserted = updateStmt.executeUpdate();
 	            if (rowsInserted > 0) {
