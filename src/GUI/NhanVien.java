@@ -293,7 +293,13 @@ public class NhanVien extends JPanel implements ActionListener, MouseListener{
         String[] colnames = new String[] { "Mã nhân viên","Tên nhân viên", "Số CCCD", "Số điện thoại", "Địa chỉ", "Chức vụ"};
         model = new DefaultTableModel(colnames, 0);
         // Sau khi khởi tạo JTable và JScrollPane
-        table = new JTable(model);
+        table = new JTable(model) {
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				// Không cho phép chỉnh sửa
+				return false;
+			}
+		};
         table.setFocusable(false);
         table.setShowGrid(true);
         table.setShowHorizontalLines(true);

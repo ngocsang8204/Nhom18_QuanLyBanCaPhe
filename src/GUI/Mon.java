@@ -414,7 +414,13 @@ public class Mon extends JPanel implements MouseListener, ActionListener{
         String[] colnames = new String[] { "Mã món","Tên món", "Loại món", "Đơn giá"};
         model_SanPham= new DefaultTableModel(colnames, 0);
         // Sau khi khởi tạo JTable và JScrollPane
-        tableSanPham = new JTable(model_SanPham);
+        tableSanPham = new JTable(model_SanPham) {
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				// Không cho phép chỉnh sửa
+				return false;
+			}
+		};
         tableSanPham.setFocusable(false);
         tableSanPham.setShowGrid(true);
         tableSanPham.setShowHorizontalLines(true);
