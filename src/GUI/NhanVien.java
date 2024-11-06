@@ -343,6 +343,7 @@ public class NhanVien extends JPanel implements ActionListener, MouseListener{
 			if(row == previousRow) {
     	    	clear();
     			previousRow = -1;
+    			table.clearSelection();
     			
     		} else {
 	    	    tMaNhanVien.setText(model.getValueAt(row, 0).toString());

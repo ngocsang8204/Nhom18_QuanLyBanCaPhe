@@ -75,6 +75,7 @@ public class Mon extends JPanel implements MouseListener, ActionListener{
 	private JButton btnXoaRong;
 	private JButton btnXoa;
 	private JButton btnAll;
+	private int previousRow=-1;
 
 	/**
 	 * Create the panel.
@@ -445,6 +446,7 @@ public class Mon extends JPanel implements MouseListener, ActionListener{
         tableSanPham.addMouseListener(this);
 	}
 	public void loadTableData() {
+		model_SanPham.getDataVector().removeAllElements();
 		ArrayList<Mon_Entity> list= mon_dao.danhSachMon();
 		list.forEach(x->{
 			model_SanPham.addRow(new Object[] {
@@ -501,10 +503,7 @@ public class Mon extends JPanel implements MouseListener, ActionListener{
 
 	    return true; // Trả về true nếu tất cả các kiểm tra đều hợp lệ
 	}
-	public void updateTable() {
-		model_SanPham.getDataVector().removeAllElements();
-		loadTableData();
-	}
+	
 	public void loadTableTheoLoai(String a) {
 		ArrayList<Mon_Entity> list= mon_dao.danhSachMonTheoLoai(a);
 		System.out.println(list.size());
@@ -524,15 +523,23 @@ public class Mon extends JPanel implements MouseListener, ActionListener{
 	public void mouseClicked(MouseEvent e) {
 		int row= tableSanPham.getSelectedRow();
 		if(row!=-1) {
-			tMaMon.setText(tableSanPham.getValueAt(row, 0).toString());
-			tTenMon.setText(tableSanPham.getValueAt(row, 1).toString());
-			tDonGia.setText(tableSanPham.getValueAt(row, 3).toString());
-			cbLoaiMon.setSelectedItem(tableSanPham.getValueAt(row, 2));
-			model_NguyenLieu.getDataVector().removeAllElements();
-			ArrayList<Object[]> a= mon_dao.getNguyenLieuTheoMaMon(tableSanPham.getValueAt(row, 0).toString());
-			a.forEach(x->{
-				model_NguyenLieu.addRow(x);
-			});
+			if(row==previousRow) {
+				XoaRong();
+				previousRow=-1;
+				tableSanPham.clearSelection();
+			}
+			else {
+				tMaMon.setText(tableSanPham.getValueAt(row, 0).toString());
+				tTenMon.setText(tableSanPham.getValueAt(row, 1).toString());
+				tDonGia.setText(tableSanPham.getValueAt(row, 3).toString());
+				cbLoaiMon.setSelectedItem(tableSanPham.getValueAt(row, 2));
+				model_NguyenLieu.getDataVector().removeAllElements();
+				ArrayList<Object[]> a= mon_dao.getNguyenLieuTheoMaMon(tableSanPham.getValueAt(row, 0).toString());
+				a.forEach(x->{
+					model_NguyenLieu.addRow(x);
+				});
+				previousRow=row;
+			}
 		}
 	}
 	@Override
@@ -610,7 +617,7 @@ public class Mon extends JPanel implements MouseListener, ActionListener{
 			        }
 			        
 			        JOptionPane.showMessageDialog(this, "Cập nhật thành công");
-			        updateTable();
+			        loadTableData();
 			    } catch (Exception e1) {
 			        e1.printStackTrace(); // In lỗi ra console để kiểm tra
 			        JOptionPane.showMessageDialog(this, "Cập nhật thất bại");
@@ -636,7 +643,7 @@ public class Mon extends JPanel implements MouseListener, ActionListener{
 			            mon_dao.themChiTietMon(newMon, nl1, soLuong);
 			        }
 			        JOptionPane.showMessageDialog(this, "Thêm món thành công");
-			        updateTable();
+			        loadTableData();
 				} catch (Exception e2) {
 					JOptionPane.showMessageDialog(this, "Thêm món thất bại");
 				}
@@ -653,7 +660,7 @@ public class Mon extends JPanel implements MouseListener, ActionListener{
 				if(confirm==JOptionPane.YES_OPTION) {
 					if(mon_dao.xoaMon(tableSanPham.getValueAt(row, 0).toString())) {
 						JOptionPane.showMessageDialog(this,"Xóa thành công");
-						updateTable();
+						loadTableData();
 					}
 					else {
 						JOptionPane.showMessageDialog(this,"Xóa thất bại");
@@ -666,7 +673,7 @@ public class Mon extends JPanel implements MouseListener, ActionListener{
 			loadTableTheoLoai("Cà phê");
 		}
 		else if(o.equals(btnAll)) {
-			updateTable();
+			loadTableData();
 		}
 		else if(o.equals(btnDaXay)) {
 			loadTableTheoLoai("Đá xay");

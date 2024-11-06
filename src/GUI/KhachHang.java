@@ -293,6 +293,7 @@ public class KhachHang extends JPanel implements ActionListener, MouseListener{
 			if(row == previousRow) {
     	    	clear();
     			previousRow = -1;
+    			table.clearSelection();
     			
     		} else {
 	    	    tMaKhachHang.setText(model.getValueAt(row, 0).toString());

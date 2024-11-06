@@ -25,16 +25,29 @@ import javax.swing.ImageIcon;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.DateFormatter;
 
 import com.toedter.calendar.JDateChooser;
 
+import DAO.NguyenLieu_DAO;
+import DAO.NhaCungCap_DAO;
+import Entity.NguyenLieu_Entity;
+import Entity.NhaCungCap_Entity;
 
 import javax.swing.border.EtchedBorder;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Date;
 
-public class NguyenLieu extends JPanel {
+public class NguyenLieu extends JPanel implements ActionListener,MouseListener{
 
 	private static final long serialVersionUID = 1L;
 	private JTextField tMaNguyenLieu;
@@ -49,6 +62,10 @@ public class NguyenLieu extends JPanel {
 	private JDateChooser thoiGianNhapHang;
 	private JDateChooser thoiGianHetHan;
 	private JButton btnXoaRong;
+	private NguyenLieu_DAO nl_dao= new NguyenLieu_DAO();
+	private NhaCungCap_DAO ncc_dao= new NhaCungCap_DAO();
+	private JComboBox<String> cbNCC;
+	private int previousRow=-1;
 	/**
 	 * Create the panel.
 	 */
@@ -126,6 +143,8 @@ public class NguyenLieu extends JPanel {
         panel_4_3.add(lb4);
         
         thoiGianNhapHang = new JDateChooser();
+        thoiGianNhapHang.setDate(new Date());
+        thoiGianNhapHang.setDateFormatString("dd/MM/yyyy");
         panel_4_3.add(thoiGianNhapHang);
         
         tSoLuong = new JTextField(); 
@@ -141,6 +160,8 @@ public class NguyenLieu extends JPanel {
         panel_4_3_1.add(lb5);
         
         thoiGianHetHan = new JDateChooser();
+        thoiGianHetHan.setDateFormatString("dd/MM/yyyy");
+        thoiGianHetHan.setDate(new Date());
         panel_4_3_1.add(thoiGianHetHan);
         
         JPanel panel_4_3_2 = new JPanel();
@@ -152,8 +173,10 @@ public class NguyenLieu extends JPanel {
         lb6.setFont(new Font("Tahoma", Font.PLAIN, 16));
         panel_4_3_2.add(lb6);
         
-        JComboBox comboBox = new JComboBox();
-        panel_4_3_2.add(comboBox);
+        cbNCC = new JComboBox();
+        cbNCC.setBackground(new Color(255, 255, 255));
+        loadComboBoxNCC();
+        panel_4_3_2.add(cbNCC);
         
         
         tMaNguyenLieu.setPreferredSize(new Dimension(tMaNguyenLieu.getPreferredSize().width,30));
@@ -162,7 +185,7 @@ public class NguyenLieu extends JPanel {
         tSoLuong.setPreferredSize(new Dimension(tMaNguyenLieu.getPreferredSize().width,30));
         thoiGianNhapHang.setPreferredSize(new Dimension(tMaNguyenLieu.getPreferredSize().width,30));
         thoiGianHetHan.setPreferredSize(new Dimension(tMaNguyenLieu.getPreferredSize().width,30));
-        comboBox.setPreferredSize(new Dimension(tMaNguyenLieu.getPreferredSize().width,30));
+        cbNCC.setPreferredSize(new Dimension(tMaNguyenLieu.getPreferredSize().width,30));
         
         lb1.setPreferredSize(new Dimension(170,20));
         lb2.setPreferredSize(new Dimension(170,20));
@@ -308,7 +331,97 @@ public class NguyenLieu extends JPanel {
         table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 18)); // Kích thước font cho tiêu đề
         table.getTableHeader().setReorderingAllowed(false);
         table.getTableHeader().setResizingAllowed(false);
+        table.addMouseListener(this);
+        loadTable();
         
+        btnXoaRong.addActionListener(this);
+        btnSua.addActionListener(this);
+        btnThem.addActionListener(this);
+	}
+	public void loadComboBoxNCC() {
+		ArrayList<NhaCungCap_Entity> ncc= ncc_dao.danhSachNhaCungCap();
+		ncc.forEach(x->{
+			cbNCC.addItem(x.getTenNhaCungCap());
+		});
+	}
+	public void loadTable() {
+		model.getDataVector().removeAllElements();
+		DateTimeFormatter df= DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		ArrayList<NguyenLieu_Entity> ds= nl_dao.danhSachNguyenLieuConHan();
+		ds.stream().forEach(x->{
+			model.addRow(new Object[] {
+					x.getMaNguyenLieu(),x.getTenNguyenLieu(),x.getSoLuong(),df.format(x.getThoiGianNhap()),df.format(x.getThoiGianHetHan()),
+					x.getNhaCungCap().getTenNhaCungCap()
+			});
+		});
+		
+	}
+	public void xoaRong() {
+		tMaNguyenLieu.setText("");
+		tTenNguyenLieu.setText("");
+		tSoLuong.setText("");
+		cbNCC.setSelectedIndex(0);
+		thoiGianNhapHang.setDate(new Date());
+		thoiGianHetHan.setDate(new Date());
+	}
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		int row= table.getSelectedRow();
+		if(row!=-1) {
+			if(row==previousRow) {
+				xoaRong();
+				previousRow=-1;
+				table.clearSelection();
+			}
+			else {
+				tMaNguyenLieu.setText(table.getValueAt(row, 0).toString());;
+				tTenNguyenLieu.setText(table.getValueAt(row, 1).toString());
+				tSoLuong.setText(table.getValueAt(row, 2).toString());
+				Date ngayNhap= new Date(table.getValueAt(row, 3).toString());
+				thoiGianNhapHang.setDate(ngayNhap);
+				
+				Date hetHan= new Date(table.getValueAt(row, 4).toString());
+				thoiGianHetHan.setDate(hetHan);
+				
+				cbNCC.setSelectedItem(table.getValueAt(row, 5).toString());
+				previousRow=row;
+			}
+			
+		}
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object o= e.getSource();
+		if(o.equals(btnXoaRong)) {
+			xoaRong();
+		}
+		
 	}
 
 }

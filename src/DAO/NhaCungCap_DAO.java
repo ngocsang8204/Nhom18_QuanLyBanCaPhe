@@ -13,6 +13,7 @@ import Entity.NguyenLieu_Entity;
 import Entity.NhaCungCap_Entity;
 
 public class NhaCungCap_DAO {
+	
 	public NhaCungCap_DAO() {
 		
 	}
@@ -39,6 +40,32 @@ public class NhaCungCap_DAO {
 			e.printStackTrace();
 		}
 		return dsNCC;
+	}
+	public NhaCungCap_Entity getNCCTheoTen(String a){
+		NhaCungCap_Entity ncc= new NhaCungCap_Entity();
+
+		database.getInstance().Connect();
+		try {
+			Connection con = database.getInstance().getConnection();
+		    if (con == null) {
+		        System.out.println("Connection is not established.");
+		    }
+			String sql = "Select * from NhaCungCap where tennhacungcap like ?";
+			PreparedStatement statement = con.prepareStatement(sql);
+			statement.setString(1, a);
+			ResultSet rs = statement.executeQuery();
+			while (rs.next()) {
+				String maNCC = rs.getString(1);
+				String tenNCC = rs.getString(2);
+				String diaChi = rs.getString(3);
+				String thongTinLienHe = rs.getString(4);
+				 ncc = new NhaCungCap_Entity(maNCC, tenNCC, diaChi, thongTinLienHe);
+				
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ncc;
 	}
 	
 	public NhaCungCap_Entity timNhaCungCapTheoMa (String ma) {
@@ -101,5 +128,9 @@ public class NhaCungCap_DAO {
 			// TODO: handle exception
 		}
 		return isSuccess;
+	}
+	public static void main(String[] args) {
+		NhaCungCap_DAO dao= new NhaCungCap_DAO();
+		System.out.println(dao.getNCCTheoTen("Nhà cung cấp E"));
 	}
 }

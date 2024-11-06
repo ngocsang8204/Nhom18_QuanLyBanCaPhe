@@ -51,6 +51,32 @@ public class NguyenLieu_DAO {
 		}
 		return dsNL;
 	}
+	public ArrayList<NguyenLieu_Entity> danhSachNguyenLieuConHan(){
+		ArrayList<NguyenLieu_Entity> dsNL = new ArrayList<NguyenLieu_Entity>();
+		try {
+			Connection con = database.getInstance().getConnection();
+		    if (con == null) {
+		        System.out.println("Connection is not established.");
+		    }
+			String sql = "Select * from NguyenLieu where thoigianhethan>= getdate()";
+			Statement statement = con.createStatement();
+			ResultSet rs = statement.executeQuery(sql);
+			while (rs.next()) {
+				String maNL = rs.getString(1);
+				String tenNL = rs.getString(2);
+				int soLuong = rs.getInt(3);
+				LocalDateTime thoiGianNhap = rs.getTimestamp(4).toLocalDateTime();
+				LocalDateTime thoiGianHetHan = rs.getTimestamp(5).toLocalDateTime();
+				String maNCC = rs.getString(6);
+				NhaCungCap_Entity ncc = ncc_dao.timNhaCungCapTheoMa(maNCC);
+				NguyenLieu_Entity nguyenLieu = new NguyenLieu_Entity(maNL, tenNL, soLuong, thoiGianNhap, thoiGianHetHan, ncc);
+				dsNL.add(nguyenLieu);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dsNL;
+	}
 	
 	public String[] danhSachNguyenLieuTheoTen(){
 		khoiTao();
