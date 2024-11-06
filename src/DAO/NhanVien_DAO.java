@@ -63,27 +63,8 @@ public class NhanVien_DAO {
 	}
 	
 	public NhanVien_Entity timNhanVienTheoMa(String maNhanVien) {
-	    try {
-	        Connection con = database.getInstance().getConnection();
-	        String sql = "SELECT * FROM NhanVien WHERE maNhanVien = ?";
-	        PreparedStatement stmt = con.prepareStatement(sql);
-	        stmt.setString(1, maNhanVien);
-
-	        ResultSet rs = stmt.executeQuery();
-	        if (rs.next()) {
-	            String tenNV = rs.getString("tenNhanVien");
-	            String soCCCD = rs.getString("soCCCD");
-	            String soDienThoai = rs.getString("soDienThoai");
-	            String diaChi = rs.getString("diaChi");
-	            boolean chucVu = rs.getBoolean("chucVu");
-
-	            // Khởi tạo đối tượng NhanVien_Entity với các thông tin lấy từ ResultSet
-	            return new NhanVien_Entity(maNhanVien, tenNV, soCCCD, soDienThoai, diaChi, chucVu);
-	        }
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
-	    return null;
+		ArrayList<NhanVien_Entity> dsNV = danhSachNhanVien();
+		return dsNV.stream().filter(x -> x.getMaNhanVien().equals(maNhanVien)).findFirst().orElse(null);
 	}
 
 	

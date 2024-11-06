@@ -132,7 +132,6 @@ public class TaiKhoan_DAO {
 	            String tenDN = rs.getString("tenDangNhap");
 	            String matKhau = rs.getString("matKhau");
 	            String maNhanVien = rs.getString("maNhanVien");
-
 	            NhanVien_Entity nhanVien = nhanVien_dao.timNhanVienTheoMa(maNhanVien); // Giả sử phương thức này tồn tại
 	            return new TaiKhoan_Entity(maTK, tenDN, matKhau, nhanVien);
 	        }
