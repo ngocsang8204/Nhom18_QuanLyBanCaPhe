@@ -11,6 +11,7 @@ public class NguyenLieu_Entity {
 	private LocalDateTime thoiGianNhap;
 	private LocalDateTime thoiGianHetHan;
 	private NhaCungCap_Entity nhaCungCap;
+	private int trangThai;
 	public NguyenLieu_Entity() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -24,6 +25,24 @@ public class NguyenLieu_Entity {
 		this.thoiGianNhap = thoiGianNhap;
 		this.thoiGianHetHan = thoiGianHetHan;
 		this.nhaCungCap = nhaCungCap;
+	}
+	
+	public NguyenLieu_Entity(String maNguyenLieu, String tenNguyenLieu, int soLuong, LocalDateTime thoiGianNhap,
+			LocalDateTime thoiGianHetHan, NhaCungCap_Entity nhaCungCap, int trangThai) {
+		super();
+		this.maNguyenLieu = maNguyenLieu;
+		this.tenNguyenLieu = tenNguyenLieu;
+		this.soLuong = soLuong;
+		this.thoiGianNhap = thoiGianNhap;
+		this.thoiGianHetHan = thoiGianHetHan;
+		this.nhaCungCap = nhaCungCap;
+		this.trangThai = trangThai;
+	}
+	public int getTrangThai() {
+		return trangThai;
+	}
+	public void setTrangThai(int trangThai) {
+		this.trangThai = trangThai;
 	}
 	public String getMaNguyenLieu() {
 		return maNguyenLieu;

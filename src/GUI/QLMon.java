@@ -341,7 +341,7 @@ public class QLMon extends JPanel implements MouseListener, ActionListener{
         panel_9.add(panel_11);
         
         btnTimKiem = new JButton("");
-        btnTimKiem.setIcon(new ImageIcon(QLNhaCungCap.class.getResource("/img/icons8-search-30.png")));
+        btnTimKiem.setIcon(new ImageIcon(QLMon.class.getResource("/img/icons8-search-30.png")));
         btnTimKiem.setContentAreaFilled(false);
 		btnTimKiem.setBorderPainted(false);
         panel_11.add(btnTimKiem);
@@ -426,7 +426,7 @@ public class QLMon extends JPanel implements MouseListener, ActionListener{
         tableSanPham.setShowHorizontalLines(true);
         tableSanPham.setShowVerticalLines(false);
         JScrollPane jsp = new JScrollPane(tableSanPham);
-//        jsp.setPreferredSize(new Dimension(1180, 873));
+        jsp.setPreferredSize(new Dimension(1180, 873));
         jsp.setBorder(BorderFactory.createLineBorder(Color.BLACK)); // Tạo viền màu đen
         tableSanPham.getTableHeader().setBackground(Color.white);
         panel_12.add(jsp);
@@ -472,7 +472,7 @@ public class QLMon extends JPanel implements MouseListener, ActionListener{
 	    String donGia = tDonGia.getText().trim();
 
 	    // Kiểm tra tên món
-	    if (tenMon.isEmpty() || !tenMon.matches("[\\p{L}\\s]+")) {
+	    if (tenMon.equals("") || !tenMon.matches("[\\p{L}\\s]+")) {
 	        thongBao("Tên món phải là chữ và không được rỗng", tTenMon);
 	        return false;
 	    }

@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -43,6 +44,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -363,6 +366,53 @@ public class QLNguyenLieu extends JPanel implements ActionListener,MouseListener
 		thoiGianNhapHang.setDate(new Date());
 		thoiGianHetHan.setDate(new Date());
 	}
+	public void setDateFromString(String dateString, JDateChooser dateChooser) {
+        try {
+           
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            Date date = sdf.parse(dateString);
+            dateChooser.setDate(date);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+	public void thongBao(String a, JTextField b) {
+		JOptionPane.showMessageDialog(this, a);
+		b.requestFocus();
+		b.selectAll();
+	}
+	public boolean valid() {
+		
+		String ten= tTenNguyenLieu.getText().trim();
+		String soLuong= tSoLuong.getText().trim();
+		Date nhap= thoiGianNhapHang.getDate();
+		Date hh= thoiGianHetHan.getDate();
+		
+		if(!ten.matches("[\\p{L}\\s\\d]+")||ten.equals("")) {
+			thongBao("Tên nguyên liệu không được rỗng", tTenNguyenLieu);
+			return false;
+		}
+		try {
+			int sl= Integer.parseInt(soLuong);
+			if(sl<=0){
+				thongBao("Số lượng phải lớn hơn 0", tSoLuong);
+				return false;
+			}
+		} catch (Exception e) {
+			thongBao("Số lượng phải là số", tSoLuong);
+			return false;
+		}
+		if(hh.before(nhap)) {
+			JOptionPane.showMessageDialog(this,"Ngày nhập phải trước ngày hết hạn");
+			return false;
+		}
+		
+		return true;
+	}
+	private String generateMa() {
+		int sl= nl_dao.getSLNL();
+		return String.format("NL%03d",sl+1);
+	}
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		int row= table.getSelectedRow();
@@ -376,11 +426,12 @@ public class QLNguyenLieu extends JPanel implements ActionListener,MouseListener
 				tMaNguyenLieu.setText(table.getValueAt(row, 0).toString());;
 				tTenNguyenLieu.setText(table.getValueAt(row, 1).toString());
 				tSoLuong.setText(table.getValueAt(row, 2).toString());
-				Date ngayNhap= new Date(table.getValueAt(row, 3).toString());
-				thoiGianNhapHang.setDate(ngayNhap);
+
+				String hetHanStr = table.getValueAt(row, 4).toString();
+                setDateFromString(hetHanStr, thoiGianHetHan);
 				
-				Date hetHan= new Date(table.getValueAt(row, 4).toString());
-				thoiGianHetHan.setDate(hetHan);
+				String ngayNhapStr = table.getValueAt(row, 3).toString();
+                setDateFromString(ngayNhapStr, thoiGianNhapHang);
 				
 				cbNCC.setSelectedItem(table.getValueAt(row, 5).toString());
 				previousRow=row;
@@ -420,7 +471,40 @@ public class QLNguyenLieu extends JPanel implements ActionListener,MouseListener
 		if(o.equals(btnXoaRong)) {
 			xoaRong();
 		}
-		
+		else if(o.equals(btnSua)) {
+			if(valid()) {
+				if(table.getSelectedRow()<0) {
+					JOptionPane.showMessageDialog(this,"Cần chọn nguyên liệu để sửa");
+				}
+				else {
+					NguyenLieu_Entity nlNew= new NguyenLieu_Entity(tMaNguyenLieu.getText().trim(), 
+							tTenNguyenLieu.getText().trim(), 
+							Integer.parseInt(tSoLuong.getText().trim()), 
+							thoiGianNhapHang.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), 
+							thoiGianHetHan.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), 
+							ncc_dao.getNCCTheoTen(cbNCC.getSelectedItem().toString()),1);
+					if(nl_dao.suaNguyenLieu(nlNew))
+					{
+						loadTable();
+						xoaRong();
+					}
+				}
+			}
+		}
+		else if(o.equals(btnThem)) {
+			if(valid()) {
+				NguyenLieu_Entity nlNew= new NguyenLieu_Entity(generateMa(), 
+						tTenNguyenLieu.getText().trim(), 
+						Integer.parseInt(tSoLuong.getText().trim()), 
+						thoiGianNhapHang.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), 
+						thoiGianHetHan.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), 
+						ncc_dao.getNCCTheoTen(cbNCC.getSelectedItem().toString()),1);
+				if(nl_dao.themNguyenLieu(nlNew)) {
+					JOptionPane.showMessageDialog(this,"Thêm nguyên liệu thành công");
+					loadTable();
+				}
+			}
+		}
 	}
 
 }

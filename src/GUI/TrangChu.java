@@ -20,6 +20,7 @@ import DAO.TaiKhoan_DAO;
 import Entity.Mon_Entity;
 import Entity.TaiKhoan_Entity;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -49,6 +50,7 @@ import java.awt.FlowLayout;
 
 public class TrangChu extends JFrame implements ActionListener, MouseListener{
 
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JPanel panel_1;
 	private JPanel trangChu;
@@ -102,6 +104,11 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
 	private JPanel body;
 	private Object selectedButton;
 	private JPopupMenu manageMenu;
+	private DefaultTableModel model_sanPhamDat;
+	private JTable table_sanPhamDat;
+	private DefaultTableModel model;
+	private DefaultTableModel model_1;
+	private JTable table_1;
 
 	/**
 	 * Launch the application.
@@ -324,49 +331,32 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
 		cen_l = new JPanel();
 		cen_l.setBackground(new Color(255, 255, 255));
 		left_main.add(cen_l, BorderLayout.CENTER);
-		cen_l.setLayout(new BorderLayout(0, 0));JPanel panel_9 = new JPanel();
-		panel_9.setBorder(new EmptyBorder(0, 0, 5, 0));
-		panel_9.setBackground(new Color(255, 255, 255));
-		cen_l.add(panel_9);
-		panel_9.setLayout(new BorderLayout(0, 0));
-
-		JPanel columns = new JPanel();
-		columns.setBackground(new Color(255, 255, 255));
-		panel_9.add(columns, BorderLayout.NORTH);
-		columns.setLayout(new GridLayout(1, 2, 0, 0));
-
-		JPanel panel_14 = new JPanel();
-		panel_14.setBackground(Color.LIGHT_GRAY);
-		columns.add(panel_14);
-
-		JLabel lblNewLabel_3 = new JLabel("Tên món");
-		lblNewLabel_3.setFont(new Font("Tahoma", Font.BOLD, 15));
-		panel_14.add(lblNewLabel_3);
-
-		JPanel panel_16 = new JPanel();
-		panel_16.setBackground(Color.LIGHT_GRAY);
-		columns.add(panel_16);
-
-		JLabel lblNewLabel_5 = new JLabel("Giá tiền");
-		lblNewLabel_5.setFont(new Font("Tahoma", Font.BOLD, 15));
-		panel_16.add(lblNewLabel_5);
-
-		JPanel panel = new JPanel();
-		panel.setBackground(Color.LIGHT_GRAY);
-		columns.add(panel);
-
-		JLabel lblNewLabel = new JLabel("Thêm món");
-		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 15));
-		panel.add(lblNewLabel);
-
-		// Cấu hình table1 và scrollPane
-		table1 = new JPanel();
-		table1.setBackground(new Color(255, 255, 255));
-		JScrollPane scrollPane = new JScrollPane(table1);
-		table1.setLayout(new BoxLayout(table1, BoxLayout.Y_AXIS));
-		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		panel_9.add(scrollPane, BorderLayout.CENTER);
 		
+		JPanel dsMon = new JPanel();
+		String[] colNames1 = {"Mã món", "Tên món", "Loại món", "Giá tiền"};
+		model_1 = new DefaultTableModel(colNames1, 0);
+		table_1 = new JTable(model_1) {
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				// Không cho phép chỉnh sửa
+				return false;
+			}
+		};
+		table_1.setShowGrid(true);
+		table_1.setShowHorizontalLines(true);
+		table_1.setShowVerticalLines(false);
+		table_1.setRowHeight(30);
+		table_1.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 18)); // Kích thước font cho tiêu đề
+        table_1.getTableHeader().setResizingAllowed(false);
+        
+        cen_l.setLayout(new GridLayout(2, 1, 0, 0));
+        dsMon.setLayout(new BorderLayout());
+        table_1.setFont(new Font("Tahoma", Font.PLAIN, 18));
+        JScrollPane scr_chinh = new JScrollPane(table_1);
+        scr_chinh.setBorder(BorderFactory.createLineBorder(Color.BLACK)); 
+        dsMon.add(scr_chinh);
+        cen_l.add(dsMon);
+			
 		right_main = new JPanel();
 		main.add(right_main);
 		right_main.setLayout(new BorderLayout(0, 0));
@@ -420,20 +410,25 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
 		tfSoDT.setColumns(10);
 		
 		r_main = new JPanel();
+		r_main.setBorder(new EmptyBorder(40, 40, 40, 40));
 		r_main.setBackground(new Color(255, 255, 255));
-		right_main.add(r_main, BorderLayout.WEST);
+		right_main.add(r_main, BorderLayout.CENTER);
 		
-		scrollPane_1 = new JScrollPane();r_main.add(scrollPane_1);
-		
-		table = new JTable();
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"Tên món", "Giá tiền", "Số lượng", "Tổng giá"
+		String[] colnames = {"Tên món", "Loại món", "Số lượng", "Giá tiền"};
+        model = new DefaultTableModel(colnames, 0);
+        r_main.setLayout(new BoxLayout(r_main, BoxLayout.X_AXIS));
+        // Sau khi khởi tạo JTable và JScrollPane
+        table = new JTable(model){
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				// Không cho phép chỉnh sửa
+				return false;
 			}
-		));
-		r_main.add(table);
+		};
+        table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 18)); // Kích thước font cho tiêu đề
+        table.getTableHeader().setResizingAllowed(false);
+        JScrollPane scr = new JScrollPane(table);
+        r_main.add(scr);
 		
 		datHang = new JPanel();
 		datHang.setBorder(new EmptyBorder(20, 0, 50, 0));
@@ -444,15 +439,14 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
 		btnThanhToan.setFont(new Font("Tahoma", Font.BOLD, 30));
 		datHang.add(btnThanhToan);
 		
-		
-		
 		btnTrangChu.addMouseListener(this);
 		btnQuanLy.addMouseListener(this);
 		btnBan.addMouseListener(this);
 		btnThongKe.addMouseListener(this);
 		btnHoaDon.addMouseListener(this);
 		btnCaiDat.addMouseListener(this);
-		updateTable(dsMon, table1);
+		
+		hienBang();
 	}
 	
 	private JMenuItem createSubmenuItem(String text) {
@@ -462,6 +456,19 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
 
         return item;
     }
+	
+	private void hienBang() {
+		model_1.getDataVector().removeAllElements();
+		ArrayList<Mon_Entity> dsMon = mon_dao.danhSachMon();
+		dsMon.forEach(x -> themDong(x));
+	}
+	
+	private void themDong(Mon_Entity a) {
+		model_1.addRow(new Object[] {a.getMaMon(),
+									a.getTenMon(),
+									a.getLoaiMon(),
+									a.getDonGia()});
+	}
 	
 	private void handleSubmenuSelection(String menu) {
         body.removeAll();
@@ -476,7 +483,7 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
                 body.add(new QLKhachHang());
                 break;
             case "product":
-                body.add(new GUI.QLMon());
+                body.add(new QLMon());
                 break;
             case "ingredient":
                 body.add(new QLNguyenLieu());
@@ -487,78 +494,6 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
         }
         body.revalidate();
         body.repaint();
-    }
-	
-	private void updateTable(ArrayList<Mon_Entity> dsMon, JPanel table) {
-		table.removeAll();
-		dsMon = mon_dao.danhSachMon();
-		dsMon.forEach(item -> {
-			addItemToTable(item, table);
-		});
-		table.revalidate();
-		table.repaint();
-	}
-	
-	private void addItemToTable(Mon_Entity mon, JPanel table) {
-		JPanel listMon = new JPanel();
-		listMon.setBackground(SystemColor.menu);
-		listMon.setPreferredSize(new Dimension(table.getWidth(), 50));
-		listMon.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
-		table.add(listMon);
-		listMon.setLayout(new GridLayout(1, 2, 0, 0));
-
-		JPanel panelMon = new JPanel();
-		listMon.add(panelMon);
-		panelMon.setLayout(new BorderLayout(0, 0));
-
-		JPanel panelTT = new JPanel();
-		listMon.add(panelTT);
-		panelMon.setLayout(new BorderLayout(0, 0));
-
-		lbTenMon = new JLabel(mon.getTenMon());
-		panelMon.add(lbTenMon, BorderLayout.CENTER);
-		lbTenMon.setFont(new Font("Tahoma", Font.PLAIN, 15));
-
-		DecimalFormat df = new DecimalFormat("#,### VND");
-		JLabel lbGiaTien = new JLabel(df.format(mon.getDonGia()));
-		panelTT.add(lbGiaTien, BorderLayout.CENTER);
-		lbGiaTien.setFont(new Font("Tahoma", Font.PLAIN, 15));
-
-		JPanel panelButton = new JPanel();
-		listMon.add(panelButton);
-		panelButton.setLayout(new BorderLayout(0, 0));
-
-		btnThem = new JButton("Thêm");
-		panelButton.add(btnThem, BorderLayout.CENTER);
-		btnThem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				JDialog dialog = new JDialog();
-	            dialog.setTitle("Thêm món");
-	            dialog.setModal(true);
-	            dialog.setSize(400, 500);
-	            dialog.setLocationRelativeTo(null); 
-	            
-	            JPanel mon_panel = new JPanel();
-	            dialog.add(mon_panel);
-	            
-	            mon_panel.setLayout(new BorderLayout());
-	            
-	            JPanel maMon = new JPanel();
-	            maMon.setLayout(new GridLayout(1, 2, 0, 0));
-	            JLabel maMon_lab = new JLabel("Mã món: ");
-	            JTextField tfMaMon = new JTextField();
-	            maMon.add(maMon_lab);
-	            maMon.add(tfMaMon);
-	            
-	            JPanel header_pane = new JPanel();
-	            header_pane.setLayout(new BoxLayout(header_pane, BoxLayout.X_AXIS));
-	            header_pane.add(maMon);
-	            
-	            mon_panel.add(header_pane, BorderLayout.NORTH);
-	            
-	            dialog.setVisible(true);
-		}});
 	}
 
 	@Override
@@ -592,7 +527,6 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
 	    
 	    if (o.equals(btnBan)) {
 	        body.removeAll();
-//	        body.add(new Ban());
 	        body.revalidate();
 	        body.repaint();
 	    }
@@ -625,34 +559,11 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-//	    Object o = e.getSource();
-//	    
-//	    if (o.equals(btnTrangChu) && selectedButton != btnTrangChu) {
-//	        btnTrangChu.setBackground(Color.PINK);
-//	    }
-//	    
-//	    if (o.equals(btnSanPham) && selectedButton != btnSanPham) {
-//	        btnSanPham.setBackground(Color.PINK);
-//	    }
+
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-//	    Object o = e.getSource();
-//	    
-//	    if (o.equals(btnTrangChu) && selectedButton != btnTrangChu) {
-//	        btnTrangChu.setBackground(new Color(240, 240, 240));
-//	    }
-//	    
-//	    if (o.equals(btnSanPham) && selectedButton != btnSanPham) {
-//	        btnSanPham.setBackground(new Color(240, 240, 240));
-//	    }
-	}
-	public static void main(String[] args) {
-		TaiKhoan_Entity tk= new TaiKhoan_Entity("TK001");
-		TrangChu tc= new TrangChu(tk);
-		tc.setVisible(true);
-	}
 
-	
+	}
 }
