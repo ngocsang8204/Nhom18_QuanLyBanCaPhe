@@ -76,9 +76,6 @@ public class QLMon extends JPanel implements MouseListener, ActionListener{
 	private JButton btnAll;
 	private int previousRow=-1;
 
-	/**
-	 * Create the panel.
-	 */
 	public QLMon() {
         this.setBackground(Color.WHITE);
         this.setBounds(0, 0, 1600, 954);
@@ -105,10 +102,6 @@ public class QLMon extends JPanel implements MouseListener, ActionListener{
         JLabel lblNewLabel_1_1 = new JLabel("                       ");
         panel_2.add(lblNewLabel_1_1);
         
-//        JPanel panel_trong = new JPanel();
-//        panel_trong.setPreferredSize(new Dimension(panel_2.getPreferredSize().width,200));
-//        panel.add(panel_trong,BorderLayout.CENTER);
-//        
         JPanel panel_3 = new JPanel();
         panel_3.setBackground(new Color(255, 255, 255));
         panel.add(panel_3, BorderLayout.CENTER);
@@ -233,7 +226,6 @@ public class QLMon extends JPanel implements MouseListener, ActionListener{
         
         String[] colNL = new String[] { "Tên","Số lượng"};
         model_NguyenLieu= new DefaultTableModel(colNL, 0);
-        // Sau khi khởi tạo JTable và JScrollPane
         tableNguyenLieu = new JTable(model_NguyenLieu);
         tableNguyenLieu.setFocusable(false);
         tableNguyenLieu.setShowGrid(true);
@@ -241,15 +233,11 @@ public class QLMon extends JPanel implements MouseListener, ActionListener{
         tableNguyenLieu.setShowVerticalLines(false);
         JScrollPane jsp2 = new JScrollPane(tableNguyenLieu);
         jsp2.setPreferredSize(new Dimension(jsp2.getPreferredSize().width, 300));
-        jsp2.setBorder(BorderFactory.createLineBorder(Color.BLACK)); // Tạo viền màu đen
+        jsp2.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         tableNguyenLieu.getTableHeader().setBackground(Color.white);
         tableNguyenLieu.getTableHeader().setReorderingAllowed(false);
         tableNguyenLieu.getTableHeader().setResizingAllowed(false);
         panel4_4_5.add(jsp2);
-        
-        
-        
-        
         
         JPanel panel_5 = new JPanel();
         panel_5.setBackground(new Color(255, 255, 255));
@@ -334,7 +322,7 @@ public class QLMon extends JPanel implements MouseListener, ActionListener{
             "Tìm kiếm nhanh:", 
             TitledBorder.LEADING, 
             TitledBorder.TOP, 
-            new Font("Tahoma", Font.PLAIN, 16), // Thiết lập kích thước chữ cho tiêu đề
+            new Font("Tahoma", Font.PLAIN, 16), 
             new Color(0, 0, 0)
         ));
 
@@ -410,14 +398,11 @@ public class QLMon extends JPanel implements MouseListener, ActionListener{
         panel_12.setLayout(new BoxLayout(panel_12, BoxLayout.X_AXIS));
         panel_12.setBackground(new Color(255, 255, 255));
         panel_1.add(panel_12, BorderLayout.CENTER);
-        // Table Model and JTable
         String[] colnames = new String[] { "Mã món","Tên món", "Loại món", "Đơn giá"};
         model_SanPham= new DefaultTableModel(colnames, 0);
-        // Sau khi khởi tạo JTable và JScrollPane
         tableSanPham = new JTable(model_SanPham) {
 			@Override
 			public boolean isCellEditable(int row, int column) {
-				// Không cho phép chỉnh sửa
 				return false;
 			}
 		};
@@ -426,19 +411,14 @@ public class QLMon extends JPanel implements MouseListener, ActionListener{
         tableSanPham.setShowHorizontalLines(true);
         tableSanPham.setShowVerticalLines(false);
         JScrollPane jsp = new JScrollPane(tableSanPham);
-        jsp.setPreferredSize(new Dimension(1180, 873));
-        jsp.setBorder(BorderFactory.createLineBorder(Color.BLACK)); // Tạo viền màu đen
+        jsp.setBorder(BorderFactory.createLineBorder(Color.BLACK)); 
         tableSanPham.getTableHeader().setBackground(Color.white);
         panel_12.add(jsp);
 
-
-        // Thiết lập kích thước font cho các ô trong bảng
-        Font font = new Font("Tahoma", Font.PLAIN, 16); // Chọn font và kích thước
+        Font font = new Font("Tahoma", Font.PLAIN, 16); 
         tableSanPham.setFont(font);
-        tableSanPham.setRowHeight(50); // Thiết lập chiều cao hàng nếu cần
-     // Các thiết lập khác
-        // Thiết lập renderer cho tiêu đề cột
-        tableSanPham.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 18)); // Kích thước font cho tiêu đề
+        tableSanPham.setRowHeight(50);
+        tableSanPham.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 18));
         tableSanPham.getTableHeader().setReorderingAllowed(false);
         tableSanPham.getTableHeader().setResizingAllowed(false);
         loadTableData();
@@ -471,13 +451,11 @@ public class QLMon extends JPanel implements MouseListener, ActionListener{
 	    String tenMon = tTenMon.getText().trim();
 	    String donGia = tDonGia.getText().trim();
 
-	    // Kiểm tra tên món
 	    if (tenMon.equals("") || !tenMon.matches("[\\p{L}\\s]+")) {
 	        thongBao("Tên món phải là chữ và không được rỗng", tTenMon);
 	        return false;
 	    }
 
-	    // Kiểm tra đơn giá
 	    if (donGia.isEmpty()) {
 	        thongBao("Đơn giá không được rỗng", tDonGia);
 	        return false;
@@ -494,13 +472,12 @@ public class QLMon extends JPanel implements MouseListener, ActionListener{
 	        return false;
 	    }
 
-	    // Kiểm tra nguyên liệu
 	    if (tableNguyenLieu.getRowCount() < 1) {
 	        JOptionPane.showMessageDialog(this, "Cần có nguyên liệu");
 	        return false;
 	    }
 
-	    return true; // Trả về true nếu tất cả các kiểm tra đều hợp lệ
+	    return true; 
 	}
 	
 	public void loadTableTheoLoai(String a) {
@@ -593,32 +570,27 @@ public class QLMon extends JPanel implements MouseListener, ActionListener{
 			    JOptionPane.showMessageDialog(this, "Cần chọn món trong danh sách");
 			} else if (valid()) {
 			    try {
-			        // Xóa chi tiết món
 			        mon_dao.deleteChiTietMon(maMon);
 			        
 			        Double donGia= Double.parseDouble(tDonGia.getText().trim());
-			        // Tạo đối tượng món mới
+			        
 			        Mon_Entity newMon = new Mon_Entity(maMon, tTenMon.getText().trim(), cbLoaiMon.getSelectedItem().toString(),donGia);
 			        
-			        // Cập nhật món
 			        mon_dao.suaMon(newMon);
 			        
-			        // Duyệt qua từng nguyên liệu trong bảng
 			        for (int i = 0; i < tableNguyenLieu.getRowCount(); i++) {
 			            String tenNguyeLieu = tableNguyenLieu.getValueAt(i, 0).toString();
 			            int soLuong = Integer.parseInt(tableNguyenLieu.getValueAt(i, 1).toString());
 			            
-			            // Tìm nguyên liệu theo mã
 			            NguyenLieu_Entity nl1 = nl_dao.getNLTheoTen(tenNguyeLieu);
 			            
-			            // Thêm chi tiết món
 			            mon_dao.themChiTietMon(newMon, nl1, soLuong);
 			        }
 			        
 			        JOptionPane.showMessageDialog(this, "Cập nhật thành công");
 			        loadTableData();
 			    } catch (Exception e1) {
-			        e1.printStackTrace(); // In lỗi ra console để kiểm tra
+			        e1.printStackTrace(); 
 			        JOptionPane.showMessageDialog(this, "Cập nhật thất bại");
 			    }
 			}
@@ -630,15 +602,12 @@ public class QLMon extends JPanel implements MouseListener, ActionListener{
 					Double donGia= Double.parseDouble(tDonGia.getText().trim());
 					Mon_Entity newMon = new Mon_Entity(generateMa(), tTenMon.getText().trim(), cbLoaiMon.getSelectedItem().toString(),donGia,1);
 					mon_dao.themMon(newMon);
-					// Duyệt qua từng nguyên liệu trong bảng
 			        for (int i = 0; i < tableNguyenLieu.getRowCount(); i++) {
 			            String tenNguyeLieu = tableNguyenLieu.getValueAt(i, 0).toString();
 			            int soLuong = Integer.parseInt(tableNguyenLieu.getValueAt(i, 1).toString());
 			            
-			            // Tìm nguyên liệu theo mã
 			            NguyenLieu_Entity nl1 = nl_dao.getNLTheoTen(tenNguyeLieu);
 			            
-			            // Thêm chi tiết món
 			            mon_dao.themChiTietMon(newMon, nl1, soLuong);
 			        }
 			        JOptionPane.showMessageDialog(this, "Thêm món thành công");

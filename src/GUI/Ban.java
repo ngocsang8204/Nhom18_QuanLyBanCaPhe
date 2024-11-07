@@ -8,9 +8,6 @@ import javax.swing.JPanel;
 
 public class Ban extends JPanel {
 
-	/**
-	 * Create the panel.
-	 */
 	public Ban() {
 		this.setLayout(null);
         this.setBackground(Color.WHITE);

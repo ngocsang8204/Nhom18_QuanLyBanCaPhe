@@ -57,9 +57,6 @@ public class QLKhachHang extends JPanel implements ActionListener, MouseListener
 	private KhachHang_DAO khachHang_DAO;
 	private int previousRow = -1;
 
-	/**
-	 * Create the panel.
-	 */
 	public QLKhachHang() {
 		khachHang_DAO = new KhachHang_DAO();
 		
@@ -87,11 +84,7 @@ public class QLKhachHang extends JPanel implements ActionListener, MouseListener
         
         JLabel lblNewLabel_1_1 = new JLabel("                       ");
         left_header.add(lblNewLabel_1_1);
-        
-//        JPanel panel_trong = new JPanel();
-//        panel_trong.setPreferredSize(new Dimension(panel_2.getPreferredSize().width,200));
-//        panel.add(panel_trong,BorderLayout.CENTER);
-//        
+
         JPanel left_content = new JPanel();
         left_content.setBackground(new Color(255, 255, 255));
         rigth_panel.add(left_content, BorderLayout.CENTER);
@@ -217,7 +210,7 @@ public class QLKhachHang extends JPanel implements ActionListener, MouseListener
             "Tìm kiếm nhanh:", 
             TitledBorder.LEADING, 
             TitledBorder.TOP, 
-            new Font("Tahoma", Font.PLAIN, 16), // Thiết lập kích thước chữ cho tiêu đề
+            new Font("Tahoma", Font.PLAIN, 16),
             new Color(0, 0, 0)
         ));
 
@@ -239,14 +232,11 @@ public class QLKhachHang extends JPanel implements ActionListener, MouseListener
         JPanel panel_12 = new JPanel();
         panel_12.setBackground(new Color(255, 255, 255));
         left_panel.add(panel_12, BorderLayout.CENTER);
-        // Table Model and JTable
         String[] colnames = new String[] { "Mã khách hàng","Tên khách hàng", "Số điện thoại"};
         model = new DefaultTableModel(colnames, 0);
-        // Sau khi khởi tạo JTable và JScrollPane
         table = new JTable(model) {
 			@Override
 			public boolean isCellEditable(int row, int column) {
-				// Không cho phép chỉnh sửa
 				return false;
 			}
 		};
@@ -256,22 +246,17 @@ public class QLKhachHang extends JPanel implements ActionListener, MouseListener
         table.setShowVerticalLines(false);
         JScrollPane jsp = new JScrollPane(table);
         jsp.setPreferredSize(new Dimension(1180, 873));
-        jsp.setBorder(BorderFactory.createLineBorder(Color.BLACK)); // Tạo viền màu đen
+        jsp.setBorder(BorderFactory.createLineBorder(Color.BLACK)); 
         table.getTableHeader().setBackground(Color.white);
         panel_12.add(jsp);
 
-
-        // Thiết lập kích thước font cho các ô trong bảng
-        Font font = new Font("Tahoma", Font.PLAIN, 16); // Chọn font và kích thước
+        Font font = new Font("Tahoma", Font.PLAIN, 16);
         table.setFont(font);
-        table.setRowHeight(50); // Thiết lập chiều cao hàng nếu cần
-        // Các thiết lập khác
+        table.setRowHeight(50);
         table.setShowGrid(true);
         table.setShowHorizontalLines(true);
         table.setShowVerticalLines(false);
-
-        // Thiết lập renderer cho tiêu đề cột
-        table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 18)); // Kích thước font cho tiêu đề
+        table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 18));
         table.getTableHeader().setReorderingAllowed(false);
         table.getTableHeader().setResizingAllowed(false);
         
@@ -298,7 +283,6 @@ public class QLKhachHang extends JPanel implements ActionListener, MouseListener
 				tTenKhachHang.setText(model.getValueAt(row, 1).toString());
 				tSoDienThoai.setText(model.getValueAt(row, 2).toString());
 	    	    previousRow = row;
-    	        // Đặt cờ là true khi một hàng được chọn
     	
     	    }
 		}
@@ -386,7 +370,6 @@ public class QLKhachHang extends JPanel implements ActionListener, MouseListener
 				String ma = tMaKhachHang.getText().trim();
 				String ten = tTenKhachHang.getText().trim();
 				String sdt = tSoDienThoai.getText().trim();
-				// Cập nhật thông tin trong bảng
 				model.setValueAt(ma, row, 0);
 				model.setValueAt(ten, row, 1);
 				model.setValueAt(sdt, row, 2);
@@ -407,17 +390,13 @@ public class QLKhachHang extends JPanel implements ActionListener, MouseListener
 
 	private void them() {
 		KhachHang_Entity kh = revert();
-	    List<KhachHang_Entity> listTopKH = khachHang_DAO.danhSachKhachHang();
-	    
-	    // Kiểm tra nếu tài khoản đã tồn tại trong danh sách
+	    List<KhachHang_Entity> listTopKH = khachHang_DAO.danhSachKhachHang();  
 	    for (KhachHang_Entity khh : listTopKH) {
 	        if (kh.getMaKhachHang().equals(khh.getMaKhachHang())) {
 	            JOptionPane.showMessageDialog(null, "Kháchh này đã tồn tại", "Lỗi", JOptionPane.ERROR_MESSAGE);
 	            return;
 	        }
 	    }
-
-	    // Thêm tài khoản nếu không trùng lặp
 	    if (khachHang_DAO.themKhachHang(kh)) {
 	        JOptionPane.showMessageDialog(null, "Thêm thành công", "Thành công", JOptionPane.DEFAULT_OPTION);
 	        model.addRow(new Object[]{
