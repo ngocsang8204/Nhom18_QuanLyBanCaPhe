@@ -143,7 +143,6 @@ public class QLTaiKhoan extends JPanel implements ActionListener, MouseListener{
         for(String maNV : listMaNV) {
         	cbb_MaNhanVien.addItem(maNV);
         }
-        
         tMatKhau = new JTextField(); 
         panel_4_2.add(tMatKhau);
         
@@ -182,8 +181,7 @@ public class QLTaiKhoan extends JPanel implements ActionListener, MouseListener{
         btnSua.setIcon(new ImageIcon(QLMon.class.getResource("/img/icons8-tools-30.png")));
         panel_6.add(btnSua);
         
-        Component horizontalStrut = Box.createHorizontalStrut(2);
-        panel_6.add(horizontalStrut);
+        panel_6.add(Box.createHorizontalStrut(2));
         
         btnXoaRong = new JButton("Xóa rỗng");
         btnXoaRong.setIcon(new ImageIcon(QLTaiKhoan.class.getResource("/img/icons8-erase-30.png")));
@@ -295,7 +293,6 @@ public class QLTaiKhoan extends JPanel implements ActionListener, MouseListener{
         table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 18)); // Kích thước font cho tiêu đề
         table.getTableHeader().setResizingAllowed(false);
         table.getTableHeader().setReorderingAllowed(false);
-        
         table.addMouseListener(this);
         btnThem.addActionListener(this);
         btnTimKiem.addActionListener(this);
@@ -366,7 +363,7 @@ public class QLTaiKhoan extends JPanel implements ActionListener, MouseListener{
 			}
 		}
 		if (o.equals(btnTimKiem)) {
-			
+			System.out.println("đm buồi Ngọc Sang");
 		}
 		if (o.equals(btnXoaRong)) {
 			clear();
@@ -461,6 +458,15 @@ public class QLTaiKhoan extends JPanel implements ActionListener, MouseListener{
 	            tk.getMatKhau(),
 	            tk.getNhanVien().getMaNhanVien()
 	        });
+//	        if (tk.getNhanVien().getMaNhanVien().equals(cbb_MaNhanVien.getSelectedItem().toString())) {
+//				cbb_MaNhanVien.removeItem(cbb_MaNhanVien.getSelectedItem().toString());
+//			}
+	        List<String> listMaNV = nhanVien_DAO.getAllNhanVien();
+	        for(String maNV : listMaNV) {
+	        	if (maNV.equals(tk.getNhanVien().getMaNhanVien())) {
+					cbb_MaNhanVien.removeItem(maNV);
+				}
+	        }
 	    } else {
 	        JOptionPane.showMessageDialog(null, "Lỗi khi thêm tài khoản vào cơ sở dữ liệu", "Lỗi", JOptionPane.ERROR_MESSAGE);
 	    }
