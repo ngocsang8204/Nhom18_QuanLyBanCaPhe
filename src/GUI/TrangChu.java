@@ -592,7 +592,8 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
 	    
 	    if (o.equals(btnBan)) {
 	        body.removeAll();
-//	        body.add(new Ban());
+	        body.add(new Ban());
+	        
 	        body.revalidate();
 	        body.repaint();
 	    }
