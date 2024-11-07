@@ -15,6 +15,7 @@ public class database {
 	public void Connect() {
 		String url = "jdbc:sqlserver://localhost:1433;databasename=QLQuanCoffee";
 		String user = "sa";
+		// String password = "123";
 		String password = "sapassword";
 
 		try {

@@ -90,7 +90,7 @@ public class NhaCungCap_DAO {
 			if (dsDV.contains(ncc)) {
 				System.out.println("Nhà cung cấp đã tồn tại, không thể thêm");
 			} else {
-				String sql = "INSERT INTO NhaCungCap(maNhaCungCap, tenNhaCungCap, diaChi, thongTinLienHe) VALUES (?, ?, ?, ?)";
+				String sql = "INSERT INTO NhaCungCap(maNhaCungCap, tenNhaCungCap, diaChi, thongTinLienHe, trangThaiNhaCungCap) VALUES (?, ?, ?, ?,1)";
 				stmt = con.prepareStatement(sql);
 				if (dsDV.size() + 1 < 10) {
 					stmt.setString(1, "NCC00" + String.valueOf(dsDV.size() + 1));

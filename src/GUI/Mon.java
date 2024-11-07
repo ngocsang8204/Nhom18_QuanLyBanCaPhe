@@ -473,7 +473,7 @@ public class Mon extends JPanel implements MouseListener, ActionListener{
 	    String donGia = tDonGia.getText().trim();
 
 	    // Kiểm tra tên món
-	    if (tenMon.isEmpty() || !tenMon.matches("[\\p{L}\\s]+")) {
+	    if (tenMon.equals("") || !tenMon.matches("[\\p{L}\\s]+")) {
 	        thongBao("Tên món phải là chữ và không được rỗng", tTenMon);
 	        return false;
 	    }

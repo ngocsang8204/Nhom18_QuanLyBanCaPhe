@@ -7,6 +7,7 @@ public class NhaCungCap_Entity {
 	private String tenNhaCungCap;
 	private String diaChi;
 	private String thongTinLienHe;
+	private int trangThai;
 	public NhaCungCap_Entity(String maNhaCungCap, String tenNhaCungCap, String diaChi, String thongTinLienHe) {
 		super();
 		this.maNhaCungCap = maNhaCungCap;
@@ -14,6 +15,25 @@ public class NhaCungCap_Entity {
 		this.diaChi = diaChi;
 		this.thongTinLienHe = thongTinLienHe;
 	}
+	
+	public NhaCungCap_Entity(String maNhaCungCap, String tenNhaCungCap, String diaChi, String thongTinLienHe,
+			int trangThai) {
+		super();
+		this.maNhaCungCap = maNhaCungCap;
+		this.tenNhaCungCap = tenNhaCungCap;
+		this.diaChi = diaChi;
+		this.thongTinLienHe = thongTinLienHe;
+		this.trangThai = trangThai;
+	}
+
+	public int getTrangThai() {
+		return trangThai;
+	}
+
+	public void setTrangThai(int trangThai) {
+		this.trangThai = trangThai;
+	}
+
 	public NhaCungCap_Entity() {
 		super();
 		// TODO Auto-generated constructor stub

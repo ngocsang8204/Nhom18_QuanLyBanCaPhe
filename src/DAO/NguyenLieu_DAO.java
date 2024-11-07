@@ -51,6 +51,23 @@ public class NguyenLieu_DAO {
 		}
 		return dsNL;
 	}
+	public int getSLNL(){
+		try {
+			Connection con = database.getInstance().getConnection();
+		    if (con == null) {
+		        System.out.println("Connection is not established.");
+		    }
+			String sql = "Select count(*) from NguyenLieu";
+			PreparedStatement stmt= con.prepareStatement(sql);
+			ResultSet rs= stmt.executeQuery();
+			if(rs.next()) {
+				return rs.getInt(1);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
 	public ArrayList<NguyenLieu_Entity> danhSachNguyenLieuConHan(){
 		ArrayList<NguyenLieu_Entity> dsNL = new ArrayList<NguyenLieu_Entity>();
 		try {
@@ -58,7 +75,7 @@ public class NguyenLieu_DAO {
 		    if (con == null) {
 		        System.out.println("Connection is not established.");
 		    }
-			String sql = "Select * from NguyenLieu where thoigianhethan>= getdate()";
+			String sql = "Select * from NguyenLieu";
 			Statement statement = con.createStatement();
 			ResultSet rs = statement.executeQuery(sql);
 			while (rs.next()) {
@@ -145,7 +162,7 @@ public class NguyenLieu_DAO {
 	    	if (dsDV.contains(nguyenLieu)) {
 	    		System.out.println("Nguyên liệu đã tồn tại, không thể thêm");
 	    	} else {
-	    		String sql = "INSERT INTO NguyenLieu(maNguyenLieu, tenNguyenLieu, soLuong, thoiGianNhapHang, thoiGianHetHan, maNhaCungCap) VALUES (?, ?, ?, ?, ?, ?)";
+	    		String sql = "INSERT INTO NguyenLieu(maNguyenLieu, tenNguyenLieu, soLuong, thoiGianNhapHang, thoiGianHetHan, maNhaCungCap, trangThaiNguyenLieu) VALUES (?, ?, ?, ?, ?, ?,1)";
 	    		stmt = con.prepareStatement(sql);
 	    		stmt.setString(1, "NL00" + String.valueOf(dsDV.size() + 1));
 	    		stmt.setString(2, nguyenLieu.getTenNguyenLieu());
@@ -173,14 +190,16 @@ public class NguyenLieu_DAO {
 			if (!dsNL.contains(nguyenLieu)) {
 				System.out.println("Nguyên liệu không tồn tại");
 			} else {
-				String updateSql = "UPDATE NguyenLieu SET tenNguyenLieu = ?, soLuong = ?, thoiGianNhapHang = ?, thoiGianHetHan = ? WHERE maNguyenLieu = ?";
+				String updateSql = "UPDATE NguyenLieu SET tenNguyenLieu = ?, soLuong = ?, thoiGianNhapHang = ?, thoiGianHetHan = ?, manhacungcap = ?, trangThaiNguyenLieu = ? WHERE maNguyenLieu = ?";
 		        PreparedStatement stmt = connection.prepareStatement(updateSql);
 		        stmt.setString(1, nguyenLieu.getTenNguyenLieu());
 	    		stmt.setInt(2, nguyenLieu.getSoLuong());
 	    		stmt.setTimestamp(3, Timestamp.valueOf(nguyenLieu.getThoiGianNhap()));
 	    		stmt.setTimestamp(4, Timestamp.valueOf(nguyenLieu.getThoiGianHetHan()));
 	    		stmt.setString(5, nguyenLieu.getNhaCungCap().getMaNhaCungCap());
-		        stmt.setString(6, nguyenLieu.getMaNguyenLieu());
+
+		        stmt.setInt(6, nguyenLieu.getTrangThai());
+		        stmt.setString(7, nguyenLieu.getMaNguyenLieu());
 		        
 		        int rowsInserted = stmt.executeUpdate();
 	            if (rowsInserted > 0) {
