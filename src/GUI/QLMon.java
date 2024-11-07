@@ -44,9 +44,8 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 
-public class Mon extends JPanel implements MouseListener, ActionListener{
+public class QLMon extends JPanel implements MouseListener, ActionListener{
 
-	private static final long serialVersionUID = 1L;
 	private JTextField tMaMon;
 	private JTextField tTenMon;
 	private JTextField tDonGia;
@@ -80,7 +79,7 @@ public class Mon extends JPanel implements MouseListener, ActionListener{
 	/**
 	 * Create the panel.
 	 */
-	public Mon() {
+	public QLMon() {
         this.setBackground(Color.WHITE);
         this.setBounds(0, 0, 1600, 954);
         setLayout(new BorderLayout(0, 0));
@@ -220,11 +219,11 @@ public class Mon extends JPanel implements MouseListener, ActionListener{
         panel4_4.add(panel4_4_3);
         
         btnThemNL = new JButton("Thêm");
-        btnThemNL.setIcon(new ImageIcon(Mon.class.getResource("/img/icons8-add-30.png")));
+        btnThemNL.setIcon(new ImageIcon(QLMon.class.getResource("/img/icons8-add-30.png")));
         panel4_4_3.add(btnThemNL);
         
         btnXoaNL = new JButton("Xóa");
-        btnXoaNL.setIcon(new ImageIcon(Mon.class.getResource("/img/icons8-delete-30.png")));
+        btnXoaNL.setIcon(new ImageIcon(QLMon.class.getResource("/img/icons8-delete-30.png")));
         panel4_4_3.add(btnXoaNL);
         btnThemNL.addActionListener(this);
         btnXoaNL.addActionListener(this);
@@ -266,20 +265,20 @@ public class Mon extends JPanel implements MouseListener, ActionListener{
         panel_5.add(panel_6);
         
         btnThem = new JButton("Thêm");
-        btnThem.setIcon(new ImageIcon(Mon.class.getResource("/img/icons8-add-30.png")));
+        btnThem.setIcon(new ImageIcon(QLMon.class.getResource("/img/icons8-add-30.png")));
         panel_6.add(btnThem);
         
         btnSua = new JButton("Sửa");
         btnSua.setPreferredSize(new Dimension(93, 39));
-        btnSua.setIcon(new ImageIcon(Mon.class.getResource("/img/icons8-tools-30.png")));
+        btnSua.setIcon(new ImageIcon(QLMon.class.getResource("/img/icons8-tools-30.png")));
         panel_6.add(btnSua);
         
         btnXoaRong = new JButton("Xóa rỗng");
-        btnXoaRong.setIcon(new ImageIcon(Mon.class.getResource("/img/icons8-erase-30.png")));
+        btnXoaRong.setIcon(new ImageIcon(QLMon.class.getResource("/img/icons8-erase-30.png")));
         panel_6.add(btnXoaRong);
         
         btnXoa = new JButton("Xóa");
-        btnXoa.setIcon(new ImageIcon(Mon.class.getResource("/img/icons8-delete-30.png")));
+        btnXoa.setIcon(new ImageIcon(QLMon.class.getResource("/img/icons8-delete-30.png")));
         panel_6.add(btnXoa);
         
         btnThem.addActionListener(this);
@@ -342,7 +341,7 @@ public class Mon extends JPanel implements MouseListener, ActionListener{
         panel_9.add(panel_11);
         
         btnTimKiem = new JButton("");
-        btnTimKiem.setIcon(new ImageIcon(NhaCungCap.class.getResource("/img/icons8-search-30.png")));
+        btnTimKiem.setIcon(new ImageIcon(QLNhaCungCap.class.getResource("/img/icons8-search-30.png")));
         btnTimKiem.setContentAreaFilled(false);
 		btnTimKiem.setBorderPainted(false);
         panel_11.add(btnTimKiem);
