@@ -18,7 +18,6 @@ import javax.swing.JProgressBar;
 
 public class Loading extends JFrame {
 
-    private static final long serialVersionUID = 1L;
     private JPanel contentPane;
     private JProgressBar progress;
     private JLabel txtLoad;

@@ -49,7 +49,6 @@ import java.awt.FlowLayout;
 
 public class TrangChu extends JFrame implements ActionListener, MouseListener{
 
-	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JPanel panel_1;
 	private JPanel trangChu;
@@ -468,22 +467,22 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
         body.removeAll();
         switch (menu) {
             case "account":
-                body.add(new TaiKhoan());
+                body.add(new QLTaiKhoan());
                 break;
             case "employee":
-                body.add(new NhanVien());
+                body.add(new QLNhanVien());
                 break;
             case "customer":
-                body.add(new KhachHang());
+                body.add(new QLKhachHang());
                 break;
             case "product":
-                body.add(new GUI.Mon());
+                body.add(new GUI.QLMon());
                 break;
             case "ingredient":
-                body.add(new NguyenLieu());
+                body.add(new QLNguyenLieu());
                 break;
             case "supplier":
-            	body.add(new NhaCungCap());
+            	body.add(new QLNhaCungCap());
             	break;
         }
         body.revalidate();

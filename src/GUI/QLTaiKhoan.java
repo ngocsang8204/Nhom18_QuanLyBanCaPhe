@@ -1,7 +1,6 @@
 package GUI;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 
 import javax.swing.JLabel;
@@ -27,8 +26,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
-import DAO.KhachHang_DAO;
-import Entity.KhachHang_Entity;
+import DAO.NhanVien_DAO;
+import DAO.TaiKhoan_DAO;
 import Entity.NhanVien_Entity;
 import Entity.TaiKhoan_Entity;
 
@@ -40,29 +39,34 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.awt.Component;
 
-public class KhachHang extends JPanel implements ActionListener, MouseListener{
-
-	private static final long serialVersionUID = 1L;
-	private JTextField tMaKhachHang;
-	private JTextField tTenKhachHang;
-	private JTextField tSoDienThoai;
+public class QLTaiKhoan extends JPanel implements ActionListener, MouseListener{
+	
+	private JTextField tMaTaiKhoan;
+	private JTextField tTenDangNhap;
+	private JTextField tMatKhau;
 	private DefaultTableModel model;
 	private JTable table;
 	private JButton btnThem;
 	private JButton btnSua;
 	private JTextField tTimKiem;
 	private JButton btnTimKiem;
-	private JButton btnXoaRong;
-	private KhachHang_DAO khachHang_DAO;
+	private JComboBox<String> cbb_MaNhanVien;
 	private int previousRow = -1;
+	private TaiKhoan_DAO taiKhoan_DAO;
+	private NhanVien_DAO nhanVien_DAO;
+	private JButton btnXoaRong;
 
 	/**
 	 * Create the panel.
 	 */
-	public KhachHang() {
-		khachHang_DAO = new KhachHang_DAO();
+	public QLTaiKhoan() {
+		nhanVien_DAO = new NhanVien_DAO();
+		taiKhoan_DAO = new TaiKhoan_DAO();
 		
         this.setBackground(Color.WHITE);
         this.setBounds(0, 0, 1600, 954);
@@ -81,7 +85,7 @@ public class KhachHang extends JPanel implements ActionListener, MouseListener{
         JLabel lblNewLabel_1 = new JLabel("                       ");
         panel_2.add(lblNewLabel_1);
         
-        JLabel lblNewLabel = new JLabel("Thông tin khách hàng");
+        JLabel lblNewLabel = new JLabel("Thông tin tài khoản");
         lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
         lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 23));
         panel_2.add(lblNewLabel);
@@ -89,10 +93,6 @@ public class KhachHang extends JPanel implements ActionListener, MouseListener{
         JLabel lblNewLabel_1_1 = new JLabel("                       ");
         panel_2.add(lblNewLabel_1_1);
         
-//        JPanel panel_trong = new JPanel();
-//        panel_trong.setPreferredSize(new Dimension(panel_2.getPreferredSize().width,200));
-//        panel.add(panel_trong,BorderLayout.CENTER);
-//        
         JPanel panel_3 = new JPanel();
         panel_3.setBackground(new Color(255, 255, 255));
         panel.add(panel_3, BorderLayout.CENTER);
@@ -102,47 +102,65 @@ public class KhachHang extends JPanel implements ActionListener, MouseListener{
         panel_4.setBackground(new Color(255, 255, 255));
         panel_3.add(panel_4);
         
-        JLabel lb1 = new JLabel("Mã khách hàng: ");
-        lb1.setFont(new Font("Tahoma", Font.PLAIN, 16));
-        panel_4.add(lb1);
+        JLabel lbMaTaiKhoan = new JLabel("Mã tài khoản: ");
+        lbMaTaiKhoan.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        panel_4.add(lbMaTaiKhoan);
         
-        tMaKhachHang = new JTextField(28);
-        panel_4.add(tMaKhachHang);
+        tMaTaiKhoan = new JTextField(28);
+        panel_4.add(tMaTaiKhoan);
         
         JPanel panel_4_1 = new JPanel();
         panel_4_1.setBackground(new Color(255, 255, 255));
         panel_3.add(panel_4_1);
         
-        JLabel lb2 = new JLabel("Tên khách hàng: ");
-        lb2.setFont(new Font("Tahoma", Font.PLAIN, 16));
-        panel_4_1.add(lb2);
+        JLabel lbTenTaiKhoan = new JLabel("Tên đăng nhập");
+        lbTenTaiKhoan.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        panel_4_1.add(lbTenTaiKhoan);
         
-        tTenKhachHang = new JTextField();
-        panel_4_1.add(tTenKhachHang);
+        tTenDangNhap = new JTextField();
+        panel_4_1.add(tTenDangNhap);
         
         JPanel panel_4_2 = new JPanel();
         panel_4_2.setBackground(new Color(255, 255, 255));
         panel_3.add(panel_4_2);
         
-        JLabel lb3 = new JLabel("Số điện thoại: ");
-        lb3.setFont(new Font("Tahoma", Font.PLAIN, 16));
-        panel_4_2.add(lb3);
+        JLabel lbMatKhau = new JLabel("Mật khẩu: ");
+        lbMatKhau.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        panel_4_2.add(lbMatKhau);
         
-        tSoDienThoai = new JTextField(); 
-        panel_4_2.add(tSoDienThoai);
+        JPanel panel_4_3 = new JPanel();
+        panel_4_3.setBackground(new Color(255, 255, 255));
+        panel_3.add(panel_4_3);
         
-        tMaKhachHang.setPreferredSize(new Dimension(tMaKhachHang.getPreferredSize().width,30));
-        tMaKhachHang.setEditable(false);
-        tTenKhachHang.setPreferredSize(new Dimension(tMaKhachHang.getPreferredSize().width,30));
-        tSoDienThoai.setPreferredSize(new Dimension(tMaKhachHang.getPreferredSize().width,30));
+        JLabel lbMaNhanVien = new JLabel("Mã nhân viên: ");
+        lbMaNhanVien.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        panel_4_3.add(lbMaNhanVien);
         
-        lb1.setPreferredSize(new Dimension(170,20));
-        lb2.setPreferredSize(new Dimension(170,20));
-        lb3.setPreferredSize(new Dimension(170,20));
+        
+        cbb_MaNhanVien = new JComboBox<String>();
+        panel_4_3.add(cbb_MaNhanVien);
+        List<String> listMaNV = nhanVien_DAO.getAllNhanVien();
+        for(String maNV : listMaNV) {
+        	cbb_MaNhanVien.addItem(maNV);
+        }
+        
+        tMatKhau = new JTextField(); 
+        panel_4_2.add(tMatKhau);
+        
+        tMaTaiKhoan.setPreferredSize(new Dimension(tMaTaiKhoan.getPreferredSize().width,30));
+        tMaTaiKhoan.setEditable(false);
+        tTenDangNhap.setPreferredSize(new Dimension(tMaTaiKhoan.getPreferredSize().width,30));
+        cbb_MaNhanVien.setPreferredSize(new Dimension(tMaTaiKhoan.getPreferredSize().width,30));
+        tMatKhau.setPreferredSize(new Dimension(tMaTaiKhoan.getPreferredSize().width,30));
+        
+        lbMaTaiKhoan.setPreferredSize(new Dimension(170,20));
+        lbTenTaiKhoan.setPreferredSize(new Dimension(170,20));
+        lbMatKhau.setPreferredSize(new Dimension(170,20));
+        lbMaNhanVien.setPreferredSize(new Dimension(170,20));
         
         JPanel panel_5 = new JPanel();
         panel_5.setBackground(new Color(255, 255, 255));
-        panel_5.setPreferredSize(new Dimension(panel_3.getPreferredSize().width,770));
+        panel_5.setPreferredSize(new Dimension(panel_3.getPreferredSize().width,700));
         panel.add(panel_5,BorderLayout.SOUTH);
         
         JLabel lblNewLabel_1_2 = new JLabel("                       ");
@@ -154,21 +172,21 @@ public class KhachHang extends JPanel implements ActionListener, MouseListener{
         panel_5.add(panel_6);
         
         btnThem = new JButton("Thêm");
-        btnThem.setIcon(new ImageIcon(Mon.class.getResource("/img/icons8-add-30.png")));
+        btnThem.setIcon(new ImageIcon(QLMon.class.getResource("/img/icons8-add-30.png")));
         panel_6.add(btnThem);
         
         panel_6.add(Box.createHorizontalStrut(2));
         
         btnSua = new JButton("Sửa");
         btnSua.setPreferredSize(new Dimension(93, 39));
-        btnSua.setIcon(new ImageIcon(Mon.class.getResource("/img/icons8-tools-30.png")));
+        btnSua.setIcon(new ImageIcon(QLMon.class.getResource("/img/icons8-tools-30.png")));
         panel_6.add(btnSua);
         
         Component horizontalStrut = Box.createHorizontalStrut(2);
         panel_6.add(horizontalStrut);
         
         btnXoaRong = new JButton("Xóa rỗng");
-        btnXoaRong.setIcon(new ImageIcon(TaiKhoan.class.getResource("/img/icons8-erase-30.png")));
+        btnXoaRong.setIcon(new ImageIcon(QLTaiKhoan.class.getResource("/img/icons8-erase-30.png")));
         panel_6.add(btnXoaRong);
         
         JPanel panel_1 = new JPanel();
@@ -197,7 +215,7 @@ public class KhachHang extends JPanel implements ActionListener, MouseListener{
         gbc_panel_8.gridy = 0;
         panel_7.add(panel_8, gbc_panel_8);
         
-        JLabel lblNewLabel_2 = new JLabel("QUẢN LÝ KHÁCH HÀNG");
+        JLabel lblNewLabel_2 = new JLabel("QUẢN LÝ TÀI KHOẢN");
         lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 30));
         panel_8.add(lblNewLabel_2);
         
@@ -226,7 +244,7 @@ public class KhachHang extends JPanel implements ActionListener, MouseListener{
         panel_9.add(panel_11);
         
         btnTimKiem = new JButton("");
-        btnTimKiem.setIcon(new ImageIcon(NhaCungCap.class.getResource("/img/icons8-search-30.png")));
+        btnTimKiem.setIcon(new ImageIcon(QLNhaCungCap.class.getResource("/img/icons8-search-30.png")));
         btnTimKiem.setContentAreaFilled(false);
 		btnTimKiem.setBorderPainted(false);
         panel_11.add(btnTimKiem);
@@ -242,7 +260,7 @@ public class KhachHang extends JPanel implements ActionListener, MouseListener{
         panel_12.setBackground(new Color(255, 255, 255));
         panel_1.add(panel_12, BorderLayout.CENTER);
         // Table Model and JTable
-        String[] colnames = new String[] { "Mã khách hàng","Tên khách hàng", "Số điện thoại"};
+        String[] colnames = new String[] { "Mã tài khoản","Tên đăng nhập", "Mật khẩu", "Mã nhân viên"};
         model = new DefaultTableModel(colnames, 0);
         // Sau khi khởi tạo JTable và JScrollPane
         table = new JTable(model) {
@@ -267,6 +285,7 @@ public class KhachHang extends JPanel implements ActionListener, MouseListener{
         Font font = new Font("Tahoma", Font.PLAIN, 16); // Chọn font và kích thước
         table.setFont(font);
         table.setRowHeight(50); // Thiết lập chiều cao hàng nếu cần
+
         // Các thiết lập khác
         table.setShowGrid(true);
         table.setShowHorizontalLines(true);
@@ -274,8 +293,8 @@ public class KhachHang extends JPanel implements ActionListener, MouseListener{
 
         // Thiết lập renderer cho tiêu đề cột
         table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 18)); // Kích thước font cho tiêu đề
-        table.getTableHeader().setReorderingAllowed(false);
         table.getTableHeader().setResizingAllowed(false);
+        table.getTableHeader().setReorderingAllowed(false);
         
         table.addMouseListener(this);
         btnThem.addActionListener(this);
@@ -296,9 +315,10 @@ public class KhachHang extends JPanel implements ActionListener, MouseListener{
     			table.clearSelection();
     			
     		} else {
-	    	    tMaKhachHang.setText(model.getValueAt(row, 0).toString());
-				tTenKhachHang.setText(model.getValueAt(row, 1).toString());
-				tSoDienThoai.setText(model.getValueAt(row, 2).toString());
+	    	    tMaTaiKhoan.setText(model.getValueAt(row, 0).toString());
+				tTenDangNhap.setText(model.getValueAt(row, 1).toString());
+				tMatKhau.setText(model.getValueAt(row, 2).toString());
+				cbb_MaNhanVien.setSelectedItem(model.getValueAt(row, 3));
 	    	    previousRow = row;
     	        // Đặt cờ là true khi một hàng được chọn
     	
@@ -351,49 +371,26 @@ public class KhachHang extends JPanel implements ActionListener, MouseListener{
 		if (o.equals(btnXoaRong)) {
 			clear();
 		}
-		
 		// TODO Auto-generated method stub
 		
 	}
 	
-	private void clear() {
-		tMaKhachHang.setText("");
-		tTenKhachHang.setText("");
-		tSoDienThoai.setText("");
-		// TODO Auto-generated method stub
-		
-	}
-	
-	protected KhachHang_Entity revert() {
-		String ma;
-		if (tMaKhachHang.getText().trim().equals("")) {
-			ma = taoMa();
-		}else {
-			ma = tMaKhachHang.getText().trim();
-		}
-		String ten = tTenKhachHang.getText().trim();
-		String sdt = tSoDienThoai.getText().trim();
-		return new KhachHang_Entity(ma, ten, sdt);
-	}
-	private String taoMa() {
-		int sl= khachHang_DAO.getSLKH()+1;
-		return String.format("KH%03d",sl);
-	}
-	
-
 	private void sua() {
 		if (JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn cập nhật không?", "Cảnh báo!", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 			int row = table.getSelectedRow();
 			if (row >= 0) {
-				String ma = tMaKhachHang.getText().trim();
-				String ten = tTenKhachHang.getText().trim();
-				String sdt = tSoDienThoai.getText().trim();
+				String ma = tMaTaiKhoan.getText().trim();
+				String ten = tTenDangNhap.getText().trim();
+				String matkhau = tMatKhau.getText().trim();
+				String maNV = cbb_MaNhanVien.getSelectedItem().toString();
 				// Cập nhật thông tin trong bảng
 				model.setValueAt(ma, row, 0);
 				model.setValueAt(ten, row, 1);
-				model.setValueAt(sdt, row, 2);
-				KhachHang_Entity kh = new KhachHang_Entity(ma, ten, sdt);
-				boolean updated = khachHang_DAO.suaKhachHang(kh);
+				model.setValueAt(matkhau, row, 2);
+				model.setValueAt(maNV, row, 3);
+				NhanVien_Entity nv = nhanVien_DAO.timNhanVienTheoMa(maNV);
+				TaiKhoan_Entity tk = new TaiKhoan_Entity(ma, ten, matkhau, nv);
+				boolean updated = taiKhoan_DAO.suaTaiKhoan(tk);
 				if (updated) {
 				    JOptionPane.showMessageDialog(null, "Cập nhật thành công!");
 				} else {
@@ -407,73 +404,90 @@ public class KhachHang extends JPanel implements ActionListener, MouseListener{
 		
 	}
 
+	private void loadData() {
+	    model.setRowCount(0);
+        for (TaiKhoan_Entity tk : taiKhoan_DAO.danhSachTaiKhoan()) {
+            model.addRow(new Object[]{
+                tk.getMaTaiKhoan(),
+                tk.getTenDangNhap(),
+                tk.getMatKhau(),
+                tk.getNhanVien().getMaNhanVien()
+            });
+	    }
+	}
+	private void clear() {
+		tMaTaiKhoan.setText("");
+		tTenDangNhap.setText("");
+		tMatKhau.setText("");
+		cbb_MaNhanVien.setSelectedIndex(0);
+		// TODO Auto-generated method stub
+	}
+	protected TaiKhoan_Entity revert() {
+		String ma;
+		if (tMaTaiKhoan.getText().trim().equals("")) {
+			ma = taoMa();
+		}else {
+			ma = tMaTaiKhoan.getText().trim();
+		}
+		String ten = tTenDangNhap.getText().trim();
+		String matkhau = tMatKhau.getText().trim();
+		String manv = (String) cbb_MaNhanVien.getSelectedItem();
+		NhanVien_Entity nv = nhanVien_DAO.timNhanVienTheoMa(manv);
+		return new TaiKhoan_Entity(ma, ten, matkhau, nv);
+	}
+	private String taoMa() {
+		int sl= taiKhoan_DAO.getSLTaiKhoan()+1;
+		return String.format("TK%03d",sl);
+	}
+	
 	private void them() {
-		KhachHang_Entity kh = revert();
-	    List<KhachHang_Entity> listTopKH = khachHang_DAO.danhSachKhachHang();
+	    TaiKhoan_Entity tk = revert();
+	    List<TaiKhoan_Entity> listTopTaiKhoan = taiKhoan_DAO.danhSachTaiKhoan();
 	    
 	    // Kiểm tra nếu tài khoản đã tồn tại trong danh sách
-	    for (KhachHang_Entity khh : listTopKH) {
-	        if (kh.getMaKhachHang().equals(khh.getMaKhachHang())) {
-	            JOptionPane.showMessageDialog(null, "Kháchh này đã tồn tại", "Lỗi", JOptionPane.ERROR_MESSAGE);
+	    for (TaiKhoan_Entity tkk : listTopTaiKhoan) {
+	        if (tk.getMaTaiKhoan().equals(tkk.getMaTaiKhoan())) {
+	            JOptionPane.showMessageDialog(null, "Tài khoản này đã tồn tại", "Lỗi", JOptionPane.ERROR_MESSAGE);
 	            return;
 	        }
 	    }
 
 	    // Thêm tài khoản nếu không trùng lặp
-	    if (khachHang_DAO.themKhachHang(kh)) {
+	    if (taiKhoan_DAO.themTaiKhoan(tk)) {
 	        JOptionPane.showMessageDialog(null, "Thêm thành công", "Thành công", JOptionPane.DEFAULT_OPTION);
 	        model.addRow(new Object[]{
-        		kh.getMaKhachHang(),
-                kh.getTenKhachHang(),
-                kh.getSoDienThoai()
+	            tk.getMaTaiKhoan(),
+	            tk.getTenDangNhap(),
+	            tk.getMatKhau(),
+	            tk.getNhanVien().getMaNhanVien()
 	        });
 	    } else {
-	        JOptionPane.showMessageDialog(null, "Lỗi khi thêm khách hàng vào cơ sở dữ liệu", "Lỗi", JOptionPane.ERROR_MESSAGE);
-	    }
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void loadData() {
-	    model.setRowCount(0);
-        for (KhachHang_Entity kh : khachHang_DAO.danhSachKhachHang()) {
-            model.addRow(new Object[]{
-               kh.getMaKhachHang(),
-               kh.getTenKhachHang(),
-               kh.getSoDienThoai()
-            });
+	        JOptionPane.showMessageDialog(null, "Lỗi khi thêm tài khoản vào cơ sở dữ liệu", "Lỗi", JOptionPane.ERROR_MESSAGE);
 	    }
 	}
 	
 	private boolean validData() {
-		String ten = tTenKhachHang.getText().trim();
-		String sdt = tSoDienThoai.getText().trim();
+		String tenDangNhap = tTenDangNhap.getText().trim();
+		String matKhau = tMatKhau.getText().trim();
 		
-		if (ten.isEmpty()) {
-			JOptionPane.showMessageDialog(null, "Tên khách hàng không được rỗng","Sai",JOptionPane.ERROR_MESSAGE);
+		if (tenDangNhap.isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Tên đăng nhập không được rỗng","Sai",JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
 		
-		if (!ten.matches("^([A-ZÀ-Ỵ][a-zà-ỵ]*(\\s[A-ZÀ-Ỵ][a-zà-ỵ]*)*)$")) {
-			JOptionPane.showMessageDialog(null, "Tên khách hàng phải 2 từ trở lên","Sai",JOptionPane.ERROR_MESSAGE);
+		if (!tenDangNhap.matches("^[a-zA-Z0-9]{5,20}$")) {
+			JOptionPane.showMessageDialog(null, "Tên đăng nhập phải viết liền không dấu","Sai",JOptionPane.ERROR_MESSAGE);
 			requestFocus();
 			return false;
 		}
 		
-		if (sdt.isEmpty()) {
-			JOptionPane.showMessageDialog(null, "Số điện thoại không được rỗng","Sai",JOptionPane.ERROR_MESSAGE);
-			return false;
-		}
-		
-		if (!sdt.matches("^(03|05|07|08|09)[0-9]{8}$")) {
-			JOptionPane.showMessageDialog(null, "số điện thoại phải có 10 chữ số và bắt đầu với các đầu số: 03x, 05x, 07x, 08x hoặc 09x.","Sai",JOptionPane.ERROR_MESSAGE);
-			requestFocus();
+		if (matKhau.isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Mật khẩu không được rỗng","Sai",JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
 		
 		return true;
 	}
-	
-	
+
 
 }

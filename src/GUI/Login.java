@@ -35,6 +35,8 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JPasswordField;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.ActionEvent;
 import java.awt.FlowLayout;
 import javax.swing.BoxLayout;
@@ -42,34 +44,12 @@ import java.awt.Component;
 
 public class Login extends JFrame implements ActionListener, MouseListener{
 
-	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private TaiKhoan_DAO taiKhoan_DAO;
 	private JTextField tTenDangNhap;
 	private JButton btnDangNhap;
 	private JPasswordField tMatKhau;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			private Login frame;
-
-			public void run() {
-				try {
-					frame = new Login();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}	
-			}
-		});
-	}
-
-	/**
-	 * Create the frame.
-	 */
 	public Login() {
 		
 		try {
@@ -178,13 +158,63 @@ public class Login extends JFrame implements ActionListener, MouseListener{
         btnDangNhap.setIcon(new ImageIcon(Login.class.getResource("/img/icons8-login-40.png")));
         btnDangNhap.setFont(new Font("Tahoma", Font.PLAIN, 25));
         panel_2.add(btnDangNhap);
+        tMatKhau.addKeyListener(new KeyAdapter(){
+			@Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    btnDangNhap.doClick();
+                } else if (e.getKeyCode() == KeyEvent.VK_UP) {
+                	tTenDangNhap.requestFocus();
+                }
+            }
+		});
         
-        btnDangNhap.addMouseListener(this);
+        tTenDangNhap.addKeyListener(new KeyAdapter(){
+			@Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    btnDangNhap.doClick();
+                } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                	tMatKhau.requestFocus();
+                }
+            }
+		});
+        btnDangNhap.addActionListener(this);
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-	    Object o = e.getSource();
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		Object o = e.getSource();
 	    if (o.equals(btnDangNhap)) {
 	        String textUser = tTenDangNhap.getText().trim();
 	        String textPassword = tMatKhau.getText().trim();
@@ -244,35 +274,5 @@ public class Login extends JFrame implements ActionListener, MouseListener{
 	        }
 
 	    }
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 }

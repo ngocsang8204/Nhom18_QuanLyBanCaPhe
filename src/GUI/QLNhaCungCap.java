@@ -42,7 +42,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
-public class NhaCungCap extends JPanel implements ActionListener, MouseListener {
+public class QLNhaCungCap extends JPanel implements ActionListener, MouseListener {
 
     private JTextField tMaNhaCungCap;
     private JTextField tTenNhaCungCap;
@@ -61,7 +61,7 @@ public class NhaCungCap extends JPanel implements ActionListener, MouseListener 
     /**
      * Create the panel.
      */
-    public NhaCungCap() {
+    public QLNhaCungCap() {
         this.setBackground(Color.WHITE);
         this.setBounds(0, 0, 1600, 954);
         setLayout(new BorderLayout(0, 0));
@@ -166,21 +166,21 @@ public class NhaCungCap extends JPanel implements ActionListener, MouseListener 
         panel_5.add(panel_6);
 
         btnThem = new JButton("Thêm");
-        btnThem.setIcon(new ImageIcon(Mon.class.getResource("/img/icons8-add-30.png")));
+        btnThem.setIcon(new ImageIcon(QLMon.class.getResource("/img/icons8-add-30.png")));
         panel_6.add(btnThem);
 
         panel_6.add(Box.createHorizontalStrut(2));
 
         btnSua = new JButton("Sửa");
         btnSua.setPreferredSize(new Dimension(93, 39));
-        btnSua.setIcon(new ImageIcon(Mon.class.getResource("/img/icons8-tools-30.png")));
+        btnSua.setIcon(new ImageIcon(QLMon.class.getResource("/img/icons8-tools-30.png")));
         panel_6.add(btnSua);
 
         Component horizontalStrut = Box.createHorizontalStrut(2);
         panel_6.add(horizontalStrut);
 
         btnXoaRong = new JButton("Xóa rỗng");
-        btnXoaRong.setIcon(new ImageIcon(TaiKhoan.class.getResource("/img/icons8-erase-30.png")));
+        btnXoaRong.setIcon(new ImageIcon(QLTaiKhoan.class.getResource("/img/icons8-erase-30.png")));
         panel_6.add(btnXoaRong);
 
         JPanel panel_1 = new JPanel();
@@ -238,7 +238,7 @@ public class NhaCungCap extends JPanel implements ActionListener, MouseListener 
         panel_9.add(panel_11);
 
         btnTimKiem = new JButton("");
-        btnTimKiem.setIcon(new ImageIcon(NhaCungCap.class.getResource("/img/icons8-search-30.png")));
+        btnTimKiem.setIcon(new ImageIcon(QLNhaCungCap.class.getResource("/img/icons8-search-30.png")));
         btnTimKiem.setContentAreaFilled(false);
         btnTimKiem.setBorderPainted(false);
         panel_11.add(btnTimKiem);
