@@ -7,9 +7,6 @@ import javax.swing.JPanel;
 
 public class ThongKe extends JPanel {
 
-	/**
-	 * Create the panel.
-	 */
 	public ThongKe() {
 		this.setLayout(null);
         this.setBackground(Color.WHITE);

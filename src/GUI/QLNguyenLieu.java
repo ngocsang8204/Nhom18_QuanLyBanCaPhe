@@ -68,9 +68,7 @@ public class QLNguyenLieu extends JPanel implements ActionListener,MouseListener
 	private NhaCungCap_DAO ncc_dao= new NhaCungCap_DAO();
 	private JComboBox<String> cbNCC;
 	private int previousRow=-1;
-	/**
-	 * Create the panel.
-	 */
+
 	public QLNguyenLieu() {
         this.setBackground(Color.WHITE);
         this.setBounds(0, 0, 1600, 954);
@@ -97,10 +95,6 @@ public class QLNguyenLieu extends JPanel implements ActionListener,MouseListener
         JLabel lblNewLabel_1_1 = new JLabel("                       ");
         panel_2.add(lblNewLabel_1_1);
         
-//        JPanel panel_trong = new JPanel();
-//        panel_trong.setPreferredSize(new Dimension(panel_2.getPreferredSize().width,200));
-//        panel.add(panel_trong,BorderLayout.CENTER);
-//        
         JPanel panel_3 = new JPanel();
         panel_3.setBackground(new Color(255, 255, 255));
         panel.add(panel_3, BorderLayout.CENTER);
@@ -276,7 +270,7 @@ public class QLNguyenLieu extends JPanel implements ActionListener,MouseListener
             "Tìm kiếm nhanh:", 
             TitledBorder.LEADING, 
             TitledBorder.TOP, 
-            new Font("Tahoma", Font.PLAIN, 16), // Thiết lập kích thước chữ cho tiêu đề
+            new Font("Tahoma", Font.PLAIN, 16),
             new Color(0, 0, 0)
         ));
 
@@ -298,14 +292,11 @@ public class QLNguyenLieu extends JPanel implements ActionListener,MouseListener
         JPanel panel_12 = new JPanel();
         panel_12.setBackground(new Color(255, 255, 255));
         panel_1.add(panel_12, BorderLayout.CENTER);
-        // Table Model and JTable
         String[] colnames = new String[] { "Mã nguyên liệu","Tên nguyên liệu", "Số lượng", "Thời gian nhập hàng", "Thời gian hết hạn", "Tên nhà cung cấp"};
         model = new DefaultTableModel(colnames, 0);
-        // Sau khi khởi tạo JTable và JScrollPane
         table = new JTable(model) {
 			@Override
 			public boolean isCellEditable(int row, int column) {
-				// Không cho phép chỉnh sửa
 				return false;
 			}
 		};
@@ -315,22 +306,17 @@ public class QLNguyenLieu extends JPanel implements ActionListener,MouseListener
         table.setShowVerticalLines(false);
         JScrollPane jsp = new JScrollPane(table);
         jsp.setPreferredSize(new Dimension(1180, 873));
-        jsp.setBorder(BorderFactory.createLineBorder(Color.BLACK)); // Tạo viền màu đen
+        jsp.setBorder(BorderFactory.createLineBorder(Color.BLACK)); 
         table.getTableHeader().setBackground(Color.white);
         panel_12.add(jsp);
 
-
-        // Thiết lập kích thước font cho các ô trong bảng
-        Font font = new Font("Tahoma", Font.PLAIN, 16); // Chọn font và kích thước
+        Font font = new Font("Tahoma", Font.PLAIN, 16); 
         table.setFont(font);
-        table.setRowHeight(50); // Thiết lập chiều cao hàng nếu cần
-        // Các thiết lập khác
+        table.setRowHeight(50); 
         table.setShowGrid(true);
         table.setShowHorizontalLines(true);
         table.setShowVerticalLines(false);
-
-        // Thiết lập renderer cho tiêu đề cột
-        table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 18)); // Kích thước font cho tiêu đề
+        table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 18));
         table.getTableHeader().setReorderingAllowed(false);
         table.getTableHeader().setResizingAllowed(false);
         table.addMouseListener(this);

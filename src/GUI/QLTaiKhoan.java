@@ -60,10 +60,7 @@ public class QLTaiKhoan extends JPanel implements ActionListener, MouseListener{
 	private TaiKhoan_DAO taiKhoan_DAO;
 	private NhanVien_DAO nhanVien_DAO;
 	private JButton btnXoaRong;
-
-	/**
-	 * Create the panel.
-	 */
+	
 	public QLTaiKhoan() {
 		nhanVien_DAO = new NhanVien_DAO();
 		taiKhoan_DAO = new TaiKhoan_DAO();
@@ -143,7 +140,6 @@ public class QLTaiKhoan extends JPanel implements ActionListener, MouseListener{
         for(String maNV : listMaNV) {
         	cbb_MaNhanVien.addItem(maNV);
         }
-        
         tMatKhau = new JTextField(); 
         panel_4_2.add(tMatKhau);
         
@@ -182,8 +178,7 @@ public class QLTaiKhoan extends JPanel implements ActionListener, MouseListener{
         btnSua.setIcon(new ImageIcon(QLMon.class.getResource("/img/icons8-tools-30.png")));
         panel_6.add(btnSua);
         
-        Component horizontalStrut = Box.createHorizontalStrut(2);
-        panel_6.add(horizontalStrut);
+        panel_6.add(Box.createHorizontalStrut(2));
         
         btnXoaRong = new JButton("Xóa rỗng");
         btnXoaRong.setIcon(new ImageIcon(QLTaiKhoan.class.getResource("/img/icons8-erase-30.png")));
@@ -237,7 +232,7 @@ public class QLTaiKhoan extends JPanel implements ActionListener, MouseListener{
             "Tìm kiếm nhanh:", 
             TitledBorder.LEADING, 
             TitledBorder.TOP, 
-            new Font("Tahoma", Font.PLAIN, 16), // Thiết lập kích thước chữ cho tiêu đề
+            new Font("Tahoma", Font.PLAIN, 16),
             new Color(0, 0, 0)
         ));
 
@@ -259,14 +254,12 @@ public class QLTaiKhoan extends JPanel implements ActionListener, MouseListener{
         JPanel panel_12 = new JPanel();
         panel_12.setBackground(new Color(255, 255, 255));
         panel_1.add(panel_12, BorderLayout.CENTER);
-        // Table Model and JTable
+
         String[] colnames = new String[] { "Mã tài khoản","Tên đăng nhập", "Mật khẩu", "Mã nhân viên"};
         model = new DefaultTableModel(colnames, 0);
-        // Sau khi khởi tạo JTable và JScrollPane
         table = new JTable(model) {
 			@Override
 			public boolean isCellEditable(int row, int column) {
-				// Không cho phép chỉnh sửa
 				return false;
 			}
 		};
@@ -276,26 +269,21 @@ public class QLTaiKhoan extends JPanel implements ActionListener, MouseListener{
         table.setShowVerticalLines(false);
         JScrollPane jsp = new JScrollPane(table);
         jsp.setPreferredSize(new Dimension(1180, 873));
-        jsp.setBorder(BorderFactory.createLineBorder(Color.BLACK)); // Tạo viền màu đen
+        jsp.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         table.getTableHeader().setBackground(Color.white);
         panel_12.add(jsp);
 
-
-        // Thiết lập kích thước font cho các ô trong bảng
-        Font font = new Font("Tahoma", Font.PLAIN, 16); // Chọn font và kích thước
+        Font font = new Font("Tahoma", Font.PLAIN, 16);
         table.setFont(font);
-        table.setRowHeight(50); // Thiết lập chiều cao hàng nếu cần
+        table.setRowHeight(50);
 
-        // Các thiết lập khác
         table.setShowGrid(true);
         table.setShowHorizontalLines(true);
         table.setShowVerticalLines(false);
 
-        // Thiết lập renderer cho tiêu đề cột
-        table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 18)); // Kích thước font cho tiêu đề
+        table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 18));
         table.getTableHeader().setResizingAllowed(false);
         table.getTableHeader().setReorderingAllowed(false);
-        
         table.addMouseListener(this);
         btnThem.addActionListener(this);
         btnTimKiem.addActionListener(this);
@@ -320,8 +308,6 @@ public class QLTaiKhoan extends JPanel implements ActionListener, MouseListener{
 				tMatKhau.setText(model.getValueAt(row, 2).toString());
 				cbb_MaNhanVien.setSelectedItem(model.getValueAt(row, 3));
 	    	    previousRow = row;
-    	        // Đặt cờ là true khi một hàng được chọn
-    	
     	    }
 		}
 		// TODO Auto-generated method stub
@@ -366,7 +352,7 @@ public class QLTaiKhoan extends JPanel implements ActionListener, MouseListener{
 			}
 		}
 		if (o.equals(btnTimKiem)) {
-			
+			System.out.println("đm buồi Ngọc Sang");
 		}
 		if (o.equals(btnXoaRong)) {
 			clear();
@@ -383,7 +369,7 @@ public class QLTaiKhoan extends JPanel implements ActionListener, MouseListener{
 				String ten = tTenDangNhap.getText().trim();
 				String matkhau = tMatKhau.getText().trim();
 				String maNV = cbb_MaNhanVien.getSelectedItem().toString();
-				// Cập nhật thông tin trong bảng
+				
 				model.setValueAt(ma, row, 0);
 				model.setValueAt(ten, row, 1);
 				model.setValueAt(matkhau, row, 2);
@@ -444,7 +430,6 @@ public class QLTaiKhoan extends JPanel implements ActionListener, MouseListener{
 	    TaiKhoan_Entity tk = revert();
 	    List<TaiKhoan_Entity> listTopTaiKhoan = taiKhoan_DAO.danhSachTaiKhoan();
 	    
-	    // Kiểm tra nếu tài khoản đã tồn tại trong danh sách
 	    for (TaiKhoan_Entity tkk : listTopTaiKhoan) {
 	        if (tk.getMaTaiKhoan().equals(tkk.getMaTaiKhoan())) {
 	            JOptionPane.showMessageDialog(null, "Tài khoản này đã tồn tại", "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -452,7 +437,6 @@ public class QLTaiKhoan extends JPanel implements ActionListener, MouseListener{
 	        }
 	    }
 
-	    // Thêm tài khoản nếu không trùng lặp
 	    if (taiKhoan_DAO.themTaiKhoan(tk)) {
 	        JOptionPane.showMessageDialog(null, "Thêm thành công", "Thành công", JOptionPane.DEFAULT_OPTION);
 	        model.addRow(new Object[]{

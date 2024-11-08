@@ -78,7 +78,6 @@ public class Loading extends JFrame {
         this.value.setText(value + " %");
         this.progress.setValue(value);
 
-        // Cập nhật trạng thái dựa trên giá trị của value
         switch (value) {
             case 10:
                 txtLoad.setText("Turning On Modules ...");
@@ -96,7 +95,7 @@ public class Loading extends JFrame {
                 txtLoad.setText("Launching Application ...");
                 break;
             case 100:
-            	this.dispose(); // Đóng cửa sổ tải
+            	this.dispose();
                 TrangChu trangChu = new TrangChu(taiKhoan);
                 trangChu.setVisible(true);
                 break;

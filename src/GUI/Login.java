@@ -219,7 +219,6 @@ public class Login extends JFrame implements ActionListener, MouseListener{
 	        String textUser = tTenDangNhap.getText().trim();
 	        String textPassword = tMatKhau.getText().trim();
 
-	        // Kiểm tra xem tên đăng nhập hoặc mật khẩu có bị trống hay không
 	        if (textUser.isEmpty()) {
 	            JOptionPane.showMessageDialog(this, "Vui lòng nhập tên đăng nhập.");
 	            return;
@@ -229,7 +228,6 @@ public class Login extends JFrame implements ActionListener, MouseListener{
 	            return;
 	        }
 
-	        // Kiểm tra thông tin đăng nhập thông qua TaiKhoan_DAO
 	        TaiKhoan_Entity taiKhoan = taiKhoan_DAO.checkUser(textUser, textPassword);
 
 	        if (taiKhoan != null) {
@@ -238,34 +236,30 @@ public class Login extends JFrame implements ActionListener, MouseListener{
 	                loading.setVisible(true);
 	                loading.setLocationRelativeTo(null);
 
-	                // Sử dụng SwingWorker để cập nhật tiến trình
 	                SwingWorker<Void, Integer> worker = new SwingWorker<Void, Integer>() {
 	                    @Override
 	                    protected Void doInBackground() throws Exception {
 	                        for (int i = 0; i <= 100; i++) {
-	                            Thread.sleep(10); // Giảm thời gian chờ để tăng tốc độ tải
-	                            publish(i); // Gửi giá trị tiến trình cho phương thức process()
+	                            Thread.sleep(10); 
+	                            publish(i); 
 	                        }
 	                        return null;
 	                    }
 
 	                    @Override
 	                    protected void process(java.util.List<Integer> chunks) {
-	                        // Lấy giá trị tiến trình cuối cùng từ danh sách
 	                        int progressValue = chunks.get(chunks.size() - 1);
 	                        loading.updateProgress(progressValue, taiKhoan);
 	                    }
 
 	                    @Override
 	                    protected void done() {
-	                        // Đóng cửa sổ tải khi hoàn tất
 	                        loading.dispose();
 	                    }
 	                };
 
-	                // Khởi động tiến trình
 	                worker.execute();
-	                setVisible(false); // Ẩn cửa sổ đăng nhập
+//	                setVisible(false); 
 	            } catch (Exception e1) {
 	                e1.printStackTrace();
 	            }

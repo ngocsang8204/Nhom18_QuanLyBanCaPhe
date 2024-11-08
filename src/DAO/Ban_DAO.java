@@ -77,7 +77,7 @@ public class Ban_DAO {
 	    	} else {
 	    		String sql = "INSERT INTO Ban(maBan, tenBan, trangThaiBan, ghiChu) VALUES (?, ?, ?, ?)";
 	    		stmt = con.prepareStatement(sql);
-	    		stmt.setString(1, "Ban00" + String.valueOf(dsBan.size() + 1));
+	    		stmt.setString(1, ban.getMaBan());
 	    		stmt.setString(2, ban.getTenBan());
 	    		stmt.setString(3, ban.getTrangThaiBan());
 	    		stmt.setString(4, ban.getGhiChu());
@@ -118,5 +118,20 @@ public class Ban_DAO {
 			// TODO: handle exception
 		}
 		return isSuccess;
+	}
+	public int getSLBan() {
+		khoiTao();
+		Connection connection = database.getInstance().getConnection();
+		String sql= "select count(*) from ban";
+		try {
+			PreparedStatement stmt= connection.prepareStatement(sql);
+			ResultSet rs=stmt.executeQuery();
+			if(rs.next()) {
+				return rs.getInt(1);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
 	}
 }

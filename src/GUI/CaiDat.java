@@ -8,9 +8,6 @@ import javax.swing.JPanel;
 
 public class CaiDat extends JPanel {
 
-	/**
-	 * Create the panel.
-	 */
 	public CaiDat() {
 		this.setLayout(null);
         this.setBackground(Color.WHITE);
