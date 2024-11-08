@@ -38,6 +38,7 @@ import javax.swing.table.DefaultTableModel;
 
 import DAO.Ban_DAO;
 import Entity.Ban_Entity;
+import Entity.TaiKhoan_Entity;
 
 import javax.swing.JScrollPane;
 import javax.swing.JComboBox;
@@ -386,5 +387,8 @@ public class Ban extends JPanel implements ActionListener,MouseListener{
 			
 		}
 		
+	}
+	public static void main(String[] args) {
+		new TrangChu(new TaiKhoan_Entity("TK001")).setVisible(true);
 	}
 }
