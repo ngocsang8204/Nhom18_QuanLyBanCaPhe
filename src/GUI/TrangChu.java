@@ -572,17 +572,30 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
         giamGia_lab.setFont(new Font("Tahoma", Font.PLAIN, 18));
         pane_l.add(giamGia_lab);
         
+//        tGiamGia = new JComboBox<String>();
+//        tGiamGia.addItem("0");
+//        tGiamGia.addItem("10000");
+//        tGiamGia.addItem("20000");
+//        tGiamGia.addItem("50000");
+//        tGiamGia.setFont(new Font("Tahoma", Font.PLAIN, 18));
+//        pane_l.add(tGiamGia);
+//        tGiamGia.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                capNhatTongTien(); // Gọi hàm cập nhật khi thay đổi
+//            }
+//        });
         tGiamGia = new JComboBox<String>();
         tGiamGia.addItem("0");
-        tGiamGia.addItem("10000");
-        tGiamGia.addItem("20000");
-        tGiamGia.addItem("50000");
+        tGiamGia.addItem("-10000 VND");
+        tGiamGia.addItem("-20000 VND");
+        tGiamGia.addItem("-50000 VND");
         tGiamGia.setFont(new Font("Tahoma", Font.PLAIN, 18));
         pane_l.add(tGiamGia);
         tGiamGia.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                capNhatTongTien(); // Gọi hàm cập nhật khi thay đổi
+                capNhatTongTien();
             }
         });
         
@@ -644,8 +657,15 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
         return item;
     }
 	
+//	private void capNhatTongTien() {
+//        double giamGia = Double.parseDouble(tGiamGia.getSelectedItem().toString());
+//        double tongTienMoi = tongTien - giamGia;
+//        DecimalFormat df = new DecimalFormat("#.### VND");
+//        btnThanhToan.setText(String.valueOf(df.format(tongTienMoi)));
+//    }
+	
 	private void capNhatTongTien() {
-        double giamGia = Double.parseDouble(tGiamGia.getSelectedItem().toString());
+        double giamGia = Double.parseDouble(tGiamGia.getSelectedItem().toString().replace("-","").replace("VND", ""));
         double tongTienMoi = tongTien - giamGia;
         DecimalFormat df = new DecimalFormat("#.### VND");
         btnThanhToan.setText(String.valueOf(df.format(tongTienMoi)));
