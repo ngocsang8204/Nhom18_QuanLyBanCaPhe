@@ -138,6 +138,11 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 	private JPanel soLuong_pane;
 	private JLabel soLuong_lab;
 	private JTextField tSoLuong;
+	private double tongTien = 0;
+	private JButton suaMon;
+	private int row = -1;
+	private int row_dat = -1;
+	private JButton btnXoaTrang;
 
 	public TrangChu(TaiKhoan_Entity taiKhoan) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -320,11 +325,11 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 		btnDaXay.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		left_main_btn.add(btnDaXay);
 
-		btnTra = new JButton("TRÀ");
+		btnTra = new JButton("TRÀ SỮA");
 		btnTra.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		left_main_btn.add(btnTra);
 
-		btnSoda = new JButton("SODA");
+		btnSoda = new JButton("SINH TỐ");
 		btnSoda.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		left_main_btn.add(btnSoda);
 
@@ -471,6 +476,14 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 		themMon.setFont(new Font("Tahoma", Font.BOLD, 20));
 		s_pane.add(themMon);
 
+		suaMon = new JButton("SỬA MÓN");
+		suaMon.setFont(new Font("Tahoma", Font.BOLD, 20));
+		s_pane.add(suaMon);
+
+		btnXoaTrang = new JButton("XOÁ TRẮNG");
+		btnXoaTrang.setFont(new Font("Tahoma", Font.BOLD, 20));
+		s_pane.add(btnXoaTrang);
+
 		right_main = new JPanel();
 		main.add(right_main);
 		right_main.setLayout(new BorderLayout());
@@ -528,7 +541,7 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 		r_main.setBackground(new Color(255, 255, 255));
 		right_main.add(r_main, BorderLayout.CENTER);
 
-		String[] colnames = { "Mã món", "Tên món", "Loại món", "Số lượng", "Giá tiền" };
+		String[] colnames = { "Mã món", "Tên món", "Đơn giá", "Số lượng", "Giá tiền" };
 		model = new DefaultTableModel(colnames, 0);
 		r_main.setLayout(new BoxLayout(r_main, BoxLayout.Y_AXIS));
 		table = new JTable(model) {
@@ -537,6 +550,9 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 				return false;
 			}
 		};
+		table.setShowGrid(true);
+		table.setRowHeight(30);
+		table.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 18));
 		table.getTableHeader().setResizingAllowed(false);
 		JScrollPane scr = new JScrollPane(table);
@@ -558,13 +574,32 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 		giamGia_lab.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		pane_l.add(giamGia_lab);
 
+		// tGiamGia = new JComboBox<String>();
+		// tGiamGia.addItem("0");
+		// tGiamGia.addItem("10000");
+		// tGiamGia.addItem("20000");
+		// tGiamGia.addItem("50000");
+		// tGiamGia.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		// pane_l.add(tGiamGia);
+		// tGiamGia.addActionListener(new ActionListener() {
+		// @Override
+		// public void actionPerformed(ActionEvent e) {
+		// capNhatTongTien(); // Gọi hàm cập nhật khi thay đổi
+		// }
+		// });
 		tGiamGia = new JComboBox<String>();
 		tGiamGia.addItem("0");
-		tGiamGia.addItem("10000");
-		tGiamGia.addItem("20000");
-		tGiamGia.addItem("50000");
+		tGiamGia.addItem("-10000 VND");
+		tGiamGia.addItem("-20000 VND");
+		tGiamGia.addItem("-50000 VND");
 		tGiamGia.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		pane_l.add(tGiamGia);
+		tGiamGia.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				capNhatTongTien();
+			}
+		});
 
 		pane_r = new JPanel();
 		pane_r.setBackground(new Color(255, 255, 255));
@@ -586,16 +621,17 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 		datHang.setBackground(new Color(255, 255, 255));
 		right_main.add(datHang, BorderLayout.SOUTH);
 
-		btnThanhToan = new JButton("0 VND");
+		DecimalFormat df = new DecimalFormat("#.### VND");
+		btnThanhToan = new JButton(df.format(tongTien));
 		btnThanhToan.setFont(new Font("Tahoma", Font.BOLD, 30));
 		datHang.add(btnThanhToan);
 
-		btnTrangChu.addMouseListener(this);
-		btnQuanLy.addMouseListener(this);
-		btnBan.addMouseListener(this);
-		btnThongKe.addMouseListener(this);
-		btnHoaDon.addMouseListener(this);
-		btnCaiDat.addMouseListener(this);
+		btnTrangChu.addActionListener(this);
+		btnQuanLy.addActionListener(this);
+		btnBan.addActionListener(this);
+		btnThongKe.addActionListener(this);
+		btnHoaDon.addActionListener(this);
+		btnCaiDat.addActionListener(this);
 
 		btnCafe.addActionListener(this);
 		btnDaXay.addActionListener(this);
@@ -604,9 +640,14 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 		btnBanh.addActionListener(this);
 		btnKhac.addActionListener(this);
 		btnTatCa.addActionListener(this);
+		themMon.addActionListener(this);
+		suaMon.addActionListener(this);
+		btnXoaTrang.addActionListener(this);
+		themMon.setEnabled(false);
+		suaMon.setEnabled(false);
 
 		table_1.addMouseListener(this);
-
+		table.addMouseListener(this);
 		hienBang();
 	}
 
@@ -616,6 +657,20 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 		item.setFont(new Font("Tahoma", Font.BOLD, 17));
 
 		return item;
+	}
+
+	// private void capNhatTongTien() {
+	// double giamGia = Double.parseDouble(tGiamGia.getSelectedItem().toString());
+	// double tongTienMoi = tongTien - giamGia;
+	// DecimalFormat df = new DecimalFormat("#.### VND");
+	// btnThanhToan.setText(String.valueOf(df.format(tongTienMoi)));
+	// }
+
+	private void capNhatTongTien() {
+		double giamGia = Double.parseDouble(tGiamGia.getSelectedItem().toString().replace("-", "").replace("VND", ""));
+		double tongTienMoi = tongTien - giamGia;
+		DecimalFormat df = new DecimalFormat("#.### VND");
+		btnThanhToan.setText(String.valueOf(df.format(tongTienMoi)));
 	}
 
 	private void hienBang() {
@@ -666,6 +721,35 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 		body.repaint();
 	}
 
+	private void themMonDat() {
+		try {
+			DecimalFormat df = new DecimalFormat("#.### VND");
+			Mon_Entity mon = mon_dao.timMonTheoMa(tMaMon.getText().toString());
+			int soLuong = Integer.parseInt(tSoLuong.getText().toString());
+			model.addRow(new Object[] { tMaMon.getText().toString(), tTenMon.getText().toString(),
+					df.format(mon.getDonGia()), tSoLuong.getText().toString(), df.format(mon.getDonGia() * soLuong) });
+			tongTien = tongTien + soLuong * mon.getDonGia();
+			btnThanhToan.setText(df.format(tongTien));
+			row = -1;
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
+
+	private void suaMonDat() {
+		try {
+			if (row_dat >= 0) {
+				Mon_Entity mon = mon_dao.timMonTheoMa(tMaMon.getText().toString());
+				int soLuongCu = Integer.parseInt(model.getValueAt(row_dat, 3).toString());
+				tongTien = tongTien - mon.getDonGia() * soLuongCu;
+				model.removeRow(row_dat);
+				themMonDat();
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
@@ -704,6 +788,70 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 			model_1.getDataVector().removeAllElements();
 			hienBang();
 		}
+
+		if (btn.equals(themMon)) {
+			themMonDat();
+			xoaTrang();
+			themMon.setEnabled(false);
+			suaMon.setEnabled(false);
+		}
+
+		if (btn.equals(btnTrangChu)) {
+			body.removeAll();
+			body.add(main);
+			body.revalidate();
+			body.repaint();
+		}
+
+		if (btn.equals(btnBan)) {
+			body.removeAll();
+			body.add(new Ban());
+			body.revalidate();
+			body.repaint();
+		}
+
+		if (btn.equals(btnQuanLy)) {
+			manageMenu.show(btnQuanLy, btnQuanLy.getWidth(), btnQuanLy.getHeight() / 3);
+		}
+
+		if (btn.equals(btnThongKe)) {
+			body.removeAll();
+			body.add(new ThongKe());
+			body.revalidate();
+			body.repaint();
+		}
+
+		if (btn.equals(btnHoaDon)) {
+			body.removeAll();
+			body.add(new HoaDon());
+			body.revalidate();
+			body.repaint();
+		}
+
+		if (btn.equals(btnCaiDat)) {
+			body.removeAll();
+			body.add(new CaiDat());
+			body.revalidate();
+			body.repaint();
+		}
+
+		if (btn.equals(btnXoaTrang)) {
+			xoaTrang();
+		}
+
+		if (btn.equals(suaMon)) {
+			suaMonDat();
+			xoaTrang();
+			themMon.setEnabled(false);
+			suaMon.setEnabled(false);
+		}
+	}
+
+	private void xoaTrang() {
+		tMaMon.setText("");
+		tTenMon.setText("");
+		tGiaTien.setText("");
+		tSoLuong.setText("1");
 	}
 
 	@Override
@@ -720,53 +868,23 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		Object o = e.getSource();
-
-		if (o.equals(btnTrangChu)) {
-			body.removeAll();
-			body.add(main);
-			body.revalidate();
-			body.repaint();
-		}
-
-		if (o.equals(btnBan)) {
-			body.removeAll();
-			body.add(new Ban());
-
-			body.revalidate();
-			body.repaint();
-		}
-
-		if (o.equals(btnQuanLy)) {
-			manageMenu.show(btnQuanLy, btnQuanLy.getWidth(), btnQuanLy.getHeight() / 3);
-		}
-
-		if (o.equals(btnThongKe)) {
-			body.removeAll();
-			body.add(new ThongKe());
-			body.revalidate();
-			body.repaint();
-		}
-
-		if (o.equals(btnHoaDon)) {
-			body.removeAll();
-			body.add(new HoaDon());
-			body.revalidate();
-			body.repaint();
-		}
-
-		if (o.equals(btnCaiDat)) {
-			body.removeAll();
-			body.add(new CaiDat());
-			body.revalidate();
-			body.repaint();
-		}
-
-		if(o.equals(table_1)) {
-			int row = table_1.getSelectedRow();
+		row = table_1.getSelectedRow();
+		row_dat = table.getSelectedRow();
+		if (row >= 0) {
+			themMon.setEnabled(true);
+			suaMon.setEnabled(false);
 			tMaMon.setText(model_1.getValueAt(row, 0).toString());
 			tTenMon.setText(model_1.getValueAt(row, 1).toString());
 			tGiaTien.setText(model_1.getValueAt(row, 3).toString());
+		}
+
+		if (row_dat >= 0) {
+			themMon.setEnabled(false);
+			suaMon.setEnabled(true);
+			tMaMon.setText(model.getValueAt(row_dat, 0).toString());
+			tTenMon.setText(model.getValueAt(row_dat, 1).toString());
+			tGiaTien.setText(model.getValueAt(row_dat, 2).toString());
+			tSoLuong.setText(model.getValueAt(row_dat, 3).toString());
 		}
 	}
 
@@ -783,8 +901,5 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 	@Override
 	public void mouseExited(MouseEvent e) {
 
-	}
-	public static void main(String[] args) {
-		new TrangChu(new TaiKhoan_Entity("TK001")).setVisible(true);
 	}
 }
