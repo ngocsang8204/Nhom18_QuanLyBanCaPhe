@@ -138,6 +138,7 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
 	private JPanel soLuong_pane;
 	private JLabel soLuong_lab;
 	private JTextField tSoLuong;
+	private double tongTien = 0;
 
 	public TrangChu(TaiKhoan_Entity taiKhoan) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);getContentPane().setLayout(new BorderLayout(0, 0));
@@ -535,6 +536,9 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
 				return false;
 			}
 		};
+		table.setShowGrid(true);
+		table.setRowHeight(30);
+		table.setFont(new Font("Tahoma", Font.PLAIN, 18));
         table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 18));
         table.getTableHeader().setResizingAllowed(false);
         JScrollPane scr = new JScrollPane(table);
@@ -563,6 +567,12 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
         tGiamGia.addItem("50000");
         tGiamGia.setFont(new Font("Tahoma", Font.PLAIN, 18));
         pane_l.add(tGiamGia);
+        tGiamGia.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                capNhatTongTien(); // Gọi hàm cập nhật khi thay đổi
+            }
+        });
         
         pane_r = new JPanel();
         pane_r.setBackground(new Color(255, 255, 255));
@@ -584,7 +594,8 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
 		datHang.setBackground(new Color(255, 255, 255));
 		right_main.add(datHang, BorderLayout.SOUTH);
 		
-		btnThanhToan = new JButton("0 VND");
+		DecimalFormat df = new DecimalFormat("#.### VND");
+		btnThanhToan = new JButton(df.format(tongTien));
 		btnThanhToan.setFont(new Font("Tahoma", Font.BOLD, 30));
 		datHang.add(btnThanhToan);
 		
@@ -602,6 +613,7 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
 		btnBanh.addActionListener(this);
 		btnKhac.addActionListener(this);
 		btnTatCa.addActionListener(this);
+		themMon.addActionListener(this);
 		
 		table_1.addMouseListener(this);
 		
@@ -614,6 +626,13 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
         item.setFont(new Font("Tahoma", Font.BOLD, 17));
 
         return item;
+    }
+	
+	private void capNhatTongTien() {
+        double giamGia = Double.parseDouble(tGiamGia.getSelectedItem().toString());
+        double tongTienMoi = tongTien - giamGia;
+        DecimalFormat df = new DecimalFormat("#.### VND");
+        btnThanhToan.setText(String.valueOf(df.format(tongTienMoi)));
     }
 	
 	private void hienBang() {
@@ -663,6 +682,19 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
         body.revalidate();
         body.repaint();
 	}
+	
+	private void themMonDat () {
+		try {
+			Mon_Entity mon = mon_dao.timMonTheoMa(tMaMon.getText().toString());
+			int soLuong = Integer.parseInt(tSoLuong.getText().toString());
+			model.addRow(new Object[] {tMaMon.getText().toString(), tTenMon.getText().toString(), tGiaTien.getText().toString(), tSoLuong.getText().toString(), mon.getDonGia()*soLuong});
+			tongTien = tongTien + soLuong*mon.getDonGia();
+			DecimalFormat df = new DecimalFormat("#.### VND");
+			btnThanhToan.setText(df.format(tongTien));
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -702,7 +734,20 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
 	    	model_1.getDataVector().removeAllElements();
 	    	hienBang();
 	    }
+	    
+	    if (btn.equals(themMon)) {
+	    	themMonDat();
+	    	xoaTrang();
+	    }
 	}
+	
+	private void xoaTrang() {
+		tMaMon.setText("");
+		tTenMon.setText("");
+		tGiaTien.setText("");
+		tSoLuong.setText("1");
+	}
+	
 
 	@Override
 	public void mousePressed(MouseEvent e) {
