@@ -1,13 +1,15 @@
 package Entity;
 
 public class ChiTietDonHang_Entity {
-	private Mon_Entity mon;
 	private HoaDon_Entity hoaDon;
+	private Mon_Entity mon;
+	
 	private int soLuongMon;
-	public ChiTietDonHang_Entity(Mon_Entity mon, HoaDon_Entity hoaDon, int soLuongMon) {
+	
+	public ChiTietDonHang_Entity(HoaDon_Entity hoaDon, Mon_Entity mon, int soLuongMon) {
 		super();
-		this.mon = mon;
 		this.hoaDon = hoaDon;
+		this.mon = mon;
 		this.soLuongMon = soLuongMon;
 	}
 	public ChiTietDonHang_Entity() {

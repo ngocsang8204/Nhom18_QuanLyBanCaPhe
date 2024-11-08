@@ -64,6 +64,11 @@ public class Ban_DAO {
 		return dsBan.stream().filter(x -> x.getTrangThaiBan().equals(trangThai)).collect(Collectors.toCollection(ArrayList::new));
 	}
 	
+	public Ban_Entity timBanTheoTenChinhXac(String ten) {
+		ArrayList<Ban_Entity> dsBan = danhSachBan();
+		return dsBan.stream().filter(x -> x.getTenBan().equalsIgnoreCase(ten)).findFirst().orElse(null);
+	}
+	
 	public boolean themBan (Ban_Entity ban) {
 		khoiTao();
 		Connection con = database.getInstance().getConnection();
