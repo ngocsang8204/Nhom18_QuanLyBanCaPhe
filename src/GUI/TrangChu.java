@@ -527,7 +527,7 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
 		r_main.setBackground(new Color(255, 255, 255));
 		right_main.add(r_main, BorderLayout.CENTER);
 		
-		String[] colnames = {"Mã món", "Tên món", "Loại món", "Số lượng", "Giá tiền"};
+		String[] colnames = {"Mã món", "Tên món", "Đơn giá", "Số lượng", "Giá tiền"};
         model = new DefaultTableModel(colnames, 0);
         r_main.setLayout(new BoxLayout(r_main, BoxLayout.Y_AXIS));
         table = new JTable(model){
@@ -685,11 +685,11 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
 	
 	private void themMonDat () {
 		try {
+			DecimalFormat df = new DecimalFormat("#.### VND");
 			Mon_Entity mon = mon_dao.timMonTheoMa(tMaMon.getText().toString());
 			int soLuong = Integer.parseInt(tSoLuong.getText().toString());
-			model.addRow(new Object[] {tMaMon.getText().toString(), tTenMon.getText().toString(), tGiaTien.getText().toString(), tSoLuong.getText().toString(), mon.getDonGia()*soLuong});
+			model.addRow(new Object[] {tMaMon.getText().toString(), tTenMon.getText().toString(), df.format(mon.getDonGia()), tSoLuong.getText().toString(), df.format(mon.getDonGia()*soLuong)});
 			tongTien = tongTien + soLuong*mon.getDonGia();
-			DecimalFormat df = new DecimalFormat("#.### VND");
 			btnThanhToan.setText(df.format(tongTien));
 		} catch (Exception e) {
 			// TODO: handle exception
