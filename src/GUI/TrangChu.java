@@ -139,6 +139,10 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
 	private JLabel soLuong_lab;
 	private JTextField tSoLuong;
 	private double tongTien = 0;
+	private JButton suaMon;
+	private int row = -1;
+	private int row_dat = -1;
+	private JButton btnXoaTrang;
 
 	public TrangChu(TaiKhoan_Entity taiKhoan) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);getContentPane().setLayout(new BorderLayout(0, 0));
@@ -469,6 +473,14 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
         themMon = new JButton("THÊM MÓN");
         themMon.setFont(new Font("Tahoma", Font.BOLD, 20));
         s_pane.add(themMon);
+        
+        suaMon = new JButton("SỬA MÓN");
+        suaMon.setFont(new Font("Tahoma", Font.BOLD, 20));
+        s_pane.add(suaMon);
+        
+        btnXoaTrang = new JButton("XOÁ TRẮNG");
+        btnXoaTrang.setFont(new Font("Tahoma", Font.BOLD, 20));
+        s_pane.add(btnXoaTrang);
 			
 		right_main = new JPanel();
 		main.add(right_main);
@@ -614,9 +626,13 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
 		btnKhac.addActionListener(this);
 		btnTatCa.addActionListener(this);
 		themMon.addActionListener(this);
+		suaMon.addActionListener(this);
+		btnXoaTrang.addActionListener(this);
+		themMon.setEnabled(false);
+		suaMon.setEnabled(false);
 		
 		table_1.addMouseListener(this);
-		
+		table.addMouseListener(this);
 		hienBang();
 	}
 	
@@ -691,6 +707,21 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
 			model.addRow(new Object[] {tMaMon.getText().toString(), tTenMon.getText().toString(), df.format(mon.getDonGia()), tSoLuong.getText().toString(), df.format(mon.getDonGia()*soLuong)});
 			tongTien = tongTien + soLuong*mon.getDonGia();
 			btnThanhToan.setText(df.format(tongTien));
+			row = -1;
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
+	
+	private void suaMonDat() {
+		try {
+			if (row_dat >= 0) {
+				Mon_Entity mon = mon_dao.timMonTheoMa(tMaMon.getText().toString());
+				int soLuongCu = Integer.parseInt(model.getValueAt(row_dat, 3).toString());
+				tongTien = tongTien - mon.getDonGia()*soLuongCu;
+				model.removeRow(row_dat);
+				themMonDat();
+			}
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
@@ -738,6 +769,58 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
 	    if (btn.equals(themMon)) {
 	    	themMonDat();
 	    	xoaTrang();
+	    	themMon.setEnabled(false);
+			suaMon.setEnabled(false);
+	    }
+	    
+	    if (btn.equals(btnTrangChu)) {
+	        body.removeAll();
+	        body.add(main);
+	        body.revalidate();
+	        body.repaint();
+	    }
+	    
+	    if (btn.equals(btnBan)) {
+	        body.removeAll();
+	        body.add(new Ban());
+	        body.revalidate();
+	        body.repaint();
+	    }
+
+	    if (btn.equals(btnQuanLy)) {
+	    	manageMenu.show(btnQuanLy, btnQuanLy.getWidth(), btnQuanLy.getHeight()/3);
+	    }
+
+	    if (btn.equals(btnThongKe)) {
+	        body.removeAll();
+	        body.add(new ThongKe());
+	        body.revalidate();
+	        body.repaint();
+	    }
+
+	    if (btn.equals(btnHoaDon)) {
+	        body.removeAll();
+	        body.add(new HoaDon());
+	        body.revalidate();
+	        body.repaint();
+	    }
+	    
+	    if (btn.equals(btnCaiDat)) {
+	        body.removeAll();
+	        body.add(new CaiDat());
+	        body.revalidate();
+	        body.repaint();
+	    }
+	    
+	    if (btn.equals(btnXoaTrang)) {
+	    	xoaTrang();
+	    }
+	    
+	    if (btn.equals(suaMon)) {
+	    	suaMonDat();
+	    	xoaTrang();
+	    	themMon.setEnabled(false);
+			suaMon.setEnabled(false);
 	    }
 	}
 	
@@ -763,50 +846,24 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener{
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-	    Object o = e.getSource();
-	    
-	    if (o.equals(btnTrangChu)) {
-	        body.removeAll();
-	        body.add(main);
-	        body.revalidate();
-	        body.repaint();
+	    row = table_1.getSelectedRow();
+	    row_dat = table.getSelectedRow();
+	    if (row >= 0) {
+	    	themMon.setEnabled(true);
+	    	suaMon.setEnabled(false);
+	    	tMaMon.setText(model_1.getValueAt(row, 0).toString());
+		    tTenMon.setText(model_1.getValueAt(row, 1).toString());
+		    tGiaTien.setText(model_1.getValueAt(row, 3).toString());
 	    }
 	    
-	    if (o.equals(btnBan)) {
-	        body.removeAll();
-	        body.revalidate();
-	        body.repaint();
+	    if (row_dat >= 0) {
+	    	themMon.setEnabled(false);
+	    	suaMon.setEnabled(true);
+	    	tMaMon.setText(model.getValueAt(row_dat, 0).toString());
+		    tTenMon.setText(model.getValueAt(row_dat, 1).toString());
+		    tGiaTien.setText(model.getValueAt(row_dat, 2).toString());
+		    tSoLuong.setText(model.getValueAt(row_dat, 3).toString());
 	    }
-
-	    if (o.equals(btnQuanLy)) {
-	    	manageMenu.show(btnQuanLy, btnQuanLy.getWidth(), btnQuanLy.getHeight()/3);
-	    }
-
-	    if (o.equals(btnThongKe)) {
-	        body.removeAll();
-	        body.add(new ThongKe());
-	        body.revalidate();
-	        body.repaint();
-	    }
-
-	    if (o.equals(btnHoaDon)) {
-	        body.removeAll();
-	        body.add(new HoaDon());
-	        body.revalidate();
-	        body.repaint();
-	    }
-	    
-	    if (o.equals(btnCaiDat)) {
-	        body.removeAll();
-	        body.add(new CaiDat());
-	        body.revalidate();
-	        body.repaint();
-	    }
-
-	    int row = table_1.getSelectedRow();
-	    tMaMon.setText(model_1.getValueAt(row, 0).toString());
-	    tTenMon.setText(model_1.getValueAt(row, 1).toString());
-	    tGiaTien.setText(model_1.getValueAt(row, 3).toString());
 	}
 	
 	private boolean thanhToan() {
