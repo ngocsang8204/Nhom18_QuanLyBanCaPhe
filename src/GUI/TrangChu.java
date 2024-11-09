@@ -1,8 +1,6 @@
 package GUI;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -11,13 +9,19 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
-import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
 
+import DAO.Ban_DAO;
+import DAO.ChiTietDonHang_DAO;
+import DAO.HoaDon_DAO;
+import DAO.KhachHang_DAO;
 import DAO.Mon_DAO;
-import DAO.TaiKhoan_DAO;
+import DAO.NhanVien_DAO;
+import Entity.Ban_Entity;
+import Entity.HoaDon_Entity;
+import Entity.KhachHang_Entity;
 import Entity.Mon_Entity;
+import Entity.NhanVien_Entity;
 import Entity.TaiKhoan_Entity;
 
 import javax.swing.BorderFactory;
@@ -25,36 +29,26 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.ImageIcon;
 import java.awt.Font;
-import java.awt.Frame;
 
 import javax.swing.SwingConstants;
-import java.awt.Component;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 
 import java.awt.Color;
 import java.awt.GridLayout;
-import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.DecimalFormat;
-import java.text.Format;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Map;
-import java.awt.FlowLayout;
 
 public class TrangChu extends JFrame implements ActionListener, MouseListener {
 
-	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JPanel panel_1;
 	private JPanel trangChu;
 	private JButton btnTrangChu;
 	private JPanel quanLy;
@@ -82,7 +76,6 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 	private JPanel ban;
 	private JButton btnBan;
 	private JPanel cen_l;
-	private JPanel table1;
 	private JPanel right_header;
 	private JPanel lab_head;
 	private JLabel right_lab;
@@ -93,21 +86,14 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 	private JLabel soDT_lab;
 	private JTextField tfSoDT;
 	private JPanel r_main;
-	private JScrollPane scrollPane_1;
 	private JTable table;
 	private JPanel datHang;
 	private JButton btnThanhToan;
 	private JPanel paneTrong_1;
 	private JPanel paneTrong_2;
 	private Mon_DAO mon_dao = new Mon_DAO();
-	private ArrayList<Mon_Entity> dsMon;
-	private JLabel lbTenMon;
-	private JButton btnThem;
 	private JPanel body;
-	private Object selectedButton;
 	private JPopupMenu manageMenu;
-	private DefaultTableModel model_sanPhamDat;
-	private JTable table_sanPhamDat;
 	private DefaultTableModel model;
 	private DefaultTableModel model_1;
 	private JTable table_1;
@@ -143,8 +129,16 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 	private int row = -1;
 	private int row_dat = -1;
 	private JButton btnXoaTrang;
+	private Ban_DAO ban_dao = new Ban_DAO();
+	private KhachHang_DAO kh_dao = new KhachHang_DAO();
+	private NhanVien_DAO nv_dao = new NhanVien_DAO();
+	private HoaDon_DAO hd_dao = new HoaDon_DAO();
+	private ChiTietDonHang_DAO ctdh_dao = new ChiTietDonHang_DAO();
+	private JButton btnHuy;
+	private String maNV;
 
 	public TrangChu(TaiKhoan_Entity taiKhoan) {
+		maNV = taiKhoan.getNhanVien().getMaNhanVien();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		getContentPane().setLayout(new BorderLayout(0, 0));
 		setResizable(false);
@@ -626,12 +620,19 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 		btnThanhToan.setFont(new Font("Tahoma", Font.BOLD, 30));
 		datHang.add(btnThanhToan);
 
+		btnHuy = new JButton("HUỶ");
+		btnHuy.setForeground(new Color(255, 255, 255));
+		btnHuy.setBackground(new Color(255, 66, 66));
+		btnHuy.setFont(new Font("Tahoma", Font.BOLD, 30));
+		datHang.add(btnHuy);
+
 		btnTrangChu.addActionListener(this);
 		btnQuanLy.addActionListener(this);
 		btnBan.addActionListener(this);
 		btnThongKe.addActionListener(this);
 		btnHoaDon.addActionListener(this);
 		btnCaiDat.addActionListener(this);
+		btnThanhToan.addActionListener(this);
 
 		btnCafe.addActionListener(this);
 		btnDaXay.addActionListener(this);
@@ -643,12 +644,21 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 		themMon.addActionListener(this);
 		suaMon.addActionListener(this);
 		btnXoaTrang.addActionListener(this);
+		btnHuy.addActionListener(this);
+
 		themMon.setEnabled(false);
 		suaMon.setEnabled(false);
-
+		banTrong.setSelectedIndex(0);
 		table_1.addMouseListener(this);
 		table.addMouseListener(this);
+
 		hienBang();
+		themBanTrong();
+	}
+
+	private void themBanTrong() {
+		ArrayList<Ban_Entity> dsBan = ban_dao.timBanTheoTrangThai("Trống");
+		dsBan.forEach(x -> banTrong.addItem(x.getTenBan()));
 	}
 
 	private JMenuItem createSubmenuItem(String text) {
@@ -845,6 +855,25 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 			themMon.setEnabled(false);
 			suaMon.setEnabled(false);
 		}
+
+		if (btn.equals(btnThanhToan)) {
+			model.getDataVector().removeAllElements();
+			model.fireTableDataChanged();
+			tongTien = 0;
+			btnThanhToan.setText(String.valueOf(tongTien));
+			banTrong.setSelectedIndex(0);
+			tGiamGia.setSelectedIndex(0);
+			thanhToan();
+		}
+
+		if (btn.equals(btnHuy)) {
+			model.getDataVector().removeAllElements();
+			model.fireTableDataChanged();
+			tongTien = 0;
+			btnThanhToan.setText(String.valueOf(tongTien));
+			banTrong.setSelectedIndex(0);
+			tGiamGia.setSelectedIndex(0);
+		}
 	}
 
 	private void xoaTrang() {
@@ -890,7 +919,41 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 
 	private boolean thanhToan() {
 		boolean isSuccess = true;
+		try {
+			KhachHang_Entity kh = taoKhachHang();
+			NhanVien_Entity nv = nv_dao.timNhanVienTheoMa(maNV);
+			Ban_Entity ban = new Ban_Entity();
+			if (banTrong.getSelectedIndex() != 0) {
+				ban = ban_dao.timBanTheoTenChinhXac(banTrong.getSelectedItem().toString());
+			}
+			double giamGia = Double
+					.parseDouble(tGiamGia.getSelectedItem().toString().replace("-", "").replace("VND", ""));
+			LocalDateTime ngayLap = LocalDateTime.now();
+			ArrayList<HoaDon_Entity> dsHD = hd_dao.danhSachHoaDon();
+			int soLuong = dsHD.size();
+			String maHD = "";
+			if (soLuong + 1 >= 10) {
+				maHD = "HD0" + String.valueOf(dsHD.size() + 1);
+			} else if (soLuong + 1 < 10) {
+				maHD = "HD00" + String.valueOf(dsHD.size() + 1);
+			}
+			HoaDon_Entity hd = new HoaDon_Entity(maHD, ngayLap, giamGia, kh, ban, nv);
+
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 		return isSuccess;
+	}
+
+	private KhachHang_Entity taoKhachHang() {
+		ArrayList<KhachHang_Entity> dsKH = kh_dao.danhSachKhachHang();
+		String maKH = "";
+		if (dsKH.size() + 1 < 10) {
+			maKH = "KH00" + String.valueOf(dsKH.size() + 1);
+		} else if (dsKH.size() + 1 >= 10) {
+			maKH = "KH0" + String.valueOf(dsKH.size() + 1);
+		}
+		return new KhachHang_Entity(maKH, tfTenKH.getText().toString(), tfSoDT.getText().toString());
 	}
 
 	@Override

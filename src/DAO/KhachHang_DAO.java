@@ -69,7 +69,7 @@ public class KhachHang_DAO {
 	    	} else {
 	    		String sql = "INSERT INTO KhachHang(maKhachHang, tenKhachHang, soDienThoai) VALUES (?, ?, ?)";
 	    		stmt = con.prepareStatement(sql);
-	    		stmt.setString(1, "KH00" + String.valueOf(dsKH.size() + 1));
+	    		stmt.setString(1, khachHang.getMaKhachHang());
 	    		stmt.setString(2, khachHang.getTenKhachHang());
 	    		stmt.setString(3, khachHang.getSoDienThoai());
 	    		int rowsInserted = stmt.executeUpdate();

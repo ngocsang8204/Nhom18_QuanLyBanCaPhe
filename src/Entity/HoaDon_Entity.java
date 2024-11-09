@@ -1,16 +1,17 @@
 package Entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class HoaDon_Entity {
 	private String maHoaDon;
-	private LocalDate ngayLap;
+	private LocalDateTime ngayLap;
 	private double giamGia;
-	private NhanVien_Entity nhanVien;
-	private Ban_Entity ban;
 	private KhachHang_Entity khachHang;
-	public HoaDon_Entity(String maHoaDon, LocalDate ngayLap, double giamGia, NhanVien_Entity nhanVien, Ban_Entity ban, KhachHang_Entity khachHang) {
+	private Ban_Entity ban;
+	private NhanVien_Entity nhanVien;
+	public HoaDon_Entity(String maHoaDon, LocalDateTime ngayLap, double giamGia, KhachHang_Entity khachHang , Ban_Entity ban, NhanVien_Entity nhanVien) {
 		super();
 		this.maHoaDon = maHoaDon;
 		this.ngayLap = ngayLap;
@@ -29,10 +30,10 @@ public class HoaDon_Entity {
 	public void setMaHoaDon(String maHoaDon) {
 		this.maHoaDon = maHoaDon;
 	}
-	public LocalDate getNgayLap() {
+	public LocalDateTime getNgayLap() {
 		return ngayLap;
 	}
-	public void setNgayLap(LocalDate ngayLap) {
+	public void setNgayLap(LocalDateTime ngayLap) {
 		this.ngayLap = ngayLap;
 	}
 	public double getGiamGia() {
