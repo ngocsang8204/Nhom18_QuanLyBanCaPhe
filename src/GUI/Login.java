@@ -55,7 +55,7 @@ public class Login extends JFrame implements ActionListener, MouseListener{
 		try {
 			database.getInstance().Connect();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		
@@ -217,8 +217,7 @@ public class Login extends JFrame implements ActionListener, MouseListener{
 		Object o = e.getSource();
 	    if (o.equals(btnDangNhap)) {
 	        String textUser = tTenDangNhap.getText().trim();
-	        String textPassword = tMatKhau.getText().trim();
-
+	        String textPassword = new String(tMatKhau.getPassword());
 	        if (textUser.isEmpty()) {
 	            JOptionPane.showMessageDialog(this, "Vui lòng nhập tên đăng nhập.");
 	            return;
@@ -229,10 +228,10 @@ public class Login extends JFrame implements ActionListener, MouseListener{
 	        }
 
 	        TaiKhoan_Entity taiKhoan = taiKhoan_DAO.checkUser(textUser, textPassword);
-
 	        if (taiKhoan != null) {
 	            try {
 	                Loading loading = new Loading(taiKhoan);
+	                this.dispose();
 	                loading.setVisible(true);
 	                loading.setLocationRelativeTo(null);
 

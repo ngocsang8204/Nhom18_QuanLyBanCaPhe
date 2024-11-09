@@ -59,7 +59,10 @@ public class TaiKhoan_DAO {
 		ArrayList<TaiKhoan_Entity> dsTK = danhSachTaiKhoan();
 		return dsTK.stream().filter(x -> x.getMaTaiKhoan().equalsIgnoreCase(maTK)).findFirst().orElse(null);
 	}
-	
+	public TaiKhoan_Entity timTaiKhoanTheoMaNV (String maNV) {
+		ArrayList<TaiKhoan_Entity> dsTK = danhSachTaiKhoan();
+		return dsTK.stream().filter(x -> x.getNhanVien().getMaNhanVien().equalsIgnoreCase(maNV)).findFirst().orElse(null);
+	}
 	public boolean themTaiKhoan (TaiKhoan_Entity tk) {
 		
 		Connection con = database.getInstance().getConnection();
@@ -110,20 +113,22 @@ public class TaiKhoan_DAO {
 	            }
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 		return isSuccess;
 	}
 	
 	public static void main(String[] args) {
-		ArrayList<TaiKhoan_Entity> dsTK = danhSachTaiKhoan();
-		dsTK.forEach(x -> System.out.println(x));
+		TaiKhoan_DAO dao= new TaiKhoan_DAO();
+		System.out.println(dao.timTaiKhoan("TK001"));
 	}
 
 	public TaiKhoan_Entity checkUser(String username, String password) {
+		khoiTao();
 	    try {
+	    	
 	        con = database.getInstance().getConnection();
-	        String sql = "SELECT * FROM TaiKhoan WHERE tenDangNhap = ? AND matKhau = ?";
+	        String sql = "SELECT * FROM TaiKhoan WHERE tenDangNhap like ? AND matKhau like ?";
 	        PreparedStatement stmt = con.prepareStatement(sql);
 	        stmt.setString(1, username);
 	        stmt.setString(2, password);
@@ -135,6 +140,7 @@ public class TaiKhoan_DAO {
 	            String matKhau = rs.getString("matKhau");
 	            String maNhanVien = rs.getString("maNhanVien");
 	            NhanVien_Entity nhanVien = nhanVien_dao.timNhanVienTheoMa(maNhanVien); // Giả sử phương thức này tồn tại
+	            System.out.println(nhanVien);
 	            return new TaiKhoan_Entity(maTK, tenDN, matKhau, nhanVien);
 	        }
 	    } catch (SQLException e) {
@@ -160,5 +166,5 @@ public class TaiKhoan_DAO {
 		return count;
 	}
 
-
+	
 }

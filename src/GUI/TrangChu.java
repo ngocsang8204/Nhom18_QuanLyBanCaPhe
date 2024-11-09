@@ -17,6 +17,7 @@ import DAO.HoaDon_DAO;
 import DAO.KhachHang_DAO;
 import DAO.Mon_DAO;
 import DAO.NhanVien_DAO;
+import DAO.TaiKhoan_DAO;
 import Entity.Ban_Entity;
 import Entity.HoaDon_Entity;
 import Entity.KhachHang_Entity;
@@ -657,6 +658,7 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 	}
 
 	private void themBanTrong() {
+		banTrong.removeAllItems();
 		ArrayList<Ban_Entity> dsBan = ban_dao.timBanTheoTrangThai("Trống");
 		dsBan.forEach(x -> banTrong.addItem(x.getTenBan()));
 	}
@@ -765,37 +767,37 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 		// TODO Auto-generated method stub
 		JButton btn = (JButton) e.getSource();
 		if (btn.equals(btnCafe)) {
-			model_1.getDataVector().removeAllElements();
+			model_1.setRowCount(0);
 			hienDanhSach("Cà phê");
 		}
 
 		if (btn.equals(btnTra)) {
-			model_1.getDataVector().removeAllElements();
+			model_1.setRowCount(0);
 			hienDanhSach("Trà");
 		}
 
 		if (btn.equals(btnDaXay)) {
-			model_1.getDataVector().removeAllElements();
+			model_1.setRowCount(0);
 			hienDanhSach("Đá xay");
 		}
 
 		if (btn.equals(btnSoda)) {
-			model_1.getDataVector().removeAllElements();
+			model_1.setRowCount(0);
 			hienDanhSach("Soda");
 		}
 
 		if (btn.equals(btnBanh)) {
-			model_1.getDataVector().removeAllElements();
+			model_1.setRowCount(0);
 			hienDanhSach("Bánh");
 		}
 
 		if (btn.equals(btnKhac)) {
-			model_1.getDataVector().removeAllElements();
+			model_1.setRowCount(0);
 			hienDanhSach("Thức uống khác");
 		}
 
 		if (btn.equals(btnTatCa)) {
-			model_1.getDataVector().removeAllElements();
+			model_1.setRowCount(0);
 			hienBang();
 		}
 
@@ -808,6 +810,7 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 
 		if (btn.equals(btnTrangChu)) {
 			body.removeAll();
+			themBanTrong();
 			body.add(main);
 			body.revalidate();
 			body.repaint();
@@ -964,5 +967,10 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 	@Override
 	public void mouseExited(MouseEvent e) {
 
+	}
+	public static void main(String[] args) {
+		TaiKhoan_DAO dao= new TaiKhoan_DAO();
+//		System.out.println(dao.timTaiKhoan("TK001"));
+		new TrangChu(dao.timTaiKhoan("TK001")).setVisible(true);;
 	}
 }

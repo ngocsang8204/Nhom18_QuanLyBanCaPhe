@@ -61,7 +61,7 @@ public class Ban_DAO {
 	
 	public ArrayList<Ban_Entity> timBanTheoTrangThai (String trangThai) {
 		ArrayList<Ban_Entity> dsBan = danhSachBan();
-		return dsBan.stream().filter(x -> x.getTrangThaiBan().equals(trangThai)).collect(Collectors.toCollection(ArrayList::new));
+		return dsBan.stream().filter(x -> x.getTrangThaiBan().equalsIgnoreCase(trangThai)).collect(Collectors.toCollection(ArrayList::new));
 	}
 	
 	public Ban_Entity timBanTheoTenChinhXac(String ten) {
