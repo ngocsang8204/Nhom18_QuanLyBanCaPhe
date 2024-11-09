@@ -13,16 +13,20 @@ import javax.swing.table.DefaultTableModel;
 
 import DAO.Ban_DAO;
 import DAO.ChiTietDonHang_DAO;
+import DAO.ChiTietMon_DAO;
 import DAO.HoaDon_DAO;
 import DAO.KhachHang_DAO;
 import DAO.Mon_DAO;
+import DAO.NguyenLieu_DAO;
 import DAO.NhanVien_DAO;
 import DAO.TaiKhoan_DAO;
 import Entity.Ban_Entity;
 import Entity.ChiTietDonHang_Entity;
+import Entity.ChiTietMon_Entity;
 import Entity.HoaDon_Entity;
 import Entity.KhachHang_Entity;
 import Entity.Mon_Entity;
+import Entity.NguyenLieu_Entity;
 import Entity.NhanVien_Entity;
 import Entity.TaiKhoan_Entity;
 
@@ -40,6 +44,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -137,9 +142,12 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 	private NhanVien_DAO nv_dao = new NhanVien_DAO();
 	private HoaDon_DAO hd_dao = new HoaDon_DAO();
 	private ChiTietDonHang_DAO ctdh_dao = new ChiTietDonHang_DAO();
+	private ChiTietMon_DAO ctm_dao= new ChiTietMon_DAO();
+	private NguyenLieu_DAO nl_dao= new NguyenLieu_DAO();
 	private JButton btnHuy;
 	private String maNV;
 	private JPopupMenu manageMenu2;
+	private JButton btnTimKiemTenKHTheoSDT;
 
 	public TrangChu(TaiKhoan_Entity taiKhoan) {
 		maNV = taiKhoan.getNhanVien().getMaNhanVien();
@@ -523,7 +531,6 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 		tfTenKH = new JTextField();
 		tfTenKH.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		tenKH.add(tfTenKH);
-		tfTenKH.setColumns(10);
 
 		soDT = new JPanel();
 		soDT.setBackground(new Color(255, 255, 255));
@@ -540,8 +547,16 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 
 		tfSoDT = new JTextField();
 		tfSoDT.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		btnTimKiemTenKHTheoSDT = new JButton();
+		btnTimKiemTenKHTheoSDT.setIcon(new ImageIcon(TrangChu.class.getResource("/img/icons8-search-30.png")));
 		soDT.add(tfSoDT);
-		tfSoDT.setColumns(10);
+		soDT.add(btnTimKiemTenKHTheoSDT);
+		
+		
+		tfSoDT.setPreferredSize(new Dimension(40,41));
+		tfTenKH.setPreferredSize(new Dimension(40,41));
+		btnTimKiemTenKHTheoSDT.setPreferredSize(new Dimension(41,41));
+		btnTimKiemTenKHTheoSDT.addActionListener(this);
 
 		r_main = new JPanel();
 		r_main.setBorder(new EmptyBorder(40, 40, 40, 40));
@@ -664,6 +679,11 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 
 		table_1.addMouseListener(this);
 		table.addMouseListener(this);
+		table.getTableHeader().setReorderingAllowed(false);
+		table.getTableHeader().setResizingAllowed(false);
+		table_1.getTableHeader().setReorderingAllowed(false);
+		table_1.getTableHeader().setResizingAllowed(false);
+		
 
 		hienBang();
 		themBanTrong();
@@ -754,18 +774,57 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 		}
 		return -1;
 	}
+	private int tinhSoLuongMonDuaTheoNguyenLieu(Mon_Entity mon) {
+		
+		ArrayList<ChiTietMon_Entity> dsCTM= ctm_dao.getDSChiTietMon(mon.getMaMon());
+		NguyenLieu_Entity nl= nl_dao.timNguyenLieuTheoMa(dsCTM.get(0).getMaNguyenLieu().getMaNguyenLieu());
+		int kq= nl.getSoLuong()/dsCTM.get(0).getSoLuong();
+		for (ChiTietMon_Entity x : dsCTM) {
+			nl= nl_dao.timNguyenLieuTheoMa(x.getMaNguyenLieu().getMaNguyenLieu());
+			int temp=nl.getSoLuong()/x.getSoLuong();
+			if(temp<kq) kq=temp;
+		}
+		return kq;
+	}
 	private void themMonDat() {
 		try {
+			
 			DecimalFormat df = new DecimalFormat("#.### VND");
 			Mon_Entity mon = mon_dao.timMonTheoMa(tMaMon.getText().toString());
+			
 			int soLuong = Integer.parseInt(tSoLuong.getText().toString());
 			int rowMon=checkMon(tMaMon.getText());
-			System.out.println(rowMon);
+			boolean NguyenLieuFlag=true;
+			String dsNLThieu = "Thiếu: ";
+			ArrayList<ChiTietMon_Entity> dsCTM= ctm_dao.getDSChiTietMon(tMaMon.getText().toString());
+			
+			//tìm các nguyên liệu của món không đủ số lượng
+			for (ChiTietMon_Entity x : dsCTM) {
+				int tongSL=soLuong;
+				if(rowMon!=-1) {
+					tongSL=soLuong+ Integer.parseInt(table.getValueAt(rowMon, 3).toString());
+				}
+				NguyenLieu_Entity nl= nl_dao.timNguyenLieuTheoMa(x.getMaNguyenLieu().getMaNguyenLieu());
+				if(x.getSoLuong()*tongSL>nl.getSoLuong()) {
+					dsNLThieu+=nl.getTenNguyenLieu()+" ; ";
+					NguyenLieuFlag=false;
+					
+				}
+			}
+			//thông báo nếu không đủ nguyên liệu
+			if(!NguyenLieuFlag) {
+				JOptionPane.showMessageDialog(this,"Nguyên liệu chỉ đủ để làm: "+ tinhSoLuongMonDuaTheoNguyenLieu(mon)+ " "+mon.getTenMon()+"\n"
+						+ dsNLThieu
+						);
+				return;
+			}
+			//cập nhật lại số lượng món đã có trong bảng
 			if(rowMon!=-1) {
 				int oldSoLuong = Integer.parseInt(table.getValueAt(rowMon, 3).toString());
 				table.setValueAt( soLuong + oldSoLuong, rowMon, 3);
 				table.setValueAt(df.format(mon.getDonGia() * (soLuong + oldSoLuong)), rowMon, 4);
 			}
+			//thêm dòng mới nếu món chưa được chọn
 			else {
 				model.addRow(new Object[] { tMaMon.getText().toString(), tTenMon.getText().toString(),
 						df.format(mon.getDonGia()), tSoLuong.getText().toString(), df.format(mon.getDonGia() * soLuong) });
@@ -803,7 +862,7 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 
 		if (btn.equals(btnTra)) {
 			model_1.setRowCount(0);
-			hienDanhSach("Trà");
+			hienDanhSach("Trà sữa");
 		}
 
 		if (btn.equals(btnDaXay)) {
@@ -813,7 +872,7 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 
 		if (btn.equals(btnSoda)) {
 			model_1.setRowCount(0);
-			hienDanhSach("Soda");
+			hienDanhSach("Sinh tố");
 		}
 
 		if (btn.equals(btnBanh)) {
@@ -842,6 +901,7 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 		if (btn.equals(btnTrangChu)) {
 			body.removeAll();
 			themBanTrong();
+			hienBang();
 			body.add(main);
 			body.revalidate();
 			body.repaint();
@@ -913,6 +973,19 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 			banTrong.setSelectedIndex(0);
 			tGiamGia.setSelectedIndex(0);
 		}
+		if (btn.equals(btnTimKiemTenKHTheoSDT)) {
+			String sdt = tfSoDT.getText().trim();
+			KhachHang_Entity kh= kh_dao.timKiemTenKhachHangTheoSDT(sdt);
+			System.out.println(kh);
+			if (kh != null) {
+				System.out.println(kh.getTenKhachHang());
+				tfTenKH.setText(kh.getTenKhachHang());
+			}else {
+				JOptionPane.showMessageDialog(this, "Không tìm thấy khách hàng này!");
+				tfTenKH.setText("");
+			}
+			
+		}
 	}
 
 	private void xoaTrang() {
@@ -973,6 +1046,13 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 		}
 		return true;
 	}
+	private void capNhatSLNguyenLieu(Mon_Entity mon, int soLuong) {
+		ArrayList<ChiTietMon_Entity> dsCTM= ctm_dao.getDSChiTietMon(mon.getMaMon());
+		dsCTM.forEach(x->{
+			//duyệt từng nguyên liệu của món, cập nhật lại số lượng dựa theo số lượng tồn kho - số lượng trong chi tiết * số lượng món đặt
+			nl_dao.capNhatSoLuong(x.getMaNguyenLieu().getMaNguyenLieu(), x.getMaNguyenLieu().getSoLuong()-(x.getSoLuong()*soLuong));
+		});
+	}
 	private boolean thanhToan() {
 		boolean isSuccess = false;
 		try {
@@ -981,6 +1061,7 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 			String sdt= tfSoDT.getText().trim();
 			KhachHang_Entity kh= kh_dao.timKiemKhachHangTheoTenVaSDT(KH, sdt);
 			if(kh==null) {
+				//thêm khách hàng nếu không có trong hệ thống
 				kh=taoKhachHang();
 				kh_dao.themKhachHang(kh);
 			}
@@ -994,8 +1075,7 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 			LocalDateTime ngayLap = LocalDateTime.now();
 			ArrayList<HoaDon_Entity> dsHD = hd_dao.danhSachHoaDon();
 			int soLuong = dsHD.size();
-			String maHD = "";
-			maHD= String.format("HD%03d",soLuong+1);
+			String maHD =  String.format("HD%03d",soLuong+1);
 			HoaDon_Entity hd = new HoaDon_Entity(maHD, ngayLap, giamGia, kh, ban, nv);
 			if(hd_dao.themHoaDon(hd)) {
 				for(int i=0;i<table.getRowCount();i++) {
@@ -1003,6 +1083,8 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 							mon_dao.timMonTheoMa(table.getValueAt(i, 0).toString()), 
 							Integer.parseInt(table.getValueAt(i, 3).toString()));
 					if(!ctdh_dao.themChiTietDonHang(ctdh)) return false;
+					//cập nhật số lượng nguyên liệu
+					capNhatSLNguyenLieu(mon_dao.timMonTheoMa(table.getValueAt(i, 0).toString()), Integer.parseInt(table.getValueAt(i, 3).toString()));
 				}
 				if(ban!=null) {
 					ban_dao.capNhatTrangThai(ban);

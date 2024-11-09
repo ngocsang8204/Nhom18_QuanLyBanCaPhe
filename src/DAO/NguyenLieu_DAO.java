@@ -211,6 +211,29 @@ public class NguyenLieu_DAO {
 		}
 		return isSuccess;
 	}
+	public boolean capNhatSoLuong (String maNL, int soluong) {
+		khoiTao();
+		Connection connection = database.getInstance().getConnection();
+		boolean isSuccess = false;
+		try {
+			ArrayList<NguyenLieu_Entity> dsNL = danhSachNguyenLieu();
+			
+				String updateSql = "UPDATE NguyenLieu SET soLuong = ? WHERE maNguyenLieu = ?";
+		        PreparedStatement stmt = connection.prepareStatement(updateSql);
+		        stmt.setInt(1, soluong);
+	    		stmt.setString(2, maNL);
+	    		
+		        
+		        int rowsInserted = stmt.executeUpdate();
+	            if (rowsInserted > 0) {
+	                isSuccess = true;
+	            }
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return isSuccess;
+	}
 	public static void main(String[] args) {
 		NguyenLieu_DAO dao= new NguyenLieu_DAO();
 		System.out.println(dao.getNLTheoTen("Nước cam"));
