@@ -70,7 +70,10 @@ public class HoaDon_DAO {
 			stmt.setTimestamp(2, Timestamp.valueOf(hd.getNgayLap()));
 			stmt.setDouble(3, hd.getGiamGia());
 			stmt.setString(4, hd.getKhachHang().getMaKhachHang());
-			stmt.setString(5,  hd.getBan().getMaBan());
+			if(hd.getBan()!=null)
+				stmt.setString(5,  hd.getBan().getMaBan());
+			else
+				stmt.setString(5,  null);
 			stmt.setString(6, hd.getNhanVien().getMaNhanVien());
 			int rowsInserted = stmt.executeUpdate();
 			if (rowsInserted > 0) {

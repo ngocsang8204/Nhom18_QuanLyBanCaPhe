@@ -124,6 +124,31 @@ public class Ban_DAO {
 		}
 		return isSuccess;
 	}
+	
+	public boolean capNhatTrangThai(Ban_Entity ban) {
+		khoiTao();
+		Connection connection = database.getInstance().getConnection();
+		boolean isSuccess = false;
+		try {
+			ArrayList<Ban_Entity> dsBan = danhSachBan();
+			if (!dsBan.contains(ban)) {
+				System.out.println("Bàn không tồn tại");
+			} else {
+				String updateSql = "UPDATE Ban SET trangThaiBan = N'Đang sử dụng' WHERE maBan = ?";
+		        PreparedStatement updateStmt = connection.prepareStatement(updateSql);
+		        updateStmt.setString(1, ban.getMaBan());
+		        
+		        
+		        int rowsInserted = updateStmt.executeUpdate();
+	            if (rowsInserted > 0) {
+	                isSuccess = true;
+	            }
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return isSuccess;
+	}
 	public int getSLBan() {
 		khoiTao();
 		Connection connection = database.getInstance().getConnection();

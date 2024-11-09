@@ -19,6 +19,7 @@ import DAO.Mon_DAO;
 import DAO.NhanVien_DAO;
 import DAO.TaiKhoan_DAO;
 import Entity.Ban_Entity;
+import Entity.ChiTietDonHang_Entity;
 import Entity.HoaDon_Entity;
 import Entity.KhachHang_Entity;
 import Entity.Mon_Entity;
@@ -36,6 +37,7 @@ import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -137,6 +139,7 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 	private ChiTietDonHang_DAO ctdh_dao = new ChiTietDonHang_DAO();
 	private JButton btnHuy;
 	private String maNV;
+	private JPopupMenu manageMenu2;
 
 	public TrangChu(TaiKhoan_Entity taiKhoan) {
 		maNV = taiKhoan.getNhanVien().getMaNhanVien();
@@ -275,6 +278,14 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 		btnCaiDat.setHorizontalAlignment(SwingConstants.LEFT);
 		btnCaiDat.setBorderPainted(false);
 		caiDat.add(btnCaiDat);
+		
+		manageMenu2 = new JPopupMenu();
+		manageMenu2.setBorder(new EmptyBorder(0, 0, 0, 0));
+		JMenuItem info = createSubmenuItem("Thông tin cá nhân");
+		JMenuItem logout = createSubmenuItem("Đăng xuất");
+		
+		info.addActionListener(e -> handleSubmenuSelection("info"));
+		logout.addActionListener(e -> handleSubmenuSelection("logout"));
 
 		paneTrong_2 = new JPanel();
 		paneTrong_2.setBackground(new Color(24, 28, 20));
@@ -353,6 +364,7 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 				return false;
 			}
 		};
+		
 		table_1.setShowGrid(true);
 		table_1.setRowHeight(30);
 		table_1.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 18));
@@ -608,7 +620,7 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 
 		banTrong = new JComboBox<String>();
 		banTrong.setFont(new Font("Tahoma", Font.BOLD, 18));
-		banTrong.addItem("Mang đi");
+		
 		pane_r.add(banTrong);
 
 		datHang = new JPanel();
@@ -649,7 +661,7 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 
 		themMon.setEnabled(false);
 		suaMon.setEnabled(false);
-		banTrong.setSelectedIndex(0);
+
 		table_1.addMouseListener(this);
 		table.addMouseListener(this);
 
@@ -659,6 +671,8 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 
 	private void themBanTrong() {
 		banTrong.removeAllItems();
+		banTrong.addItem("Mang đi");
+		banTrong.setSelectedIndex(0);
 		ArrayList<Ban_Entity> dsBan = ban_dao.timBanTheoTrangThai("Trống");
 		dsBan.forEach(x -> banTrong.addItem(x.getTenBan()));
 	}
@@ -732,19 +746,35 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 		body.revalidate();
 		body.repaint();
 	}
-
+	private int checkMon(String maMon) {
+		for(int i=0;i<table.getRowCount();i++) {
+			if(table.getValueAt(i, 0).toString().equalsIgnoreCase(maMon)) {
+				return i;
+			}
+		}
+		return -1;
+	}
 	private void themMonDat() {
 		try {
 			DecimalFormat df = new DecimalFormat("#.### VND");
 			Mon_Entity mon = mon_dao.timMonTheoMa(tMaMon.getText().toString());
 			int soLuong = Integer.parseInt(tSoLuong.getText().toString());
-			model.addRow(new Object[] { tMaMon.getText().toString(), tTenMon.getText().toString(),
-					df.format(mon.getDonGia()), tSoLuong.getText().toString(), df.format(mon.getDonGia() * soLuong) });
+			int rowMon=checkMon(tMaMon.getText());
+			System.out.println(rowMon);
+			if(rowMon!=-1) {
+				int oldSoLuong = Integer.parseInt(table.getValueAt(rowMon, 3).toString());
+				table.setValueAt( soLuong + oldSoLuong, rowMon, 3);
+				table.setValueAt(df.format(mon.getDonGia() * (soLuong + oldSoLuong)), rowMon, 4);
+			}
+			else {
+				model.addRow(new Object[] { tMaMon.getText().toString(), tTenMon.getText().toString(),
+						df.format(mon.getDonGia()), tSoLuong.getText().toString(), df.format(mon.getDonGia() * soLuong) });
+			}
 			tongTien = tongTien + soLuong * mon.getDonGia();
 			btnThanhToan.setText(df.format(tongTien));
 			row = -1;
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 	}
 
@@ -804,6 +834,7 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 		if (btn.equals(themMon)) {
 			themMonDat();
 			xoaTrang();
+			table_1.clearSelection();
 			themMon.setEnabled(false);
 			suaMon.setEnabled(false);
 		}
@@ -860,13 +891,18 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 		}
 
 		if (btn.equals(btnThanhToan)) {
-			model.getDataVector().removeAllElements();
-			model.fireTableDataChanged();
-			tongTien = 0;
-			btnThanhToan.setText(String.valueOf(tongTien));
-			banTrong.setSelectedIndex(0);
-			tGiamGia.setSelectedIndex(0);
-			thanhToan();
+			if(valid())
+			if(thanhToan()) 
+			{	
+				model.getDataVector().removeAllElements();
+				model.fireTableDataChanged();
+				tongTien = 0;
+				btnThanhToan.setText(String.valueOf(tongTien));
+				banTrong.setSelectedIndex(0);
+				tGiamGia.setSelectedIndex(0);
+				JOptionPane.showMessageDialog(this,"Thanh toán thành công");
+			}
+			
 		}
 
 		if (btn.equals(btnHuy)) {
@@ -919,29 +955,62 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 			tSoLuong.setText(model.getValueAt(row_dat, 3).toString());
 		}
 	}
-
+	private boolean valid() {
+		String KH= tfTenKH.getText().trim();
+		String sdt= tfSoDT.getText().trim();
+		if(KH.trim().equals("")) {
+			JOptionPane.showMessageDialog(this,"Tên khách hàng không được rỗng");
+			return false;
+		}
+		else if(KH.matches("[\\p{L}]\\s"))
+		{
+			JOptionPane.showMessageDialog(this,"Tên khách hàng phải là chữ");
+			return false;
+		}
+		if(table.getRowCount()<1) {
+			JOptionPane.showMessageDialog(this,"Hãy chọn món");
+			return false;
+		}
+		return true;
+	}
 	private boolean thanhToan() {
-		boolean isSuccess = true;
+		boolean isSuccess = false;
 		try {
-			KhachHang_Entity kh = taoKhachHang();
+			
+			String KH= tfTenKH.getText().trim();
+			String sdt= tfSoDT.getText().trim();
+			KhachHang_Entity kh= kh_dao.timKiemKhachHangTheoTenVaSDT(KH, sdt);
+			if(kh==null) {
+				kh=taoKhachHang();
+				kh_dao.themKhachHang(kh);
+			}
 			NhanVien_Entity nv = nv_dao.timNhanVienTheoMa(maNV);
 			Ban_Entity ban = new Ban_Entity();
-			if (banTrong.getSelectedIndex() != 0) {
-				ban = ban_dao.timBanTheoTenChinhXac(banTrong.getSelectedItem().toString());
-			}
+			
+			ban = ban_dao.timBanTheoTenChinhXac(banTrong.getSelectedItem().toString());
+			
 			double giamGia = Double
 					.parseDouble(tGiamGia.getSelectedItem().toString().replace("-", "").replace("VND", ""));
 			LocalDateTime ngayLap = LocalDateTime.now();
 			ArrayList<HoaDon_Entity> dsHD = hd_dao.danhSachHoaDon();
 			int soLuong = dsHD.size();
 			String maHD = "";
-			if (soLuong + 1 >= 10) {
-				maHD = "HD0" + String.valueOf(dsHD.size() + 1);
-			} else if (soLuong + 1 < 10) {
-				maHD = "HD00" + String.valueOf(dsHD.size() + 1);
-			}
+			maHD= String.format("HD%03d",soLuong+1);
 			HoaDon_Entity hd = new HoaDon_Entity(maHD, ngayLap, giamGia, kh, ban, nv);
-
+			if(hd_dao.themHoaDon(hd)) {
+				for(int i=0;i<table.getRowCount();i++) {
+					ChiTietDonHang_Entity ctdh= new ChiTietDonHang_Entity(hd, 
+							mon_dao.timMonTheoMa(table.getValueAt(i, 0).toString()), 
+							Integer.parseInt(table.getValueAt(i, 3).toString()));
+					if(!ctdh_dao.themChiTietDonHang(ctdh)) return false;
+				}
+				if(ban!=null) {
+					ban_dao.capNhatTrangThai(ban);
+					themBanTrong();
+				}
+				return true;
+				
+			};
 		} catch (Exception e) {
 			// TODO: handle exception
 		}

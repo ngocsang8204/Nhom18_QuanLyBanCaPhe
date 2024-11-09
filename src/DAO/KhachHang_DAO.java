@@ -55,7 +55,10 @@ public class KhachHang_DAO {
 		ArrayList<KhachHang_Entity> dsKH = danhSachKhachHang();
 		return dsKH.stream().filter(x -> x.getTenKhachHang().matches(".*" + ten + ".*")).collect(Collectors.toCollection(ArrayList::new));
 	}
-	
+	public KhachHang_Entity timKiemKhachHangTheoTenVaSDT (String ten, String sdt){
+		ArrayList<KhachHang_Entity> dsKH = danhSachKhachHang();
+		return dsKH.stream().filter(x -> x.getTenKhachHang().matches(".*" + ten + ".*")&&x.getSoDienThoai().equals(sdt)).findFirst().orElse(null);
+	}
 	public boolean themKhachHang (KhachHang_Entity khachHang) {
 		khoiTao();
 		Connection con = database.getInstance().getConnection();
