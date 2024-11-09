@@ -538,6 +538,13 @@ public class QLMon extends JPanel implements MouseListener, ActionListener{
 		// TODO Auto-generated method stub
 		
 	}
+	public int getNLInTable(String ma) {
+		for(int i=0;i<tableNguyenLieu.getRowCount();i++) {
+			if(ma.equalsIgnoreCase(tableNguyenLieu.getValueAt(i, 0).toString()))
+				return i;
+		}
+		return -1;
+	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object o= e.getSource();
@@ -546,12 +553,20 @@ public class QLMon extends JPanel implements MouseListener, ActionListener{
 				JOptionPane.showMessageDialog(this,"Số lượng phải là số");
 			}
 			else {
-				model_NguyenLieu.addRow(new Object[] {
-					cbNL.getSelectedItem().toString(), tSLNL.getText().trim()	
-				});
+				int row=getNLInTable(cbNL.getSelectedItem().toString());
+				if(row!=-1) {
+					int sl= Integer.parseInt(tSLNL.getText().trim())+Integer.parseInt(tableNguyenLieu.getValueAt(row,1).toString());
+					tableNguyenLieu.setValueAt(sl, row, 1);
+				}
+				else {
+					model_NguyenLieu.addRow(new Object[] {
+							cbNL.getSelectedItem().toString(), tSLNL.getText().trim()	
+						});
+				}
 				
 			}
 		}
+		
 		else if(o.equals(btnXoaNL)) {
 			int row= tableNguyenLieu.getSelectedRow();
 			if(row<0) {
@@ -588,6 +603,7 @@ public class QLMon extends JPanel implements MouseListener, ActionListener{
 			        }
 			        
 			        JOptionPane.showMessageDialog(this, "Cập nhật thành công");
+			        XoaRong();
 			        loadTableData();
 			    } catch (Exception e1) {
 			        e1.printStackTrace(); 
@@ -611,6 +627,7 @@ public class QLMon extends JPanel implements MouseListener, ActionListener{
 			            mon_dao.themChiTietMon(newMon, nl1, soLuong);
 			        }
 			        JOptionPane.showMessageDialog(this, "Thêm món thành công");
+			        XoaRong();
 			        loadTableData();
 				} catch (Exception e2) {
 					JOptionPane.showMessageDialog(this, "Thêm món thất bại");

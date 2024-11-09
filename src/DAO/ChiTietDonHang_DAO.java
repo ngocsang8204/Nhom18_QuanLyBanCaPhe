@@ -45,7 +45,31 @@ public class ChiTietDonHang_DAO {
 		}
 		return dsCTDH;
 	}
-	
+	public ArrayList<ChiTietDonHang_Entity> danhSachCTDH(HoaDon_Entity hoadon){
+		ArrayList<ChiTietDonHang_Entity> dsCTDH = new ArrayList<ChiTietDonHang_Entity>();
+		try {
+			Connection con = database.getInstance().getConnection();
+		    if (con == null) {
+		        System.out.println("Connection is not established.");
+		    }
+			String sql = "Select * from ChiTietDonHang where mahoadon like ?";
+			PreparedStatement stmt= con.prepareStatement(sql);
+			stmt.setString(1, hoadon.getMaHoaDon());
+			ResultSet rs= stmt.executeQuery();
+			while (rs.next()) {
+				String maHD = rs.getString(1);
+				String maMon = rs.getString(2);
+				int soLuongMon = rs.getInt(3);
+				HoaDon_Entity hd = hd_dao.timKiemHoaDonTheoMa(maHD);
+				Mon_Entity mon = mon_dao.timMonTheoMa(maMon);
+				ChiTietDonHang_Entity ctdh = new ChiTietDonHang_Entity(hd, mon, soLuongMon);
+				dsCTDH.add(ctdh);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dsCTDH;
+	}
 	public boolean themChiTietDonHang (ChiTietDonHang_Entity ctdh) {
 		Connection con = database.getInstance().getConnection();
 		PreparedStatement stmt = null;

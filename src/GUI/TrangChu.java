@@ -35,6 +35,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.ImageIcon;
 import java.awt.Font;
 
@@ -960,7 +961,6 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 				btnThanhToan.setText(String.valueOf(tongTien));
 				banTrong.setSelectedIndex(0);
 				tGiamGia.setSelectedIndex(0);
-				JOptionPane.showMessageDialog(this,"Thanh toán thành công");
 			}
 			
 		}
@@ -1053,6 +1053,75 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 			nl_dao.capNhatSoLuong(x.getMaNguyenLieu().getMaNguyenLieu(), x.getMaNguyenLieu().getSoLuong()-(x.getSoLuong()*soLuong));
 		});
 	}
+	private void hienHoaDon(HoaDon_Entity hd) {
+	    // Tạo JDialog hiển thị chi tiết hóa đơn
+	    JDialog dialog = new JDialog((JFrame) null, "Chi tiết Hóa Đơn", true);
+	    dialog.setLayout(new BorderLayout());
+
+	    // Tạo panel chứa thông tin hóa đơn
+	    JPanel panel = new JPanel();
+	    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+	    
+	    // Tiêu đề hóa đơn
+	    JLabel lblTitle = new JLabel("HÓA ĐƠN");
+	    lblTitle.setFont(new Font("Arial", Font.BOLD, 25));
+	    JPanel title= new JPanel();
+	    title.add(lblTitle);
+	   
+
+	    // Thêm thông tin chi tiết hóa đơn vào panel
+	    panel.add(new JLabel("Mã Hóa Đơn: " + hd.getMaHoaDon()));
+	    panel.add(Box.createVerticalStrut(10));
+	    panel.add(new JLabel("Tên Khách Hàng: " + hd.getKhachHang().getTenKhachHang()));
+	    panel.add(Box.createVerticalStrut(10));
+	    panel.add(new JLabel("Ngày Lập: " + hd.getNgayLap()));
+	    panel.add(Box.createVerticalStrut(10));
+
+	    // Định dạng số tiền
+	    DecimalFormat df = new DecimalFormat("#,###.0 VND");
+
+	    // Cấu hình bảng chi tiết sản phẩm
+	    panel.add(new JLabel("Chi Tiết Sản Phẩm:"));
+	    panel.add(Box.createVerticalStrut(10));
+	    String[] columns = {"Tên món", "SL", "Đơn giá", "Thành tiền"};
+	    DefaultTableModel model = new DefaultTableModel(columns, 0);
+	    double tongTien=0;
+	    // Thêm dữ liệu vào model
+	    ArrayList<ChiTietDonHang_Entity> dsCTDH= ctdh_dao.danhSachCTDH(hd);
+	    for (ChiTietDonHang_Entity cthd : dsCTDH) {
+	        Object[] rowData = {
+	            cthd.getMon().getTenMon(),
+	            cthd.getSoLuongMon(),
+	            df.format(cthd.getMon().getDonGia()),
+	            df.format(cthd.getSoLuongMon() * cthd.getMon().getDonGia())
+	            
+	        };
+	        tongTien+=cthd.getSoLuongMon() * cthd.getMon().getDonGia();
+	        model.addRow(rowData);
+	    }
+
+	    // Tạo bảng với model và thêm vào JScrollPane
+	    JTable table = new JTable(model);
+	    table.setEnabled(false);
+	    JScrollPane scrollPane = new JScrollPane(table);
+	    scrollPane.setPreferredSize(new Dimension(550, 300)); // Giới hạn kích thước của bảng
+	    panel.add(scrollPane);
+	    panel.add(Box.createVerticalStrut(10));
+	    panel.add(new JLabel("Tổng tiền: "+df.format(tongTien)));
+	    panel.add(Box.createVerticalStrut(30));
+	    
+
+	    // Thêm panel và nút vào dialog
+	    dialog.add(panel, BorderLayout.CENTER);
+	    dialog.add(title, BorderLayout.NORTH);
+
+	    // Thiết lập kích thước và hiển thị dialog
+	    dialog.setSize(600, 700);
+	    dialog.setLocationRelativeTo(null); // Hiển thị ở giữa màn hình
+	    dialog.setVisible(true);
+	}
+
+
 	private boolean thanhToan() {
 		boolean isSuccess = false;
 		try {
@@ -1077,20 +1146,24 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 			int soLuong = dsHD.size();
 			String maHD =  String.format("HD%03d",soLuong+1);
 			HoaDon_Entity hd = new HoaDon_Entity(maHD, ngayLap, giamGia, kh, ban, nv);
+			
 			if(hd_dao.themHoaDon(hd)) {
 				for(int i=0;i<table.getRowCount();i++) {
 					ChiTietDonHang_Entity ctdh= new ChiTietDonHang_Entity(hd, 
 							mon_dao.timMonTheoMa(table.getValueAt(i, 0).toString()), 
 							Integer.parseInt(table.getValueAt(i, 3).toString()));
 					if(!ctdh_dao.themChiTietDonHang(ctdh)) return false;
-					//cập nhật số lượng nguyên liệu
-					capNhatSLNguyenLieu(mon_dao.timMonTheoMa(table.getValueAt(i, 0).toString()), Integer.parseInt(table.getValueAt(i, 3).toString()));
-				}
+//				cập nhật số lượng nguyên liệu
+				capNhatSLNguyenLieu(mon_dao.timMonTheoMa(table.getValueAt(i, 0).toString()), Integer.parseInt(table.getValueAt(i, 3).toString()));
 				if(ban!=null) {
 					ban_dao.capNhatTrangThai(ban);
 					themBanTrong();
 				}
-				return true;
+			}
+
+			JOptionPane.showMessageDialog(this,"Thanh toán thành công");
+			hienHoaDon(hd);	
+			return true;
 				
 			};
 		} catch (Exception e) {
