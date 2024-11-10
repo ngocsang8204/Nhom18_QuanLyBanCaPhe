@@ -46,6 +46,7 @@ import javax.swing.JOptionPane;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -149,6 +150,7 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 	private String maNV;
 	private JPopupMenu manageMenu2;
 	private JButton btnTimKiemTenKHTheoSDT;
+	private JLabel logo;
 
 	public TrangChu(TaiKhoan_Entity taiKhoan) {
 		maNV = taiKhoan.getNhanVien().getMaNhanVien();
@@ -172,13 +174,18 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 		navbar.setLayout(new BoxLayout(navbar, BoxLayout.Y_AXIS));
 
 		paneTrong_1 = new JPanel();
+		paneTrong_1.setLayout(new FlowLayout());
 		paneTrong_1.setBackground(new Color(24, 28, 20));
 		navbar.add(paneTrong_1);
-		paneTrong_1.setLayout(new BorderLayout(0, 0));
-
+		
+		
+		logo = new JLabel("");
+		logo.setIcon(new ImageIcon(TrangChu.class.getResource("/img/logo.png")));
+		paneTrong_1.add(logo);
 		body = new JPanel();
 		body.setLayout(new BorderLayout());
 		contentPane.add(body, BorderLayout.CENTER);
+		
 
 		trangChu = new JPanel();
 		trangChu.setBackground(new Color(24, 28, 20));
@@ -304,6 +311,8 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 		header = new JPanel();
 		header.setBackground(new Color(255, 255, 255));
 		contentPane.add(header, BorderLayout.NORTH);
+		
+		
 
 		main = new JPanel();
 		body.add(main, BorderLayout.CENTER);
@@ -1056,7 +1065,7 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 	private void hienHoaDon(HoaDon_Entity hd) {
 	    // Tạo JDialog hiển thị chi tiết hóa đơn
 	    JDialog dialog = new JDialog((JFrame) null, "Chi tiết Hóa Đơn", true);
-	    dialog.setLayout(new BorderLayout());
+	    dialog.getContentPane().setLayout(new BorderLayout());
 
 	    // Tạo panel chứa thông tin hóa đơn
 	    JPanel panel = new JPanel();
@@ -1112,8 +1121,8 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 	    
 
 	    // Thêm panel và nút vào dialog
-	    dialog.add(panel, BorderLayout.CENTER);
-	    dialog.add(title, BorderLayout.NORTH);
+	    dialog.getContentPane().add(panel, BorderLayout.CENTER);
+	    dialog.getContentPane().add(title, BorderLayout.NORTH);
 
 	    // Thiết lập kích thước và hiển thị dialog
 	    dialog.setSize(600, 700);
