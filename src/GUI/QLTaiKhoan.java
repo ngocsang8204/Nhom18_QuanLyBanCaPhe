@@ -277,10 +277,6 @@ public class QLTaiKhoan extends JPanel implements ActionListener, MouseListener{
         table.setFont(font);
         table.setRowHeight(50);
 
-        table.setShowGrid(true);
-        table.setShowHorizontalLines(true);
-        table.setShowVerticalLines(false);
-
         table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 18));
         table.getTableHeader().setResizingAllowed(false);
         table.getTableHeader().setReorderingAllowed(false);
@@ -309,6 +305,7 @@ public class QLTaiKhoan extends JPanel implements ActionListener, MouseListener{
 				cbb_MaNhanVien.setSelectedItem(model.getValueAt(row, 3));
 	    	    previousRow = row;
     	    }
+			cbb_MaNhanVien.setEditable(false);
 		}
 		// TODO Auto-generated method stub
 		
