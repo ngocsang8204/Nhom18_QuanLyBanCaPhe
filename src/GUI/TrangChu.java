@@ -187,7 +187,7 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 		
 		
 		logo = new JLabel("");
-		logo.setIcon(new ImageIcon(TrangChu.class.getResource("/img/logo - Copy.png")));
+		logo.setIcon(new ImageIcon(TrangChu.class.getResource("/img/logo.png")));
 		paneTrong_1.add(logo);
 		body = new JPanel();
 		body.setLayout(new BorderLayout());
