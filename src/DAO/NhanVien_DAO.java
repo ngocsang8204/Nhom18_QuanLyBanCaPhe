@@ -109,7 +109,7 @@ public class NhanVien_DAO {
 	public boolean suaNhanVien(NhanVien_Entity nhanVien) {
 		boolean isSuccess = false;
 		PreparedStatement updateStmt = null;
-
+		con= database.getInstance().getConnection();
 		try {
 			ArrayList<NhanVien_Entity> dsNV = danhSachNhanVien();
 			// Kiểm tra xem nhân viên có tồn tại không

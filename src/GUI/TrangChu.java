@@ -151,6 +151,13 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 	private JPopupMenu manageMenu2;
 	private JButton btnTimKiemTenKHTheoSDT;
 	private JLabel logo;
+	
+
+	
+
+	public void setMaNV(String maNV) {
+		this.maNV = maNV;
+	}
 
 	public TrangChu(TaiKhoan_Entity taiKhoan) {
 		maNV = taiKhoan.getNhanVien().getMaNhanVien();
@@ -180,7 +187,7 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 		
 		
 		logo = new JLabel("");
-		logo.setIcon(new ImageIcon(TrangChu.class.getResource("/img/logo.png")));
+		logo.setIcon(new ImageIcon(TrangChu.class.getResource("/img/logo - Copy.png")));
 		paneTrong_1.add(logo);
 		body = new JPanel();
 		body.setLayout(new BorderLayout());
@@ -944,7 +951,7 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 
 		if (btn.equals(btnCaiDat)) {
 			body.removeAll();
-			body.add(new CaiDat());
+			body.add(new CaiDat(maNV));
 			body.revalidate();
 			body.repaint();
 		}
@@ -1049,10 +1056,16 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 			JOptionPane.showMessageDialog(this,"Tên khách hàng phải là chữ");
 			return false;
 		}
+		if (!sdt.matches("^(03|05|07|08|09)[0-9]{8}$")) {
+			JOptionPane.showMessageDialog(this, "số điện thoại phải có 10 chữ số và bắt đầu với các đầu số: 03x, 05x, 07x, 08x hoặc 09x.");
+			requestFocus();
+			return false;
+		}
 		if(table.getRowCount()<1) {
 			JOptionPane.showMessageDialog(this,"Hãy chọn món");
 			return false;
 		}
+		
 		return true;
 	}
 	private void capNhatSLNguyenLieu(Mon_Entity mon, int soLuong) {
@@ -1080,6 +1093,8 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 
 	    // Thêm thông tin chi tiết hóa đơn vào panel
 	    panel.add(new JLabel("Mã Hóa Đơn: " + hd.getMaHoaDon()));
+	    panel.add(Box.createVerticalStrut(10));
+	    panel.add(new JLabel("Tên Nhân viên: " + hd.getNhanVien().getTenNhanVien()));
 	    panel.add(Box.createVerticalStrut(10));
 	    panel.add(new JLabel("Tên Khách Hàng: " + hd.getKhachHang().getTenKhachHang()));
 	    panel.add(Box.createVerticalStrut(10));
