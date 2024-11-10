@@ -117,6 +117,28 @@ public class TaiKhoan_DAO {
 		}
 		return isSuccess;
 	}
+	public boolean doiMatKhau(String ma, String mk) {
+		khoiTao();
+		Connection connection = database.getInstance().getConnection();
+		boolean isSuccess = false;
+		try {
+			ArrayList<TaiKhoan_Entity> dsTK = danhSachTaiKhoan();
+			
+				String updateSql = "UPDATE TaiKhoan SET matKhau = ? WHERE maTaiKhoan = ?";
+				PreparedStatement updateStmt = connection.prepareStatement(updateSql);
+				updateStmt.setString(1, mk);
+				updateStmt.setString(2, ma);
+				
+				int rowsInserted = updateStmt.executeUpdate();
+				if (rowsInserted > 0) {
+					isSuccess = true;
+				}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return isSuccess;
+	}
 	
 	public static void main(String[] args) {
 		TaiKhoan_DAO dao= new TaiKhoan_DAO();
