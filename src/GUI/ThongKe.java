@@ -408,7 +408,6 @@ public class ThongKe extends JPanel implements ActionListener, MouseListener{
             return;
         }
 
-        // Cập nhật bảng kết quả
         model_1.setRowCount(0);
         for (Object[] item : top5Items) {
             String tenMon = (String) item[0];
@@ -427,7 +426,6 @@ public class ThongKe extends JPanel implements ActionListener, MouseListener{
             return;
         }
 
-        // Cập nhật bảng kết quả
         model_2.setRowCount(0);
         for (Object[] item : top5Items) {
             String tenMon = (String) item[0];
@@ -446,7 +444,6 @@ public class ThongKe extends JPanel implements ActionListener, MouseListener{
             return;
         }
 
-        // Cập nhật bảng kết quả
         model_1.setRowCount(0);
         for (Object[] item : top5Items) {
             String tenMon = (String) item[0];
@@ -465,7 +462,6 @@ public class ThongKe extends JPanel implements ActionListener, MouseListener{
             return;
         }
 
-        // Cập nhật bảng kết quả
         model_2.setRowCount(0);
         for (Object[] item : top5Items) {
             String tenMon = (String) item[0];
@@ -484,7 +480,6 @@ public class ThongKe extends JPanel implements ActionListener, MouseListener{
             return;
         }
 
-        // Cập nhật bảng kết quả
         model_1.setRowCount(0);
         for (Object[] item : top5Items) {
             String tenMon = (String) item[0];
@@ -503,7 +498,6 @@ public class ThongKe extends JPanel implements ActionListener, MouseListener{
             return;
         }
 
-        // Cập nhật bảng kết quả
         model_2.setRowCount(0);
         for (Object[] item : top5Items) {
             String tenMon = (String) item[0];
@@ -521,7 +515,6 @@ public class ThongKe extends JPanel implements ActionListener, MouseListener{
             return;
         }
 
-        // Cập nhật bảng kết quả
         model_1.setRowCount(0);
         for (Object[] item : top5Items) {
             String tenMon = (String) item[0];
@@ -539,7 +532,6 @@ public class ThongKe extends JPanel implements ActionListener, MouseListener{
             return;
         }
 
-        // Cập nhật bảng kết quả
         model_2.setRowCount(0);
         for (Object[] item : top5Items) {
             String tenMon = (String) item[0];
@@ -549,22 +541,17 @@ public class ThongKe extends JPanel implements ActionListener, MouseListener{
 	}
 
 	private JPanel createLineChartPanel() {
-	    // Tạo dataset
-	    XYSeries totalRevenueSeries = new XYSeries("Tổng doanh thu");
 
-	    // Lấy năm cần thống kê từ giao diện `thongKeTheoNam`
+	    XYSeries totalRevenueSeries = new XYSeries("Tổng doanh thu");
 	    int nam = tktn.getNam();
 	    for (int i = 1; i <= 12; i++) {
-	        // Thêm doanh thu theo tháng vào series
 	        double doanhThu = hoaDonDAO.tinhTongTienTheoThang(i, nam);
 	        totalRevenueSeries.add(i, doanhThu);
 	    }
 
-	    // Tạo bộ dữ liệu từ series doanh thu
 	    XYSeriesCollection dataset = new XYSeriesCollection();
 	    dataset.addSeries(totalRevenueSeries);
 
-	    // Tạo biểu đồ đường
 	    JFreeChart lineChart = ChartFactory.createXYLineChart(
 	            "Thống kê tổng doanh thu năm " + nam,
 	            "Tháng",
@@ -574,34 +561,28 @@ public class ThongKe extends JPanel implements ActionListener, MouseListener{
 	            true, true, false
 	    );
 
-	    // Tuỳ chỉnh biểu đồ
 	    XYPlot plot = lineChart.getXYPlot();
 	    XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-	    renderer.setSeriesPaint(0, new Color(248, 160, 44)); // Màu cho tổng doanh thu
+	    renderer.setSeriesPaint(0, new Color(248, 160, 44));
 	    plot.setRenderer(renderer);
 
-	    // Thiết lập nền và lưới cho biểu đồ
 	    plot.setBackgroundPaint(Color.WHITE);
 	    plot.setDomainGridlinePaint(Color.LIGHT_GRAY);
 	    plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
 
-	    // Kiểm tra và thiết lập khoảng giá trị cho trục Y
 	    double maxDoanhThu = totalRevenueSeries.getMaxY();
 	    if (maxDoanhThu > 0) {
-	        plot.getRangeAxis().setRange(0, maxDoanhThu * 1.1); // Giới hạn trục Y với khoảng dư 10%
+	        plot.getRangeAxis().setRange(0, maxDoanhThu * 1.1);
 	    } else {
-	        plot.getRangeAxis().setRange(0, 1); // Giới hạn mặc định nếu không có doanh thu
+	        plot.getRangeAxis().setRange(0, 1);
 	    }
 
-	    // Định dạng trục Y để hiển thị đơn vị VND với dấu phân cách
 	    NumberAxis yAxis = (NumberAxis) plot.getRangeAxis();
 	    yAxis.setNumberFormatOverride(new DecimalFormat("###,###,### VND"));
 
-	    // Tùy chỉnh trục X để hiển thị các tháng dưới dạng số nguyên
 	    NumberAxis xAxis = (NumberAxis) plot.getDomainAxis();
 	    xAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
-	    // Cài đặt font chữ cho các thành phần của biểu đồ
 	    lineChart.getTitle().setFont(new Font("Tahoma", Font.BOLD, 15));
 	    lineChart.getLegend().setItemFont(new Font("Tahoma", Font.PLAIN, 15));
 	    plot.getDomainAxis().setLabelFont(new Font("Tahoma", Font.PLAIN, 15));
@@ -609,16 +590,13 @@ public class ThongKe extends JPanel implements ActionListener, MouseListener{
 	    plot.getDomainAxis().setTickLabelFont(new Font("Tahoma", Font.PLAIN, 12));
 	    plot.getRangeAxis().setTickLabelFont(new Font("Tahoma", Font.PLAIN, 12));
 
-	    // Tạo panel cho biểu đồ và trả về panel này
 	    ChartPanel chartPanel = new ChartPanel(lineChart);
 	    chartPanel.setBorder(new LineBorder(new Color(0, 0, 0), 2, true));
 	    chartPanel.setRangeZoomable(false);
 	    chartPanel.setPreferredSize(new Dimension(800, 400));
-	    chartPanel.setBackground(Color.WHITE); // Nền của ChartPanel
-	    lineChart.setBackgroundPaint(Color.WHITE); // Nền tổng thể của biểu đồ
+	    chartPanel.setBackground(Color.WHITE);
+	    lineChart.setBackgroundPaint(Color.WHITE);
 
 	    return chartPanel;
 	}
-
-	
 }

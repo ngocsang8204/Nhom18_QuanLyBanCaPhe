@@ -5,8 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 
 import ConnectDB.database;
 import Entity.Ban_Entity;
@@ -63,7 +66,6 @@ public class HoaDon_DAO {
 		boolean isSuccess = false;
 
 		try {
-			ArrayList<HoaDon_Entity> dsHD = danhSachHoaDon();
 			String sql = "INSERT INTO HoaDon(maHoaDon, ngayLap, giamGia, maKhachHang, maBan, maNhanVien) VALUES (?, ?, ?, ?, ?, ?)";
 			stmt = con.prepareStatement(sql);
 			stmt.setString(1, hd.getMaHoaDon());
@@ -84,7 +86,7 @@ public class HoaDon_DAO {
 		}
 		return isSuccess;
 	}
-
+	
 	public double tinhTongTienTheoThang(int thang, int nam) {
 	    double tongTien = 0;
 	    
@@ -93,31 +95,56 @@ public class HoaDon_DAO {
 	                 "JOIN ChiTietDonHang ctdh ON hd.maHoaDon = ctdh.maHoaDon " +
 	                 "JOIN Mon m ON m.maMon = ctdh.maMon " +
 	                 "WHERE MONTH(hd.ngayLap) = ? AND YEAR(hd.ngayLap) = ?";
-
-	    try (Connection con = database.getInstance().getConnection();
-	         PreparedStatement stmt = con.prepareStatement(sql)) {
-
+	    try {
+	        Connection con = database.getInstance().getConnection();
+	        PreparedStatement stmt = con.prepareStatement(sql);
+	        
 	        stmt.setInt(1, thang);
 	        stmt.setInt(2, nam);
 
-	        try (ResultSet rs = stmt.executeQuery()) {
-	            if (rs.next()) {
-	                tongTien = rs.getDouble("tongTien");
-	            }
+	        ResultSet rs = stmt.executeQuery();
+	        if (rs.next()) {
+	            tongTien = rs.getDouble("tongTien");
 	        }
+	    
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
 	    return tongTien;
 	}
-	
-	public static void main(String[] args) {
-		HoaDon_DAO hdd = new HoaDon_DAO();
-		double tongTien = hdd.tinhTongTienTheoThang(11, 2024);
-	    System.out.println(tongTien);
-	
+
+	public ArrayList<HoaDon_Entity> timHoaDonTheoNgay(LocalDate ngay) {
+	    ArrayList<HoaDon_Entity> danhSachHoaDonTheoNgay = new ArrayList<HoaDon_Entity>();
+	    String sql = "SELECT * FROM HoaDon WHERE DAY(ngayLap) = ? AND MONTH(ngayLap) = ? AND YEAR(ngayLap) = ?";
+	        try {
+	        	Connection con = database.getInstance().getConnection();
+		        PreparedStatement stmt = con.prepareStatement(sql);
+		        int ngayLap = ngay.getDayOfMonth();
+		        int thangLap = ngay.getMonthValue();
+		        int namLap = ngay.getYear();
+
+		        stmt.setInt(1, ngayLap);
+		        stmt.setInt(2, thangLap);
+		        stmt.setInt(3, namLap);
+	        	ResultSet rs = stmt.executeQuery();
+	            while (rs.next()) {
+	                String maHD = rs.getString("maHoaDon");
+	                LocalDateTime ngayLapHD = rs.getTimestamp("ngayLap").toLocalDateTime();
+	                double giamGia = rs.getDouble("giamGia");
+	                String maKH = rs.getString("maKhachHang");
+	                String maBan = rs.getString("maBan");
+	                String maNV = rs.getString("maNhanVien");
+
+	                KhachHang_Entity kh = kh_dao.timKiemKhachHangTheoMa(maKH);
+	                Ban_Entity ban = ban_dao.timBanTheoMa(maBan);
+	                NhanVien_Entity nv = nv_dao.timNhanVienTheoMa(maNV);
+
+	                HoaDon_Entity hoaDon = new HoaDon_Entity(maHD, ngayLapHD, giamGia, kh, ban, nv);
+	                danhSachHoaDonTheoNgay.add(hoaDon);
+	            }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return danhSachHoaDonTheoNgay;
 	}
-
-
-	
 }

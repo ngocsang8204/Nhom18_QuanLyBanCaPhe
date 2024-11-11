@@ -11,9 +11,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -21,6 +24,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,10 +37,12 @@ import javax.swing.table.DefaultTableModel;
 import com.toedter.calendar.JDateChooser;
 
 import DAO.Ban_DAO;
+import DAO.ChiTietDonHang_DAO;
 import DAO.HoaDon_DAO;
 import DAO.KhachHang_DAO;
 import DAO.NhanVien_DAO;
 import Entity.Ban_Entity;
+import Entity.ChiTietDonHang_Entity;
 import Entity.HoaDon_Entity;
 import Entity.KhachHang_Entity;
 import Entity.NhanVien_Entity;
@@ -56,6 +62,7 @@ public class HoaDon extends JPanel implements ActionListener, MouseListener{
 	private Ban_DAO ban_dao = new Ban_DAO();
 	private KhachHang_DAO kh_dao = new KhachHang_DAO();
 	private NhanVien_DAO nv_dao = new NhanVien_DAO();
+	private ChiTietDonHang_DAO ctdh_dao = new ChiTietDonHang_DAO();
 	private JTextField tfMaHD;
 	private JTextField tNgayLap;
 	private JTextField tfGiamGia;
@@ -65,6 +72,11 @@ public class HoaDon extends JPanel implements ActionListener, MouseListener{
 	private JTextField tfTenNV;
 	private JTextField tfSoDTNV;
 	private JTextField tfChucVu;
+	private int ngayCat;
+	private int thangCat;
+	private int namCat;
+	private JButton timKiemNgay;
+	private JButton btnXemChiTiet;
 
 	public HoaDon() {
 		this.setBackground(Color.WHITE);
@@ -100,17 +112,30 @@ public class HoaDon extends JPanel implements ActionListener, MouseListener{
         ngay.setBackground(new Color(255, 255, 255));
         ngay.setBorder(new EmptyBorder(25, 0, 0, 0));
         chon.add(ngay);
+        ngay.setLayout(new BoxLayout(ngay, BoxLayout.X_AXIS));
+        
+        JPanel chonNgay = new JPanel();
+        chonNgay.setBackground(new Color(255, 255, 255));
+        ngay.add(chonNgay);
         
         JLabel ngay_lab = new JLabel("Chọn ngày:");
         ngay_lab.setFont(new Font("Tahoma", Font.BOLD, 20));
-        ngay.add(ngay_lab);
+        chonNgay.add(ngay_lab);
         
         thoiGian = new JDateChooser();
         thoiGian.setDate(new Date());
         thoiGian.setDateFormatString("dd/MM/yyyy");
-        ngay.add(thoiGian);
+        chonNgay.add(thoiGian);
         thoiGian.setPreferredSize(new Dimension(200, 40));
         thoiGian.setFont(new Font("Tahoma", Font.BOLD, 15));
+        
+        JPanel timKiembtn = new JPanel();
+        timKiembtn.setBackground(new Color(255, 255, 255));
+        ngay.add(timKiembtn);
+        
+        timKiemNgay = new JButton("");
+        timKiemNgay.setIcon(new ImageIcon(HoaDon.class.getResource("/img/icons8-search-30.png")));
+        timKiembtn.add(timKiemNgay);
         
         JPanel timNhanh = new JPanel();
         timNhanh.setBackground(new Color(255, 255, 255));
@@ -314,14 +339,40 @@ public class HoaDon extends JPanel implements ActionListener, MouseListener{
         tfChucVu.setFont(new Font("Tahoma", Font.PLAIN, 20));
         p_chucVu.add(tfChucVu);
         
+        JPanel xemChiTiet = new JPanel();
+        chiTietHoaDon.add(xemChiTiet);
+        
+        btnXemChiTiet = new JButton("XEM CHI TIẾT");
+        btnXemChiTiet.setIcon(new ImageIcon(HoaDon.class.getResource("/img/icons8-bill-30-black.png")));
+        btnXemChiTiet.setFont(new Font("Tahoma", Font.BOLD, 20));
+        xemChiTiet.add(btnXemChiTiet);
+        
         btnTimKiem.addActionListener(this);
+        timKiemNgay.addActionListener(this);
+        btnXemChiTiet.addActionListener(this);
         table.addMouseListener(this);
         hienBang();
 	}
 	
+	private void catNgay () {
+		Date date = thoiGian.getDate();
+	    
+	    if (date != null) {
+	        String formattedDate = new java.text.SimpleDateFormat("dd/MM/yyyy").format(date);
+	        String[] parts = formattedDate.split("/");
+	        
+	        ngayCat = Integer.parseInt(parts[0]);
+	        thangCat = Integer.parseInt(parts[1]);
+	        namCat = Integer.parseInt(parts[2]);
+	    } else {
+	        System.out.println("Ngày không hợp lệ");
+	    }
+	}
+
 	private void hienBang() {
+		catNgay();
 		model.getDataVector().removeAllElements();
-		ArrayList<HoaDon_Entity> dsHD = hd_dao.danhSachHoaDon();
+		ArrayList<HoaDon_Entity> dsHD = hd_dao.timHoaDonTheoNgay(LocalDate.of(namCat, thangCat, ngayCat));
 		dsHD.forEach(x -> themDong(x));
 	}
 	
@@ -352,6 +403,76 @@ public class HoaDon extends JPanel implements ActionListener, MouseListener{
 		tfSoDTNV.setText(nv.getSoDienThoai());
 		tfChucVu.setText(nv.getChucVu()?"Quản lý":"Nhân viên");
 	}
+	
+	private void hienHoaDon(HoaDon_Entity hd) {
+	    // Tạo JDialog hiển thị chi tiết hóa đơn
+	    JDialog dialog = new JDialog((JFrame) null, "Chi tiết Hóa Đơn", true);
+	    dialog.getContentPane().setLayout(new BorderLayout());
+
+	    // Tạo panel chứa thông tin hóa đơn
+	    JPanel panel = new JPanel();
+	    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+	    
+	    // Tiêu đề hóa đơn
+	    JLabel lblTitle = new JLabel("HÓA ĐƠN");
+	    lblTitle.setFont(new Font("Arial", Font.BOLD, 25));
+	    JPanel title= new JPanel();
+	    title.add(lblTitle);
+	   
+
+	    // Thêm thông tin chi tiết hóa đơn vào panel
+	    panel.add(new JLabel("Mã Hóa Đơn: " + hd.getMaHoaDon()));
+	    panel.add(Box.createVerticalStrut(10));
+	    panel.add(new JLabel("Tên Nhân viên: " + hd.getNhanVien().getTenNhanVien()));
+	    panel.add(Box.createVerticalStrut(10));
+	    panel.add(new JLabel("Tên Khách Hàng: " + hd.getKhachHang().getTenKhachHang()));
+	    panel.add(Box.createVerticalStrut(10));
+	    panel.add(new JLabel("Ngày Lập: " + hd.getNgayLap()));
+	    panel.add(Box.createVerticalStrut(10));
+
+	    // Định dạng số tiền
+	    DecimalFormat df = new DecimalFormat("#,###.0 VND");
+
+	    // Cấu hình bảng chi tiết sản phẩm
+	    panel.add(new JLabel("Chi Tiết Sản Phẩm:"));
+	    panel.add(Box.createVerticalStrut(10));
+	    String[] columns = {"Tên món", "SL", "Đơn giá", "Thành tiền"};
+	    DefaultTableModel model = new DefaultTableModel(columns, 0);
+	    double tongTien=0;
+	    // Thêm dữ liệu vào model
+	    ArrayList<ChiTietDonHang_Entity> dsCTDH= ctdh_dao.danhSachCTDH(hd);
+	    for (ChiTietDonHang_Entity cthd : dsCTDH) {
+	        Object[] rowData = {
+	            cthd.getMon().getTenMon(),
+	            cthd.getSoLuongMon(),
+	            df.format(cthd.getMon().getDonGia()),
+	            df.format(cthd.getSoLuongMon() * cthd.getMon().getDonGia())
+	            
+	        };
+	        tongTien+=cthd.getSoLuongMon() * cthd.getMon().getDonGia();
+	        model.addRow(rowData);
+	    }
+
+	    // Tạo bảng với model và thêm vào JScrollPane
+	    JTable table = new JTable(model);
+	    table.setEnabled(false);
+	    JScrollPane scrollPane = new JScrollPane(table);
+	    scrollPane.setPreferredSize(new Dimension(550, 300)); // Giới hạn kích thước của bảng
+	    panel.add(scrollPane);
+	    panel.add(Box.createVerticalStrut(10));
+	    panel.add(new JLabel("Tổng tiền: "+df.format(tongTien)));
+	    panel.add(Box.createVerticalStrut(30));
+	    
+
+	    // Thêm panel và nút vào dialog
+	    dialog.getContentPane().add(panel, BorderLayout.CENTER);
+	    dialog.getContentPane().add(title, BorderLayout.NORTH);
+
+	    // Thiết lập kích thước và hiển thị dialog
+	    dialog.setSize(600, 700);
+	    dialog.setLocationRelativeTo(null); // Hiển thị ở giữa màn hình
+	    dialog.setVisible(true);
+	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
@@ -380,7 +501,17 @@ public class HoaDon extends JPanel implements ActionListener, MouseListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
+		JButton btn = (JButton)e.getSource();
+		if (btn.equals(timKiemNgay)) {
+			model.getDataVector().removeAllElements();
+			model.fireTableDataChanged();
+			hienBang();
+		}
 		
+		if (btn.equals(btnXemChiTiet)) {
+			HoaDon_Entity hd = hd_dao.timKiemHoaDonTheoMa(tfMaHD.getText().toString());
+			hienHoaDon(hd);
+		}
 	}
 
 }
