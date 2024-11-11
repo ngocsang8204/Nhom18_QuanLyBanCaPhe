@@ -513,15 +513,8 @@ public class QLNhanVien extends JPanel implements ActionListener, MouseListener{
 		return new NhanVien_Entity(ma, ten, soCCCD, SDT, diaChi, chucVu);
 	}
 	private String taoMa() {
-		String lastMa = nhanVien_DAO.getMaxMaNhanVien();
-		int newNumber = 1;
-		if (lastMa != null && !lastMa.isEmpty()) {
-			String numberPart = lastMa.substring(2);
-			newNumber = Integer.parseInt(numberPart) + 1;
-		}
-
-		String newMa = String.format("NV%03d", newNumber);
-		return newMa;
+		int sl= nhanVien_DAO.getSLNhanVien()+1;
+		return String.format("NV%03d",sl);
 	}
 	
 	private boolean validData() {

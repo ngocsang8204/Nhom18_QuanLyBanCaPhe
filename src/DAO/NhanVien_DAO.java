@@ -144,25 +144,21 @@ public class NhanVien_DAO {
 		return isSuccess;
 	}
 
-	public String getMaxMaNhanVien() {
-		String maNV = "";
-
-		if (con == null) {
-			System.out.println("Chưa có kết nối cơ sở dữ liệu");
-			return maNV;
-		}
-
-		try (PreparedStatement stm = con.prepareStatement(
-				"SELECT TOP 1 maNhanVien FROM NhanVien ORDER BY maNhanVien DESC")) {
-
-			ResultSet rs = stm.executeQuery();
-			if (rs.next()) {
-				maNV = rs.getString("maNhanVien");
+	public int getSLNhanVien() {
+		khoiTao();
+		Connection connection = database.getInstance().getConnection();
+		String sql= "Select count(*) from NhanVien";
+		int count=0;
+		try {
+			PreparedStatement stmt= connection.prepareStatement(sql);
+			ResultSet rs= stmt.executeQuery();
+			if(rs.next()) {
+				count=rs.getInt(1);
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return maNV;
+		return count;
 	}
 
 	public List<String> getAllNhanVien() {
