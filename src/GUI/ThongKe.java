@@ -93,10 +93,11 @@ public class ThongKe extends JPanel implements ActionListener, MouseListener{
 	private JComponent chart;
 	private JLabel lbDoiChieu;
 	private JLabel lbTongDoanhThuTheoLoai;
+	private JPanel panel_thongketongdoanhthu;
 
 	public ThongKe() {
 		
-		
+			
 		setBackground(new Color(255, 255, 255));
         setBounds(0, 0, 1600, 954);
         setLayout(new BorderLayout(0, 0));
@@ -299,7 +300,7 @@ public class ThongKe extends JPanel implements ActionListener, MouseListener{
         panel_center.add(panel_3, gbc_panel_3);
         panel_3.setLayout(new BorderLayout(0, 0));
         
-        JPanel panel_thongketongdoanhthu = new JPanel();
+        panel_thongketongdoanhthu = new JPanel();
         panel_thongketongdoanhthu.setBackground(new Color(255, 255, 255));
         panel_3.add(panel_thongketongdoanhthu, BorderLayout.CENTER);
         panel_thongketongdoanhthu.setLayout(new GridLayout(0, 2, 0, 0));
@@ -398,9 +399,11 @@ public class ThongKe extends JPanel implements ActionListener, MouseListener{
 		        return;
 		    }
 		    if ("Thống kê theo năm".equals(lbDoiChieu.getText())) {
+		    	System.out.println("yes");
+		    	doanhThuTheoNam();
 		        thongKeTop5MonBanChayNhatTheoNam();
 		        thongKeTop5MonKhongBanChayNhatTheoNam();
-		        doanhThuTheoNam();
+		        
 		        return;
 		    }
 		    
@@ -564,7 +567,7 @@ public class ThongKe extends JPanel implements ActionListener, MouseListener{
 
 		int nam = tktn.getNam();
 	    XYSeries totalRevenueSeries = new XYSeries("Tổng doanh thu");
-
+	    System.out.println(nam);
 	    for (int i = 1; i <= 12; i++) {
 	        double doanhThu = hoaDonDAO.tinhTongTienTheoThang(i, nam);
 	        totalRevenueSeries.add(i, doanhThu);
@@ -648,10 +651,15 @@ public class ThongKe extends JPanel implements ActionListener, MouseListener{
 	    String doanhThuNamFormat = df.format(doanhThuNam);
 	    if (doanhThuNam == 0) {
 	        lbTongDoanhThuTheoLoai.setText("Không có doanh thu trong năm " + nam);
-	        return;
+	        
 	    } else {
 	        lbTongDoanhThuTheoLoai.setText("Tổng doanh thu trong năm " + nam + " là: " + doanhThuNamFormat);
 	    }
+	    panel_thongketongdoanhthu.remove(1);
+	    panel_thongketongdoanhthu.add(createLineChartPanel());
+	    panel_thongketongdoanhthu.revalidate();
+	    panel_thongketongdoanhthu.repaint();
+
 	}
 
 	

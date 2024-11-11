@@ -948,9 +948,9 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 		}
 
 		if (btn.equals(btnThanhToan)) {
-			if(valid())
-			if(thanhToan()) 
+			if(valid()) 
 			{	
+				thanhToan();
 				model.getDataVector().removeAllElements();
 				model.fireTableDataChanged();
 				tongTien = 0;
@@ -1027,26 +1027,28 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 	private boolean valid() {
 		String KH= tfTenKH.getText().trim();
 		String sdt= tfSoDT.getText().trim();
-		if(KH.trim().equals("")) {
-			JOptionPane.showMessageDialog(this,"Tên khách hàng không được rỗng");
-			return false;
-		}
-		else if(KH.matches("[\\p{L}]\\s"))
-		{
-			JOptionPane.showMessageDialog(this,"Tên khách hàng phải là chữ");
-			return false;
-		}
-		if (!sdt.matches("^(03|05|07|08|09)[0-9]{8}$")) {
-			JOptionPane.showMessageDialog(this, "số điện thoại phải có 10 chữ số và bắt đầu với các đầu số: 03x, 05x, 07x, 08x hoặc 09x.");
-			requestFocus();
-			return false;
-		}
-		if(table.getRowCount()<1) {
-			JOptionPane.showMessageDialog(this,"Hãy chọn món");
-			return false;
-		}
+		boolean isCorrect = true;
 		
-		return true;
+		if (!KH.matches("") && !sdt.matches("")) {
+			if(!KH.matches("^([A-ZÀ-Ỵ][a-zà-ỵ]*(\\s[A-ZÀ-Ỵ][a-zà-ỵ]*)*)$"))
+			{
+				JOptionPane.showMessageDialog(this,"Tên khách hàng phải là chữ");
+				isCorrect = false;
+			} else {
+				if (!sdt.matches("^(03|05|07|08|09)[0-9]{8}$") && !sdt.matches("")) {
+					JOptionPane.showMessageDialog(this, "số điện thoại phải có 10 chữ số và bắt đầu với các đầu số: 03x, 05x, 07x, 08x hoặc 09x.");
+					requestFocus();
+					isCorrect = false;
+				} else {
+					 if(table.getRowCount()<1) {
+							JOptionPane.showMessageDialog(this,"Hãy chọn món");
+							isCorrect = false;
+						}
+				}
+			}
+		}
+
+		return isCorrect;
 	}
 	private void capNhatSLNguyenLieu(Mon_Entity mon, int soLuong) {
 		ArrayList<ChiTietMon_Entity> dsCTM= ctm_dao.getDSChiTietMon(mon.getMaMon());
