@@ -54,8 +54,6 @@ import javax.swing.border.LineBorder;
 public class HoaDon extends JPanel implements ActionListener, MouseListener{
 
 	private JDateChooser thoiGian;
-	private JButton btnTimKiem;
-	private JTextField tTimKiem;
 	private DefaultTableModel model;
 	private JTable table;
 	private HoaDon_DAO hd_dao = new HoaDon_DAO();
@@ -141,33 +139,8 @@ public class HoaDon extends JPanel implements ActionListener, MouseListener{
         timNhanh.setBackground(new Color(255, 255, 255));
         chon.add(timNhanh);
         timNhanh.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-        
-        JPanel timKiem = new JPanel();
-        timNhanh.add(timKiem);
-        timKiem.setBackground(new Color(255, 255, 255));
-        timKiem.setBorder(BorderFactory.createTitledBorder(
-            BorderFactory.createEtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), 
-            "Tìm kiếm nhanh:", 
-            TitledBorder.LEADING, 
-            TitledBorder.TOP, 
-            new Font("Tahoma", Font.PLAIN, 16),
-            new Color(0, 0, 0)
-        ));
         JLabel tenKH_lab = new JLabel("Tên khách hàng: ");
         tenKH_lab.setFont(new Font("Tahoma", Font.BOLD, 20));
-        
-        btnTimKiem = new JButton("");
-        btnTimKiem.setIcon(new ImageIcon(QLNhaCungCap.class.getResource("/img/icons8-search-30.png")));
-        btnTimKiem.setContentAreaFilled(false);
-		btnTimKiem.setBorderPainted(false);
-        timKiem.add(btnTimKiem);
-        
-        tTimKiem = new JTextField(25);
-        tTimKiem.setOpaque(false);
-        tTimKiem.setForeground(Color.BLACK);
-        tTimKiem.setFont(new Font("Tahoma", Font.PLAIN, 16));
-        tTimKiem.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
-        timKiem.add(tTimKiem);
         
         JPanel p_cen = new JPanel();
         p_cen.setBackground(new Color(255, 255, 255));
@@ -346,8 +319,6 @@ public class HoaDon extends JPanel implements ActionListener, MouseListener{
         btnXemChiTiet.setIcon(new ImageIcon(HoaDon.class.getResource("/img/icons8-bill-30-black.png")));
         btnXemChiTiet.setFont(new Font("Tahoma", Font.BOLD, 20));
         xemChiTiet.add(btnXemChiTiet);
-        
-        btnTimKiem.addActionListener(this);
         timKiemNgay.addActionListener(this);
         btnXemChiTiet.addActionListener(this);
         table.addMouseListener(this);

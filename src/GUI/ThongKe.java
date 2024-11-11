@@ -570,19 +570,6 @@ public class ThongKe extends JPanel implements ActionListener, MouseListener{
 	    plot.setDomainGridlinePaint(Color.LIGHT_GRAY);
 	    plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
 
-	    double maxDoanhThu = totalRevenueSeries.getMaxY();
-	    if (maxDoanhThu > 0) {
-	        plot.getRangeAxis().setRange(0, maxDoanhThu * 1.1);
-	    } else {
-	        plot.getRangeAxis().setRange(0, 1);
-	    }
-
-	    NumberAxis yAxis = (NumberAxis) plot.getRangeAxis();
-	    yAxis.setNumberFormatOverride(new DecimalFormat("###,###,### VND"));
-
-	    NumberAxis xAxis = (NumberAxis) plot.getDomainAxis();
-	    xAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-
 	    lineChart.getTitle().setFont(new Font("Tahoma", Font.BOLD, 15));
 	    lineChart.getLegend().setItemFont(new Font("Tahoma", Font.PLAIN, 15));
 	    plot.getDomainAxis().setLabelFont(new Font("Tahoma", Font.PLAIN, 15));
