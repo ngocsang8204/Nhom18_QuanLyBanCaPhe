@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -112,6 +113,33 @@ public class HoaDon_DAO {
 	    }
 	    return tongTien;
 	}
+	
+	public double tinhTongTienTheoNgay(Date ngayChon) {
+	    double tongTien = 0;
+	    
+	    String sql = "SELECT SUM(ctdh.soLuongMon * m.donGia) AS tongTien " +
+	                 "FROM HoaDon hd " +
+	                 "JOIN ChiTietDonHang ctdh ON hd.maHoaDon = ctdh.maHoaDon " +
+	                 "JOIN Mon m ON m.maMon = ctdh.maMon " +
+	                 "WHERE CONVERT(DATE, hd.ngayLap) = ?";
+	    try {
+	        Connection con = database.getInstance().getConnection();
+	        PreparedStatement stmt = con.prepareStatement(sql);
+	        
+	        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	        String formattedDate = dateFormat.format(ngayChon);
+	        stmt.setString(1, formattedDate);
+	        
+	        ResultSet rs = stmt.executeQuery();
+	        if (rs.next()) {
+	            tongTien = rs.getDouble("tongTien");
+	        }
+	    
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return tongTien;
+	}
 
 	public ArrayList<HoaDon_Entity> timHoaDonTheoNgay(LocalDate ngay) {
 	    ArrayList<HoaDon_Entity> danhSachHoaDonTheoNgay = new ArrayList<HoaDon_Entity>();
@@ -146,5 +174,9 @@ public class HoaDon_DAO {
 	        e.printStackTrace();
 	    }
 	    return danhSachHoaDonTheoNgay;
+	}
+	
+	public static void main(String[] args) {
+		
 	}
 }

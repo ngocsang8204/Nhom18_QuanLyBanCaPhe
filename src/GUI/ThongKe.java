@@ -92,6 +92,7 @@ public class ThongKe extends JPanel implements ActionListener, MouseListener{
 	
 	private JComponent chart;
 	private JLabel lbDoiChieu;
+	private JLabel lbTongDoanhThuTheoLoai;
 
 	public ThongKe() {
 		
@@ -301,8 +302,19 @@ public class ThongKe extends JPanel implements ActionListener, MouseListener{
         JPanel panel_thongketongdoanhthu = new JPanel();
         panel_thongketongdoanhthu.setBackground(new Color(255, 255, 255));
         panel_3.add(panel_thongketongdoanhthu, BorderLayout.CENTER);
-        panel_thongketongdoanhthu.add(createLineChartPanel());
+        panel_thongketongdoanhthu.setLayout(new GridLayout(0, 2, 0, 0));
         
+        JPanel panel_4 = new JPanel();
+        panel_4.setBackground(new Color(255, 255, 255));
+        FlowLayout flowLayout_3 = (FlowLayout) panel_4.getLayout();
+        flowLayout_3.setAlignment(FlowLayout.LEFT);
+        panel_thongketongdoanhthu.add(panel_4);
+        
+        lbTongDoanhThuTheoLoai = new JLabel("Tổng doanh thu");
+        lbTongDoanhThuTheoLoai.setBackground(new Color(255, 255, 255));
+        lbTongDoanhThuTheoLoai.setFont(new Font("Tahoma", Font.PLAIN, 17));
+        panel_4.add(lbTongDoanhThuTheoLoai);
+        panel_thongketongdoanhthu.add(createLineChartPanel());
         
         btnThongKeTheoNgay.addActionListener(this);
         btnThongKeTheoThang.addActionListener(this);
@@ -377,23 +389,30 @@ public class ThongKe extends JPanel implements ActionListener, MouseListener{
 		}
 		
 		if (o.equals(btnThongKe)) {
-		    if ("Thống kê theo ngày".equals(lbDoiChieu.getText())) {
-		        thongKeTop5MonBanChayNhatTheoNgay();
-		        thongKeTop5MonKhongBanChayNhatTheoNgay();
-		    }
+		  
 		    if ("Thống kê theo tháng".equals(lbDoiChieu.getText())) {
 		        thongKeTop5MonBanChayNhatTheoThang();
 		        thongKeTop5MonKhongBanChayNhatTheoThang();
+		        doanhThuThang();
+		        
+		        return;
 		    }
 		    if ("Thống kê theo năm".equals(lbDoiChieu.getText())) {
 		        thongKeTop5MonBanChayNhatTheoNam();
 		        thongKeTop5MonKhongBanChayNhatTheoNam();
+		        doanhThuTheoNam();
+		        return;
 		    }
 		    
 		    if ("Thống kê theo khoảng ngày".equals(lbDoiChieu.getText())) {
 		        thongKeTop5MonBanChayNhatTheoKhoangNgay();
 		        thongKeTop5MonKhongBanChayNhatTheoKhoangNgay();
+		        return;
 		    }
+		    thongKeTop5MonBanChayNhatTheoNgay();
+	        thongKeTop5MonKhongBanChayNhatTheoNgay();
+	        doanhThuNgay();
+	        return;
 		}
 
 	}
@@ -539,11 +558,13 @@ public class ThongKe extends JPanel implements ActionListener, MouseListener{
             model_2.addRow(new Object[]{tenMon, soLuong});
         }
 	}
+	
 
 	private JPanel createLineChartPanel() {
 
+		int nam = tktn.getNam();
 	    XYSeries totalRevenueSeries = new XYSeries("Tổng doanh thu");
-	    int nam = tktn.getNam();
+
 	    for (int i = 1; i <= 12; i++) {
 	        double doanhThu = hoaDonDAO.tinhTongTienTheoThang(i, nam);
 	        totalRevenueSeries.add(i, doanhThu);
@@ -580,10 +601,72 @@ public class ThongKe extends JPanel implements ActionListener, MouseListener{
 	    ChartPanel chartPanel = new ChartPanel(lineChart);
 	    chartPanel.setBorder(new LineBorder(new Color(0, 0, 0), 2, true));
 	    chartPanel.setRangeZoomable(false);
-	    chartPanel.setPreferredSize(new Dimension(800, 400));
+	    chartPanel.setPreferredSize(new Dimension(600, 400));
 	    chartPanel.setBackground(Color.WHITE);
 	    lineChart.setBackgroundPaint(Color.WHITE);
 
 	    return chartPanel;
 	}
+	
+	private void doanhThuNgay() {
+	    Date layNgay = ngayChon.getDate();
+	    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+	    String ngayFormat = sdf.format(layNgay);
+	    DecimalFormat df = new DecimalFormat("##,###,### VND");
+	    double doanhThuNgay = hoaDonDAO.tinhTongTienTheoNgay(layNgay);
+	    String doanhThuNgayFormat = df.format(doanhThuNgay);
+	    if (doanhThuNgay == 0) {
+			lbTongDoanhThuTheoLoai.setText("Không có doanh thu trong ngày "+ ngayFormat);
+			return;
+		}else {
+			lbTongDoanhThuTheoLoai.setText("Tổng doanh thu ngày " + ngayFormat + " là: " + doanhThuNgayFormat);
+		}
+	    
+	}
+	
+	private void doanhThuThang() {
+	    int thang = tktt.getThang();
+	    int nam = tktt.getNam();
+	    DecimalFormat df = new DecimalFormat("##,###,### VND");
+	    double doanhThuThang = hoaDonDAO.tinhTongTienTheoThang(thang,nam);
+	    String doanhThuThangFormat = df.format(doanhThuThang);
+	    if (doanhThuThang == 0) {
+			lbTongDoanhThuTheoLoai.setText("Không có doanh thu trong tháng " + thang + " năm " + nam );
+			return;
+		}else {
+			lbTongDoanhThuTheoLoai.setText("Tổng doanh thu trong tháng " + thang + " năm " + nam + " là: " + doanhThuThangFormat);
+		}
+	}
+	
+	private void doanhThuTheoNam() {
+	    int nam = tktn.getNam();
+	    DecimalFormat df = new DecimalFormat("##,###,### VND");
+	    double doanhThuNam = 0;
+	    for (int i = 1; i <= 12; i++) {
+	        doanhThuNam += hoaDonDAO.tinhTongTienTheoThang(i, nam); 
+	    }
+	    String doanhThuNamFormat = df.format(doanhThuNam);
+	    if (doanhThuNam == 0) {
+	        lbTongDoanhThuTheoLoai.setText("Không có doanh thu trong năm " + nam);
+	        return;
+	    } else {
+	        lbTongDoanhThuTheoLoai.setText("Tổng doanh thu trong năm " + nam + " là: " + doanhThuNamFormat);
+	    }
+	}
+
+	
+//	private void doanhThuKhoangNgay() {
+//	    int thang = tktt.getThang();
+//	    int nam = tktt.getNam();
+//	    DecimalFormat df = new DecimalFormat("##,###,### VND");
+//	    double doanhThuNgay = hoaDonDAO.tinhTongTienTheoThang(thang,nam);
+//	    String doanhThuNgayFormat = df.format(doanhThuNgay);
+//	    if (doanhThuNgay == 0) {
+//			lbTongDoanhThuTheoLoai.setText("Không có doanh thu trong tháng " + thang + " năm " + nam );
+//			return;
+//		}else {
+//			lbTongDoanhThuTheoLoai.setText("Tổng doanh thu trong tháng " + thang + " năm " + nam + " là: " + doanhThuNgayFormat);
+//		}
+//	}
+
 }
