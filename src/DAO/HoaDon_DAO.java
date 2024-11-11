@@ -84,5 +84,40 @@ public class HoaDon_DAO {
 		}
 		return isSuccess;
 	}
+
+	public double tinhTongTienTheoThang(int thang, int nam) {
+	    double tongTien = 0;
+	    
+	    String sql = "SELECT SUM(ctdh.soLuongMon * m.donGia) AS tongTien " +
+	                 "FROM HoaDon hd " +
+	                 "JOIN ChiTietDonHang ctdh ON hd.maHoaDon = ctdh.maHoaDon " +
+	                 "JOIN Mon m ON m.maMon = ctdh.maMon " +
+	                 "WHERE MONTH(hd.ngayLap) = ? AND YEAR(hd.ngayLap) = ?";
+
+	    try (Connection con = database.getInstance().getConnection();
+	         PreparedStatement stmt = con.prepareStatement(sql)) {
+
+	        stmt.setInt(1, thang);
+	        stmt.setInt(2, nam);
+
+	        try (ResultSet rs = stmt.executeQuery()) {
+	            if (rs.next()) {
+	                tongTien = rs.getDouble("tongTien");
+	            }
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return tongTien;
+	}
+	
+	public static void main(String[] args) {
+		HoaDon_DAO hdd = new HoaDon_DAO();
+		double tongTien = hdd.tinhTongTienTheoThang(11, 2024);
+	    System.out.println(tongTien);
+	
+	}
+
+
 	
 }

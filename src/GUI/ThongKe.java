@@ -26,6 +26,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -40,6 +41,7 @@ import com.toedter.calendar.JCalendar;
 import com.toedter.calendar.JDateChooser;
 import com.toedter.calendar.JMonthChooser;
 
+import DAO.HoaDon_DAO;
 import DAO.Mon_DAO;
 import Entity.TaiKhoan_Entity;
 import GUI_Panel_ChonThang_Nam.*;
@@ -52,9 +54,11 @@ import javax.swing.table.DefaultTableModel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.data.Range;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
@@ -84,6 +88,8 @@ public class ThongKe extends JPanel implements ActionListener, MouseListener{
 	private GUI_Panel_ChonThang_Nam.thongKeTheoKhoangNgay tktkn = new thongKeTheoKhoangNgay();
 	
 	private Mon_DAO monDAO = new Mon_DAO();
+	private HoaDon_DAO hoaDonDAO = new HoaDon_DAO();
+	
 	private JComponent chart;
 	private JLabel lbDoiChieu;
 
@@ -543,24 +549,26 @@ public class ThongKe extends JPanel implements ActionListener, MouseListener{
 	}
 
 	private JPanel createLineChartPanel() {
-	    // Tạo dataset cho tổng doanh thu
+	    // Tạo dataset
 	    XYSeries totalRevenueSeries = new XYSeries("Tổng doanh thu");
 
-	    int nam = tktn.getNam();// lấy năm từ GUI
-//	    for (int i = 1; i <= 12; i++) {
-//	        // Tính tổng doanh thu mỗi tháng của quán cà phê
-//	        double totalRevenue = HoaDon.tinhTongTienTheoThang(i, nam);  // Giả sử có hàm tính tổng tiền theo tháng trong HoaDon
-//	        totalRevenueSeries.add(i, totalRevenue);  // Thêm tổng doanh thu vào series
-//	    }
+	    // Lấy năm cần thống kê từ giao diện `thongKeTheoNam`
+	    int nam = tktn.getNam();
+	    for (int i = 1; i <= 12; i++) {
+	        // Thêm doanh thu theo tháng vào series
+	        double doanhThu = hoaDonDAO.tinhTongTienTheoThang(i, nam);
+	        totalRevenueSeries.add(i, doanhThu);
+	    }
 
+	    // Tạo bộ dữ liệu từ series doanh thu
 	    XYSeriesCollection dataset = new XYSeriesCollection();
-	    dataset.addSeries(totalRevenueSeries);  // Chỉ thêm series tổng doanh thu vào dataset
+	    dataset.addSeries(totalRevenueSeries);
 
 	    // Tạo biểu đồ đường
 	    JFreeChart lineChart = ChartFactory.createXYLineChart(
-	            "Thống kê tổng doanh thu",
+	            "Thống kê tổng doanh thu năm " + nam,
 	            "Tháng",
-	            "Doanh thu",
+	            "Doanh thu (VND)",
 	            dataset,
 	            PlotOrientation.VERTICAL,
 	            true, true, false
@@ -569,13 +577,31 @@ public class ThongKe extends JPanel implements ActionListener, MouseListener{
 	    // Tuỳ chỉnh biểu đồ
 	    XYPlot plot = lineChart.getXYPlot();
 	    XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-	    renderer.setSeriesPaint(0, new Color(248, 160, 44));  // Đặt màu cho dòng tổng doanh thu
+	    renderer.setSeriesPaint(0, new Color(248, 160, 44)); // Màu cho tổng doanh thu
 	    plot.setRenderer(renderer);
+
+	    // Thiết lập nền và lưới cho biểu đồ
 	    plot.setBackgroundPaint(Color.WHITE);
 	    plot.setDomainGridlinePaint(Color.LIGHT_GRAY);
 	    plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
-	    
-	    // Thay đổi font chữ
+
+	    // Kiểm tra và thiết lập khoảng giá trị cho trục Y
+	    double maxDoanhThu = totalRevenueSeries.getMaxY();
+	    if (maxDoanhThu > 0) {
+	        plot.getRangeAxis().setRange(0, maxDoanhThu * 1.1); // Giới hạn trục Y với khoảng dư 10%
+	    } else {
+	        plot.getRangeAxis().setRange(0, 1); // Giới hạn mặc định nếu không có doanh thu
+	    }
+
+	    // Định dạng trục Y để hiển thị đơn vị VND với dấu phân cách
+	    NumberAxis yAxis = (NumberAxis) plot.getRangeAxis();
+	    yAxis.setNumberFormatOverride(new DecimalFormat("###,###,### VND"));
+
+	    // Tùy chỉnh trục X để hiển thị các tháng dưới dạng số nguyên
+	    NumberAxis xAxis = (NumberAxis) plot.getDomainAxis();
+	    xAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+
+	    // Cài đặt font chữ cho các thành phần của biểu đồ
 	    lineChart.getTitle().setFont(new Font("Tahoma", Font.BOLD, 15));
 	    lineChart.getLegend().setItemFont(new Font("Tahoma", Font.PLAIN, 15));
 	    plot.getDomainAxis().setLabelFont(new Font("Tahoma", Font.PLAIN, 15));
@@ -585,16 +611,14 @@ public class ThongKe extends JPanel implements ActionListener, MouseListener{
 
 	    // Tạo panel cho biểu đồ và trả về panel này
 	    ChartPanel chartPanel = new ChartPanel(lineChart);
-	    chartPanel.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+	    chartPanel.setBorder(new LineBorder(new Color(0, 0, 0), 2, true));
 	    chartPanel.setRangeZoomable(false);
-	    chartPanel.setPreferredSize(new Dimension(1600, 450));
-	    chartPanel.setBackground(Color.WHITE);
-	    lineChart.setBackgroundPaint(Color.WHITE);
+	    chartPanel.setPreferredSize(new Dimension(800, 400));
+	    chartPanel.setBackground(Color.WHITE); // Nền của ChartPanel
+	    lineChart.setBackgroundPaint(Color.WHITE); // Nền tổng thể của biểu đồ
 
 	    return chartPanel;
 	}
-	
-	
 
-
+	
 }
