@@ -36,6 +36,7 @@ CREATE TABLE Mon (
     tenMon NVARCHAR(255),
     loaiMon NVARCHAR(255),
     donGia MONEY NOT NULL,
+    trangThaiMon BIT,
     PRIMARY KEY (maMon)
 );
 
@@ -164,13 +165,13 @@ VALUES
 ('B005', N'Bàn 5', N'Trống', N'Gần sân vườn');
 
 -- Thêm dữ liệu vào bảng Mon
-INSERT INTO Mon (maMon, tenMon, loaiMon, donGia)
+INSERT INTO Mon (maMon, tenMon, loaiMon, donGia, trangThaiMon)
 VALUES
-('M001', N'Cà phê sữa', N'Nước uống', 25000),
-('M002', N'Trà sữa', N'Nước uống', 30000),
-('M003', N'Bánh mì', N'Thức ăn', 15000),
-('M004', N'Sinh tố bơ', N'Nước uống', 35000),
-('M005', N'Nước cam', N'Nước uống', 20000);
+('M001', N'Cà phê sữa', N'Nước uống', 25000, 1),
+('M002', N'Trà sữa', N'Nước uống', 30000, 1),
+('M003', N'Bánh mì', N'Thức ăn', 15000, 1),
+('M004', N'Sinh tố bơ', N'Nước uống', 35000, 1),
+('M005', N'Nước cam', N'Nước uống', 20000, 1);
 
 -- Thêm dữ liệu vào bảng KhachHang
 INSERT INTO KhachHang (maKhachHang, tenKhachHang, soDienThoai)
