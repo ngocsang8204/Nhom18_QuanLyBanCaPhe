@@ -393,6 +393,7 @@ public class QLMon extends JPanel implements MouseListener, ActionListener{
         btnThucUongKhac.addActionListener(this);
         btnBanh.addActionListener(this);
         btnAll.addActionListener(this);
+        btnTimKiem.addActionListener(this);
         
         JPanel panel_12 = new JPanel();
         panel_12.setLayout(new BoxLayout(panel_12, BoxLayout.X_AXIS));
@@ -675,7 +676,21 @@ public class QLMon extends JPanel implements MouseListener, ActionListener{
 		else if(o.equals(btnBanh)) {
 			loadTableTheoLoai("Bánh");
 		}
-		
+		if (o.equals(btnTimKiem)) {
+			String tim = tTimKiem.getText().trim();
+			if (tim.length() <= 0) {
+				JOptionPane.showMessageDialog(this, "Nhập vào trường tìm kiếm");
+				loadTableData();
+			} else {
+				model_SanPham.getDataVector().removeAllElements();
+				model_SanPham.fireTableDataChanged();
+				ArrayList<Mon_Entity> dsMon = mon_dao.timMonTheoTen(tTimKiem.getText().trim());
+				dsMon.forEach(x -> themDong(x));
+			}
+		}
 	}
 
+	private void themDong(Mon_Entity mon) {
+		model_SanPham.addRow(new Object[] {mon.getMaMon(), mon.getTenMon(), mon.getLoaiMon(), mon.getDonGia()});
+	}
 }

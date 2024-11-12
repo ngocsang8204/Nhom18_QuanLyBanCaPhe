@@ -40,6 +40,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import java.util.List;
 
 public class QLKhachHang extends JPanel implements ActionListener, MouseListener{
@@ -328,14 +329,34 @@ public class QLKhachHang extends JPanel implements ActionListener, MouseListener
 			}
 		}
 		if (o.equals(btnTimKiem)) {
-			
-		}
+			String tim = tTimKiem.getText().trim();
+			if (tim.length() <= 0) {
+				JOptionPane.showMessageDialog(this, "Nhập vào ô tìm kiếm");
+				loadData();
+			} else {
+				if (tim.matches("^[0-9]{10}$")) {
+					KhachHang_Entity kh = khachHang_DAO.timKiemTenKhachHangTheoSDT(tim);
+					model.getDataVector().removeAllElements();
+					model.fireTableDataChanged();
+					themDong(kh);
+				} else {
+					ArrayList<KhachHang_Entity> dsKH = khachHang_DAO.timKiemKhachHangTheoTen(tim);
+					model.getDataVector().removeAllElements();
+					model.fireTableDataChanged();
+					dsKH.forEach(x -> themDong(x));
+				}
+			}
+ 		}
 		if (o.equals(btnXoaRong)) {
 			clear();
 		}
 		
 		// TODO Auto-generated method stub
 		
+	}
+	
+	private void themDong(KhachHang_Entity a) {
+		model.addRow(new Object[] {a.getMaKhachHang(), a.getTenKhachHang(), a.getSoDienThoai()});
 	}
 	
 	private void clear() {

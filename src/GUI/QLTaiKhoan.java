@@ -349,7 +349,7 @@ public class QLTaiKhoan extends JPanel implements ActionListener, MouseListener{
 			}
 		}
 		if (o.equals(btnTimKiem)) {
-			System.out.println("đm buồi Ngọc Sang");
+			
 		}
 		if (o.equals(btnXoaRong)) {
 			clear();
