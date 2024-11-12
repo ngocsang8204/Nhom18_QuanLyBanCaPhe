@@ -140,6 +140,36 @@ public class HoaDon_DAO {
 	    }
 	    return tongTien;
 	}
+	
+	public double tinhTongTienTheoKhoangNgay(Date ngayBD, Date ngayKT) {
+	    double tongTien = 0;
+	    
+	    String sql = "SELECT SUM(ctdh.soLuongMon * m.donGia) AS tongTien " +
+	                 "FROM HoaDon hd " +
+	                 "JOIN ChiTietDonHang ctdh ON hd.maHoaDon = ctdh.maHoaDon " +
+	                 "JOIN Mon m ON m.maMon = ctdh.maMon " +
+	                 "WHERE CONVERT(DATE, hd.ngayLap) >= ?" +
+	                 "  AND CONVERT(DATE, hd.ngayLap) <= ?";
+	    try {
+	        Connection con = database.getInstance().getConnection();
+	        PreparedStatement stmt = con.prepareStatement(sql);
+	        
+	        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	        String formattedDateStart = dateFormat.format(ngayBD);
+	        String formattedDateFinal = dateFormat.format(ngayKT);
+	        stmt.setString(1, formattedDateStart);
+	        stmt.setString(2, formattedDateFinal);
+	        
+	        ResultSet rs = stmt.executeQuery();
+	        if (rs.next()) {
+	            tongTien = rs.getDouble("tongTien");
+	        }
+	    
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return tongTien;
+	}
 
 	public ArrayList<HoaDon_Entity> timHoaDonTheoNgay(LocalDate ngay) {
 	    ArrayList<HoaDon_Entity> danhSachHoaDonTheoNgay = new ArrayList<HoaDon_Entity>();

@@ -403,13 +403,13 @@ public class ThongKe extends JPanel implements ActionListener, MouseListener{
 		    	doanhThuTheoNam();
 		        thongKeTop5MonBanChayNhatTheoNam();
 		        thongKeTop5MonKhongBanChayNhatTheoNam();
-		        
 		        return;
 		    }
 		    
 		    if ("Thống kê theo khoảng ngày".equals(lbDoiChieu.getText())) {
 		        thongKeTop5MonBanChayNhatTheoKhoangNgay();
 		        thongKeTop5MonKhongBanChayNhatTheoKhoangNgay();
+		        doanhThuKhoangNgay();
 		        return;
 		    }
 		    thongKeTop5MonBanChayNhatTheoNgay();
@@ -663,18 +663,21 @@ public class ThongKe extends JPanel implements ActionListener, MouseListener{
 	}
 
 	
-//	private void doanhThuKhoangNgay() {
-//	    int thang = tktt.getThang();
-//	    int nam = tktt.getNam();
-//	    DecimalFormat df = new DecimalFormat("##,###,### VND");
-//	    double doanhThuNgay = hoaDonDAO.tinhTongTienTheoThang(thang,nam);
-//	    String doanhThuNgayFormat = df.format(doanhThuNgay);
-//	    if (doanhThuNgay == 0) {
-//			lbTongDoanhThuTheoLoai.setText("Không có doanh thu trong tháng " + thang + " năm " + nam );
-//			return;
-//		}else {
-//			lbTongDoanhThuTheoLoai.setText("Tổng doanh thu trong tháng " + thang + " năm " + nam + " là: " + doanhThuNgayFormat);
-//		}
-//	}
+	private void doanhThuKhoangNgay() {
+	    Date ngayBD = tktkn.getNgayBD();
+	    Date ngayKT = tktkn.getNgayKT();
+	    DecimalFormat df = new DecimalFormat("##,###,### VND");
+	    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-YY");
+	    String ngayBDformat = sdf.format(ngayBD);
+	    String ngayKTformat = sdf.format(ngayKT);
+	    double doanhThuKhoangNgay = hoaDonDAO.tinhTongTienTheoKhoangNgay(ngayBD, ngayKT);
+	    String doanhThuKhoangNgayFormat = df.format(doanhThuKhoangNgay);
+	    if (doanhThuKhoangNgay == 0) {
+			lbTongDoanhThuTheoLoai.setText("Không có doanh thu trong khoảng ngày từ " + ngayBDformat + " đến " + ngayKTformat );
+			return;
+		}else {
+			lbTongDoanhThuTheoLoai.setText("Tổng doanh thu trong khoảng ngày từ " + ngayBDformat + " đến " + ngayKTformat + " là: " + doanhThuKhoangNgayFormat);
+		}
+	}
 
 }
