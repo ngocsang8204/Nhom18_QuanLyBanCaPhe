@@ -281,6 +281,7 @@ public class QLNguyenLieu extends JPanel implements ActionListener,MouseListener
         btnTimKiem.setContentAreaFilled(false);
 		btnTimKiem.setBorderPainted(false);
         panel_11.add(btnTimKiem);
+        btnTimKiem.addActionListener(this);
         
         tTimKiem = new JTextField(25);
         tTimKiem.setOpaque(false);
@@ -491,6 +492,32 @@ public class QLNguyenLieu extends JPanel implements ActionListener,MouseListener
 				}
 			}
 		}
+		if (o.equals(btnTimKiem)) {
+			String tim = tTimKiem.getText().trim();
+			if (tim.length() <= 0) {
+				JOptionPane.showMessageDialog(this, "Nhập vào trường tìm kiếm!");
+				loadTable();
+			} else {
+				if (tim.matches("^NL[0-9]{3,}$")) {
+					NguyenLieu_Entity nl = nl_dao.timNguyenLieuTheoMa(tim);
+					model.getDataVector().removeAllElements();
+					model.fireTableDataChanged();
+					themDong(nl);
+				} else {
+					ArrayList<NguyenLieu_Entity> dsNL = nl_dao.timNguyenLieuTheoTen(tim);
+					model.getDataVector().removeAllElements();
+					model.fireTableDataChanged();
+					dsNL.forEach(x -> themDong(x));
+				}
+			}
+		}
 	}
 
+	private void themDong(NguyenLieu_Entity x) {
+		DateTimeFormatter df= DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		model.addRow(new Object[] {
+				x.getMaNguyenLieu(),x.getTenNguyenLieu(),x.getSoLuong(),df.format(x.getThoiGianNhap()),df.format(x.getThoiGianHetHan()),
+				x.getNhaCungCap().getTenNhaCungCap()
+		});
+	}
 }

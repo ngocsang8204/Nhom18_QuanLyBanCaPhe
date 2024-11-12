@@ -28,6 +28,8 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
 import DAO.NhanVien_DAO;
+import Entity.KhachHang_Entity;
+import Entity.NhaCungCap_Entity;
 import Entity.NhanVien_Entity;
 
 import javax.swing.border.EtchedBorder;
@@ -38,6 +40,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -387,7 +390,33 @@ public class QLNhanVien extends JPanel implements ActionListener, MouseListener{
 			}
 		}
 		if (o.equals(btnTimKiem)) {
-			
+			if (tTimKiem.getText().length() <= 0) {
+				JOptionPane.showMessageDialog(this, "Nhập vào ô tìm kiếm");
+				loadData();
+			} else {
+				String search = tTimKiem.getText().trim();
+				if (search.length() >= 3) {
+					String kt = search.substring(0, 2);
+					if (kt.matches("NV")) {
+						NhanVien_Entity nv = nhanVien_DAO.timNhanVienTheoMa(search);
+						model.getDataVector().removeAllElements();
+						themDong(nv);
+					} else if (search.matches("^0[0-9]{9}$")) {
+						clear();
+						NhanVien_Entity nv = nhanVien_DAO.timNhanVienTheoSoDienThoai(search);
+						model.getDataVector().removeAllElements();
+						themDong(nv);
+					} else {
+						clear();
+						ArrayList<NhanVien_Entity> dsTim = nhanVien_DAO.timNhanVienTheoTen(search);
+						model.getDataVector().removeAllElements();
+						dsTim.forEach(x -> themDong(x));
+					}
+				} else {
+					JOptionPane.showMessageDialog(null,"Nhập đây đủ thông tin hơn để tìm", "Lỗi", JOptionPane.ERROR_MESSAGE);
+					loadData();;
+				} 
+			}
 		}
 		if (o.equals(btnXoaRong)) {
 			clear();
@@ -395,8 +424,17 @@ public class QLNhanVien extends JPanel implements ActionListener, MouseListener{
 		// TODO Auto-generated method stub
 		
 	}
+
 	
-	
+	private void themDong(NhanVien_Entity a) {
+		String chucVu;
+		if (a.getChucVu()==true) {
+			chucVu = "Quản lý";
+		}else {
+			chucVu = "Nhân viên";
+		}
+		model.addRow(new Object[] {a.getMaNhanVien(), a.getTenNhanVien(), a.getSoCCCD(), a.getSoDienThoai(), chucVu});
+	}
 
     private void them() {
 		NhanVien_Entity nv = revert();

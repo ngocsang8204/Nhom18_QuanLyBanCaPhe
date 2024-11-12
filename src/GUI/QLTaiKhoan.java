@@ -349,13 +349,37 @@ public class QLTaiKhoan extends JPanel implements ActionListener, MouseListener{
 			}
 		}
 		if (o.equals(btnTimKiem)) {
-			
+			String search = tTimKiem.getText().trim();
+			if (search.length() >= 3) {
+				String kt = search.substring(0, 2);
+				if (kt.matches("TK")) {
+					TaiKhoan_Entity tk = taiKhoan_DAO.timTaiKhoan(search);
+					model.getDataVector().removeAllElements();
+					themDong(tk);
+				} else if (kt.matches("NV")) {
+					TaiKhoan_Entity tk = taiKhoan_DAO.timTaiKhoanTheoMaNV(search);
+					model.getDataVector().removeAllElements();
+					themDong(tk);
+				}
+			} else {
+				JOptionPane.showMessageDialog(null,"Nhập đây đủ thông tin hơn để tìm", "Lỗi", JOptionPane.ERROR_MESSAGE);
+				loadData();;
+			} 
 		}
 		if (o.equals(btnXoaRong)) {
 			clear();
 		}
 		// TODO Auto-generated method stub
 		
+	}
+	
+	private void themDong(TaiKhoan_Entity tk) {
+		model.addRow(new Object[] {
+				tk.getMaTaiKhoan(),
+                tk.getTenDangNhap(),
+                tk.getMatKhau(),
+                tk.getNhanVien().getMaNhanVien()
+		});
 	}
 	
 	private void sua() {

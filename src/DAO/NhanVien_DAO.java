@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import ConnectDB.database;
+import Entity.NhaCungCap_Entity;
 import Entity.NhanVien_Entity;
 
 public class NhanVien_DAO {
@@ -65,10 +66,9 @@ public class NhanVien_DAO {
 		return dsNV.stream().filter(x -> x.getMaNhanVien().equals(maNhanVien)).findFirst().orElse(null);
 	}
 
-	public ArrayList<NhanVien_Entity> timNhanVienTheoTen(String ten) {
+	public ArrayList<NhanVien_Entity> timNhanVienTheoTen (String ten){
 		ArrayList<NhanVien_Entity> dsNV = danhSachNhanVien();
-		return dsNV.stream().filter(x -> x.getTenNhanVien().matches(".*" + ".*"))
-				.collect(Collectors.toCollection(ArrayList::new));
+		return dsNV.stream().filter(x -> x.getTenNhanVien().matches(".*" + ten + ".*")).collect(Collectors.toCollection(ArrayList::new));
 	}
 
 	public NhanVien_Entity timNhanVienTheoSoDienThoai(String soDT) {

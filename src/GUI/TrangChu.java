@@ -246,12 +246,17 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 		JMenuItem ingredientItem = createSubmenuItem("Nguyên liệu");
 		JMenuItem supplierItem = createSubmenuItem("Nhà cung cấp");
 
-		manageMenu.add(accountItem);
-		manageMenu.add(employeeItem);
-		manageMenu.add(customerItem);
-		manageMenu.add(productItem);
-		manageMenu.add(ingredientItem);
-		manageMenu.add(supplierItem);
+		if (taiKhoan.getNhanVien().getChucVu()) {
+			manageMenu.add(accountItem);
+			manageMenu.add(employeeItem);
+			manageMenu.add(customerItem);
+			manageMenu.add(productItem);
+			manageMenu.add(ingredientItem);
+			manageMenu.add(supplierItem);
+		} else {
+			manageMenu.add(customerItem);
+		}
+		
 
 		accountItem.addActionListener(e -> handleSubmenuSelection("account"));
 		employeeItem.addActionListener(e -> handleSubmenuSelection("employee"));
@@ -260,9 +265,12 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 		ingredientItem.addActionListener(e -> handleSubmenuSelection("ingredient"));
 		supplierItem.addActionListener(e -> handleSubmenuSelection("supplier"));
 
+		
 		thongKe = new JPanel();
 		thongKe.setBackground(new Color(24, 28, 20));
-		navbar.add(thongKe);
+		if (taiKhoan.getNhanVien().getChucVu()) {
+			navbar.add(thongKe);
+		}
 		thongKe.setLayout(new BorderLayout(0, 0));
 
 		btnThongKe = new JButton("Thống kê");
@@ -957,6 +965,8 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 				btnThanhToan.setText(String.valueOf(tongTien));
 				banTrong.setSelectedIndex(0);
 				tGiamGia.setSelectedIndex(0);
+				tfTenKH.setText("");
+				tfSoDT.setText("");
 			}
 			
 		}
@@ -972,9 +982,7 @@ public class TrangChu extends JFrame implements ActionListener, MouseListener {
 		if (btn.equals(btnTimKiemTenKHTheoSDT)) {
 			String sdt = tfSoDT.getText().trim();
 			KhachHang_Entity kh= kh_dao.timKiemTenKhachHangTheoSDT(sdt);
-			System.out.println(kh);
 			if (kh != null) {
-				System.out.println(kh.getTenKhachHang());
 				tfTenKH.setText(kh.getTenKhachHang());
 			}else {
 				JOptionPane.showMessageDialog(this, "Không tìm thấy khách hàng này!");
